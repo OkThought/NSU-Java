@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="LinesOfCode" default="all" basedir=".">
+    <!--properties-->
+    <property name="version"        value="0.0.1"/>
+    <property name="src.dir"        value="${basedir}/src"/>
+    <property name="out.dir"        value="${basedir}/out"/>
+    <property name="package"        value="bogush"/>
+    <property name="main.class"     value="${package}.Main"/>
+
+    <property name="builds.dir"     value="${out.dir}/builds"/>
+    <property name="build.dir"      value="${builds.dir}/${version}"/>
+    <property name="build.jar"      value="${build.dir}/${ant.project.name}.jar"/>
+
+    <property name="classes.dir"    value="${out.dir}/classes"/>
+
+    <property name="tests.src.dir"  value="tests"/>
+    <property name="tests.dir"      value="${out.dir}/tests"/>
+    <property name="test.name"      value="test"/>
+    <property name="test.jar"       value="${tests.dir}/${test.name}.jar"/>
+    <!--
+        all src .java files including test files are stored in src.dir
+        all .class and .jar files will be stored in out.dir
+            .class -> classes
+            .jar -> builds/build
+        clean removes all .class from out.dir
+        clean-all removes all .class and .jar from out.dir
+        init sets the standard DSTAMP, TSTAMP, and TODAY properties according to the default formats.
+    -->
+
+    <!--paths and filesets-->
+
+    <path id="src.paths">
+        <fileset id="src.fileset"
+                 dir="${src.dir}">
+            <include name="**/*.java"/>
+            <exclude name="**/*test*"/>
+        </fileset>
+    </path>
+
+    <path id="test.src.paths">
+        <fileset id="test.src.fileset"
+                 dir="${tests.src.dir}">
+            <include name="**/*test*.java"/>
+        </fileset>
+    </path>
+
+    <path id="classes.paths">
+        <fileset id="classes.fileset"
+                 dir="${classes.dir}">
+            <include name="**/*.class"/>
+            <exclude name="**/*test*"/>
+        </fileset>
+    </path>
+
+    <path id="test.classes.paths">
+        <fileset id="test.classes.fileset"
+                 dir="${classes.dir}">
+            <include name="**/*test*.class"/>
+        </fileset>
+    </path>
+
+    <!--targets-->
+
+    <target name="init"
+            description="set the standard DSTAMP, TSTAMP, and TODAY
+            properties according to the default formats">
+        <tstamp/>
+    </target>
+
+    <target name="make.dirs"
+            description="makes all necessary dirs">
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${tests.dir}"/>
+    </target>
+
+    <target name="build.jar.check.available">
+        <available file="${build.jar}" property="build.jar.available"/>
+    </target>
+
+    <target name="test.jar.check.available">
+        <available file="${test.jar}" property="test.jar.available"/>
+    </target>
+
+    <target name="src.check.modified"
+            depends="build.jar.check.available"
+            if="build.jar.available">
+        <uptodate property="up-to-date" srcfile="${build.jar}">
+            <mapper type="identity">
+                <classpath refid="classes.paths"/>
+            </mapper>
+        </uptodate>
+    </target>
+
+    <target name="test.check.modified"
+            depends="test.jar.check.available"
+            if="test.jar.available">
+        <uptodate property="tests.up-to-date">
+            <mapper type="identity">
+                <classpath refid="test.classes.paths"/>
+            </mapper>
+        </uptodate>
+    </target>
+
+    <target name="compile"
+            depends="init, make.dirs, src.check.modified"
+            unless="up-to-date"
+            description="compile all main .java src-files into classes">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}">
+            <sourcepath refid="src.paths"/>
+        </javac>
+    </target>
+
+    <target name="test.compile"
+            depends="init, make.dirs, test.check.modified"
+            unless="tests.up-to-date"
+            description="compile all test .java src-files into classes">
+        <javac srcdir="${tests.dir}" destdir="${classes.dir}">
+            <sourcepath refid="test.src.paths"/>
+        </javac>
+    </target>
+
+    <target name="build"
+            depends="init, make.dirs, src.check.modified, compile"
+            description="jar all main .class files into '${build.jar}'"
+            unless="up-to-date">
+        <jar jarfile="${build.jar}" basedir="${classes.dir}">
+            <path refid="classes.paths"/>
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="test.build"
+            depends="init, make.dirs, test.check.modified, test.compile"
+            description="jar all test .class files into '${test.jar}'"
+            unless="tests.up-to-date">
+        <jar jarfile="${test.jar}" basedir="${classes.dir}">
+            <classfileset refid="test.classes.fileset"/>
+        </jar>
+    </target>
+
+    <target name="clean"
+            depends="init"
+            description="remove all .class from '${out.dir}'">
+        <delete dir="${classes.dir}"/>
+    </target>
+
+    <target name="clean-all"
+            depends="init, clean"
+            description="remove all .class and .jar from '${out.dir}'">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="test"
+            depends="init, test.build"
+            description="run test '${test.name}'">
+        <java jar="${test.jar}" fork="true"/>
+    </target>
+
+    <target name="run"
+            depends="init, build"
+            description="run '${ant.project.name}'">
+        <java jar="${build.jar}" fork="true">
+            <arg value="config"/>
+            <arg value="."/>
+        </java>
+    </target>
+
+    <target name="all"
+            depends="init, run"/>
+</project>
