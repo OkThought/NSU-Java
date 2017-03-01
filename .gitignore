@@ -13,6 +13,7 @@ hs_err_pid*
 
 # Project files
 *.idea
+*.iml
 
 # Input files
 LoC/config
