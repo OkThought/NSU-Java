@@ -1,3 +1,5 @@
+package bogush;
+
 public class FileStatistics {
     int fileCount;
     int lineCount;

@@ -1,3 +1,5 @@
+package bogush;
+
 import java.nio.file.Path;
 
 public class FileExtensionFilter implements Filter {

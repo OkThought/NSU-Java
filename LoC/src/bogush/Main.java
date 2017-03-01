@@ -1,3 +1,5 @@
+package bogush;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -5,6 +7,10 @@ import java.nio.file.Paths;
 
 public class Main {
     public static void main(String[] args) {
+        if (args.length < 2) {
+            System.err.println("at least two arguments required: config file path and dir path");
+            return;
+        }
         String configFileName = args[0];
         Path configFilePath = Paths.get(configFileName);
         String dir = args[1];
