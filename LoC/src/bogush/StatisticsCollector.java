@@ -7,13 +7,20 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.TimeUnit;
 
+class NoFilterException extends Exception {
+    public NoFilterException(String message) {
+        super(message);
+    }
+}
+
 public class StatisticsCollector extends SimpleFileVisitor<Path> {
     private Statistics stats;
     private Filter[] filters;
     public boolean printVisited = false;
-    StatisticsCollector(Statistics statistics, Filter[] filters) {
+    StatisticsCollector(Statistics statistics, Filter[] filters) throws NoFilterException {
         stats = statistics;
         this.filters = filters;
+        if (filters.length == 0) throw new NoFilterException("No filter passed");
     }
 
     @Override
