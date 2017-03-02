@@ -9,7 +9,7 @@ class LineCounter {
             boolean empty = true;
             byte bytes[] = new byte[1024];
             int readChars;
-            int count = 0;
+            int count = 1;
             while ((readChars = is.read(bytes)) != -1) {
                 empty = false;
                 for (int i = 0; i < readChars; ++i) {
@@ -18,7 +18,11 @@ class LineCounter {
                     }
                 }
             }
-            return (count == 0 && !empty) ? 1 : count;
+            if (empty) {
+                return 0;
+            } else {
+                return count;
+            }
         }
     }
 }
