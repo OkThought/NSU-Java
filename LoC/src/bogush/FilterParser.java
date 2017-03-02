@@ -5,14 +5,25 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+class FilterParseException extends Exception {
+    FilterParseException(String message) {
+        super(message);
+    }
+}
+
 class FilterParser {
     static Filter[] parse(Path configFile) throws IOException, FilterParseException {
         ArrayList<Filter> filterList = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(configFile.toFile()))) {
             String line;
             while((line = br.readLine()) != null) {
-                filterList.add(parse(line));
+                if (!line.trim().isEmpty()) {
+                    filterList.add(parse(line));
+                }
             }
+        }
+        if (filterList.size() == 0) {
+            throw new FilterParseException("No filters have been parsed");
         }
         Filter[] filters = new Filter[filterList.size()];
         filters = filterList.toArray(filters);
