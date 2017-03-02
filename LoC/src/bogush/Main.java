@@ -22,7 +22,12 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        StatisticsCollector collector = new StatisticsCollector(stats, filters);
+        StatisticsCollector collector = null;
+        try {
+            collector = new StatisticsCollector(stats, filters);
+        } catch (NoFilterException e) {
+            e.printStackTrace();
+        }
 //        collector.printVisited = true;
         try {
             Files.walkFileTree(dirToWalk, collector);
