@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <project name="LinesOfCode" default="all" basedir=".">
     <!--properties-->
-    <property name="version"        value="0.0.1"/>
+    <property name="version"        value="0.0.2"/>
     <property name="main.src.dir"   value="${basedir}/src"/>
     <property name="out.dir"        value="${basedir}/out"/>
     <property name="package"        value="bogush"/>
