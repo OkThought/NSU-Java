@@ -30,6 +30,18 @@ public class Statistics {
         totalFiles += amount;
     }
 
+    public int getTotalLines() {
+        return totalLines;
+    }
+
+    public int getTotalFiles() {
+        return totalFiles;
+    }
+
+    public Map<Filter, FileStatistics> getFilterFileStatisticsMap() {
+        return filterFileStatisticsMap;
+    }
+
     @Override
     public String toString() {
         String string = "Total " + totalLines + " lines in " + totalFiles + " files:\n";
