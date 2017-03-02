@@ -17,3 +17,5 @@ hs_err_pid*
 
 # Input files
 LoC/config
+!/LoC/lib/hamcrest-core-1.3.jar
+!/LoC/lib/junit-4.12.jar
