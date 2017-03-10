@@ -4,7 +4,7 @@
     <property name="version"        value="0.0.2"/>
     <property name="main.src.dir"   value="${basedir}/src"/>
     <property name="out.dir"        value="${basedir}/out"/>
-    <property name="package"        value="bogush"/>
+    <property name="package"        value="loc"/>
     <property name="main.class"     value="${package}.Main"/>
 
     <property name="builds.dir"     value="${out.dir}/builds"/>
