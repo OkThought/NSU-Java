@@ -1,6 +1,6 @@
 package loc;
 
-import loc.filters.Filter;
+import loc.filter.Filter;
 import loc.statistics.Statistics;
 import loc.statistics.StatisticsCollector;
 import org.junit.Test;

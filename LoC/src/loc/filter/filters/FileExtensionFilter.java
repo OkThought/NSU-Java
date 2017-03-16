@@ -1,13 +1,37 @@
-package loc.filters;
+package loc.filter.filters;
+
+import loc.IFilterSerializer;
 
 import java.nio.file.Path;
 
-public class FileExtensionFilter implements Filter {
+public final class FileExtensionFilter implements IFilter {
     public static final char prefix = '.';
     public final String extension;
 
+    public static class Serializer implements IFilterSerializer {
+        @Override
+        public FileExtensionFilter parse(String string) throws Exception {
+            String extension = new loc.Parser(string)
+                    .skipSpaces()
+                    .skipChar(prefix)
+                    .skipSpaces()
+                    .readToTheEnd();
+            return new FileExtensionFilter(extension);
+        }
+
+        @Override
+        public String serialize() throws Exception {
+            return null;
+        }
+    }
+
     public FileExtensionFilter(String ext) {
         extension = ext;
+    }
+
+    @Override
+    public IFilterSerializer getSerializer() {
+        return new Serializer();
     }
 
     @Override

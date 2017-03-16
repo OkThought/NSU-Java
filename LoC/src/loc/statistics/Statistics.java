@@ -1,6 +1,6 @@
 package loc.statistics;
 
-import loc.filters.Filter;
+import loc.filter.Filter;
 
 import java.nio.file.Path;
 import java.util.HashMap;

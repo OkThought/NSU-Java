@@ -1,6 +1,6 @@
 package loc.statistics;
 
-import loc.filters.Filter;
+import loc.filter.Filter;
 import loc.LineCounter;
 
 import java.io.IOException;

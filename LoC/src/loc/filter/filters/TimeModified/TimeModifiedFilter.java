@@ -1,11 +1,6 @@
-package loc.filters;
+package loc.filter.filters.TimeModified;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
-
-public abstract class ModifiedTimeFilter implements Filter {
+public abstract class ModifiedTimeFilter implements IFilter {
 	public final long timeBound;
 
 	protected ModifiedTimeFilter(long timeBound) {

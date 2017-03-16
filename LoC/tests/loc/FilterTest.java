@@ -1,6 +1,6 @@
 package loc;
 
-import loc.filters.*;
+import loc.filter.*;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

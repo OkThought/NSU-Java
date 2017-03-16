@@ -1,13 +1,35 @@
-package loc.filters;
+package loc.filter.filters.Aggregate;
+
+import loc.FilterFactory;
+import loc.IFilterSerializer;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class FilterNot implements Filter {
+public class FilterNot implements IFilter {
     public static final char prefix = '!';
-	public final Filter filter;
+	public final IFilter filter;
 
-	public FilterNot(Filter filter) {
+
+	public static class Serializer implements IFilterSerializer {
+		@Override
+		public FilterNot parse(String string) throws Exception {
+			String filterString = new loc.Parser(string).skipSpaces().skipChar(prefix).readToTheEnd();
+			return new FilterNot(FilterFactory.create(filterString));
+		}
+
+		@Override
+		public String serialize() throws Exception {
+			return null;
+		}
+	}
+
+	@Override
+	public IFilterSerializer getSerializer() {
+		return new Serializer();
+	}
+
+	public FilterNot(IFilter filter) {
 		this.filter = filter;
 	}
 

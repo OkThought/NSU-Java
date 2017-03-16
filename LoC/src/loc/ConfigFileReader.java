@@ -1,6 +1,7 @@
 package loc;
 
-import loc.filters.Filter;
+import loc.filter.Filter;
+import loc.filter.FilterFactory;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

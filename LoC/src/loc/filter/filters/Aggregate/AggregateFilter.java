@@ -1,13 +1,11 @@
-package loc.filters;
+package loc.filter.filters.Aggregate;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Arrays;
 
-public abstract class AggregateFilter implements Filter {
-	public Filter[] filters;
+public abstract class AggregateFilter implements IFilter {
+	public IFilter[] filters;
 
-	public AggregateFilter(Filter[] filters) {
+	public AggregateFilter(IFilter[] filters) {
 		this.filters = filters;
 	}
 
@@ -33,7 +31,7 @@ public abstract class AggregateFilter implements Filter {
 		buffer.append(getPrefix());
 		buffer.append('(');
 		boolean first = true;
-		for (Filter filter: filters) {
+		for (IFilter filter: filters) {
 			if (!first){
 				buffer.append(' ');
 			}

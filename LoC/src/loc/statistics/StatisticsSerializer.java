@@ -2,7 +2,7 @@ package loc.statistics;
 
 import loc.FilterSerializer;
 import loc.IFilterSerializer;
-import loc.filters.*;
+import loc.filter.*;
 
 import java.util.*;
 

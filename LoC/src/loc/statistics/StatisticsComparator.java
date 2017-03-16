@@ -1,6 +1,6 @@
 package loc.statistics;
 
-import loc.filters.Filter;
+import loc.filter.Filter;
 
 import java.util.Comparator;
 import java.util.Map;

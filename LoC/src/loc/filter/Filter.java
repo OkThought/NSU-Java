@@ -1,9 +1,12 @@
-package loc.filters;
+
+import loc.IFilterSerializer;
+package loc.filter;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-public interface Filter {
+public interface IFilter {
     boolean check(Path file) throws IOException;
 	char getPrefix();
+	IFilterSerializer getSerializer();
 }
