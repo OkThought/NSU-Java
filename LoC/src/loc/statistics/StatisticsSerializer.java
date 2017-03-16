@@ -1,6 +1,5 @@
 package loc.statistics;
 
-import loc.FilterSequenceStringBuffer;
 import loc.filter.*;
 
 import java.util.*;

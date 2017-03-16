@@ -1,8 +1,6 @@
 package loc.filter.filters.Aggregate;
 
-import loc.filter.FilterFactory;
-import loc.filter.FilterSerializer;
-import loc.filter.Filter;
+import loc.filter.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -14,13 +12,13 @@ public class Not implements Filter {
 
 	public static class Serializer implements FilterSerializer {
 		@Override
-		public Not serialize(String string) throws Exception {
-			String filterString = new loc.Parser(string).skipSpaces().skipChar(prefix).readToTheEnd();
+		public Not serialize(String string) throws FilterSerializeException {
+			String filterString = new Parser(string).skipSpaces().skipChar(prefix).readToTheEnd();
 			return new Not(FilterFactory.create(filterString));
 		}
 
 		@Override
-		public String serialize(Filter filter) throws Exception {
+		public String serialize(Filter filter) throws FilterSerializeException {
 			Filter subFilter = Not.class.cast(filter).filter;
 			return prefix + subFilter.getSerializer().serialize(subFilter);
 		}

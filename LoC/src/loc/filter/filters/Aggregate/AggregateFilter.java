@@ -1,7 +1,8 @@
 package loc.filter.filters.Aggregate;
 
-import loc.FilterSequenceStringBuffer;
+import loc.filter.FilterSequenceStringBuffer;
 import loc.filter.Filter;
+import loc.filter.FilterSerializeException;
 import loc.filter.FilterSerializer;
 
 import java.util.Arrays;
@@ -12,12 +13,13 @@ public abstract class AggregateFilter implements Filter {
 
 	public static class Serializer implements FilterSerializer {
 		@Override
-		public AggregateFilter serialize(String string) throws Exception {
-			return null;
+		public AggregateFilter serialize(String string) throws FilterSerializeException {
+			throw new FilterSerializeException(Serializer.class.getName() +
+					" can't serialize String to " + AggregateFilter.class.getName());
 		}
 
 		@Override
-		public String serialize(Filter filter) throws Exception {
+		public String serialize(Filter filter) throws FilterSerializeException {
 			Filter[] filters = AggregateFilter.class.cast(filter).filters;
 			return new FilterSequenceStringBuffer().append(filters).toString();
 		}

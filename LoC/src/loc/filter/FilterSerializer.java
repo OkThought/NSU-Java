@@ -1,6 +1,6 @@
 package loc.filter;
 
 public interface FilterSerializer {
-	String serialize(Filter filter) throws Exception;
-	Filter serialize(String string) throws Exception;
+	String serialize(Filter filter) throws FilterSerializeException;
+	Filter serialize(String string) throws FilterSerializeException;
 }

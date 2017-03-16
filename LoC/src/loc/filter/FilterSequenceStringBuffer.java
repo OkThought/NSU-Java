@@ -1,6 +1,4 @@
-package loc;
-
-import loc.filter.Filter;
+package loc.filter;
 
 import java.io.*;
 
@@ -15,8 +13,8 @@ public class FilterSequenceStringBuffer {
 		this.buffer = new StringBuilder();
 	}
 
-	public FilterSequenceStringBuffer append(Filter[] filters) throws Exception {
-		if (filters.length == 0) throw new IOException("Can't print sequence of 0 filter");
+	public FilterSequenceStringBuffer append(Filter[] filters) throws FilterSerializeException {
+		if (filters.length == 0) throw new FilterSerializeException("Can't print sequence of 0 filter");
 		boolean first = true;
 		buffer.append(__openParenthesis);
 		for (Filter filter : filters) {

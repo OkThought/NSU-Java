@@ -21,10 +21,14 @@ public class FilterFactory {
 		serializers.put(ModifiedLater.prefix,       ModifiedLater.Serializer.class);
 	}
 
-	public static Filter create(String filterString) throws Exception {
-		filterString = filterString.trim();
-		char prefix = filterString.charAt(0);
-		FilterSerializer parser = (FilterSerializer) serializers.get(prefix).newInstance();
-		return parser.serialize(filterString);
+	public static Filter create(String filterString) throws FilterSerializeException {
+		try {
+			filterString = filterString.trim();
+			char prefix = filterString.charAt(0);
+			FilterSerializer parser = (FilterSerializer) serializers.get(prefix).newInstance();
+			return parser.serialize(filterString);
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new FilterSerializeException(e);
+		}
 	}
 }

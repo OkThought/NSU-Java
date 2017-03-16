@@ -2,6 +2,7 @@ package loc.filter.filters;
 
 import loc.filter.Filter;
 import loc.filter.FilterSerializer;
+import loc.filter.Parser;
 
 import java.nio.file.Path;
 
@@ -11,8 +12,8 @@ public final class FileExtensionFilter implements Filter {
 
     public static class Serializer implements FilterSerializer {
         @Override
-        public FileExtensionFilter serialize(String string) throws Exception {
-            String extension = new loc.Parser(string)
+        public FileExtensionFilter serialize(String string) throws Parser.ParseException {
+            String extension = new Parser(string)
                     .skipSpaces()
                     .skipChar(prefix)
                     .skipSpaces()
@@ -21,7 +22,7 @@ public final class FileExtensionFilter implements Filter {
         }
 
         @Override
-        public String serialize(Filter filter) throws Exception {
+        public String serialize(Filter filter) {
             return prefix + FileExtensionFilter.class.cast(filter).extension;
         }
     }
