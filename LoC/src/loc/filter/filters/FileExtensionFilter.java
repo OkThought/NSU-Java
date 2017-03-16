@@ -21,8 +21,8 @@ public final class FileExtensionFilter implements Filter {
         }
 
         @Override
-        public String serialize() throws Exception {
-            return null;
+        public String serialize(Filter filter) throws Exception {
+            return prefix + FileExtensionFilter.class.cast(filter).extension;
         }
     }
 
