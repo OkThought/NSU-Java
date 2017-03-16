@@ -2,7 +2,7 @@ package loc.filter;
 
 import loc.filter.Filter;
 
-	String serialize() throws Exception;
-	IFilter parse(String string) throws Exception;
 public interface FilterSerializer {
+	String serialize(Filter filter) throws Exception;
+	Filter parse(String string) throws Exception;
 }
