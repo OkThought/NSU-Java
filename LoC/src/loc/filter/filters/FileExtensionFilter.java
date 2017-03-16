@@ -11,7 +11,7 @@ public final class FileExtensionFilter implements Filter {
 
     public static class Serializer implements FilterSerializer {
         @Override
-        public FileExtensionFilter parse(String string) throws Exception {
+        public FileExtensionFilter serialize(String string) throws Exception {
             String extension = new loc.Parser(string)
                     .skipSpaces()
                     .skipChar(prefix)

@@ -13,7 +13,7 @@ public class ModifiedLater extends TimeModifiedFilter {
 
 	public static class Serializer implements FilterSerializer {
 		@Override
-		public ModifiedLater parse(String string) throws Exception {
+		public ModifiedLater serialize(String string) throws Exception {
 			String timestampString = new loc.Parser(string)
 					.skipSpaces()
 					.skipChar(prefix)

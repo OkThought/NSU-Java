@@ -14,7 +14,7 @@ public class Or extends AggregateFilter {
 
 	public static class Serializer implements FilterSerializer {
 		@Override
-		public Or parse(String string) throws Exception {
+		public Or serialize(String string) throws Exception {
 			String filterSequenceString = new loc.Parser(string)
 					.skipSpaces()
 					.skipChar(prefix)

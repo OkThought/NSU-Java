@@ -12,7 +12,7 @@ public abstract class AggregateFilter implements Filter {
 
 	public static class Serializer implements FilterSerializer {
 		@Override
-		public AggregateFilter parse(String string) throws Exception {
+		public AggregateFilter serialize(String string) throws Exception {
 			return null;
 		}
 

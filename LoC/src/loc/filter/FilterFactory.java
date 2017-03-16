@@ -25,6 +25,6 @@ public class FilterFactory {
 		filterString = filterString.trim();
 		char prefix = filterString.charAt(0);
 		FilterSerializer parser = (FilterSerializer) serializers.get(prefix).newInstance();
-		return parser.parse(filterString);
+		return parser.serialize(filterString);
 	}
 }

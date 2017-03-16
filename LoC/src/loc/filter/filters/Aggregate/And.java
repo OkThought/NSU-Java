@@ -11,7 +11,7 @@ public class And extends AggregateFilter {
 
 	public static class Serializer implements FilterSerializer {
 		@Override
-		public And parse(String string) throws Exception {
+		public And serialize(String string) throws Exception {
 			String filterSequenceString = new loc.Parser(string)
 					.skipSpaces()
 					.skipChar(prefix)

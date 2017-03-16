@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class ParserTest {
 	@Test (expected = Parser.ParseException.class)
 	public void parseEmpty() throws Exception {
-		new Or.Serializer().parse("");
+		new Or.Serializer().serialize("");
 	}
 /* parenthesis are only for filter sequences now (used only in AggregateFilter)
 	@Test (expected = FilterParser.ParseException.class)

@@ -14,7 +14,7 @@ public class Not implements Filter {
 
 	public static class Serializer implements FilterSerializer {
 		@Override
-		public Not parse(String string) throws Exception {
+		public Not serialize(String string) throws Exception {
 			String filterString = new loc.Parser(string).skipSpaces().skipChar(prefix).readToTheEnd();
 			return new Not(FilterFactory.create(filterString));
 		}

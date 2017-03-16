@@ -14,7 +14,7 @@ public class Parser {
 
 	private int parenthesisCounter;
 	private int currentChar;
-	private StringBuffer filterStringBuffer;
+	private StringBuilder filterStringBuffer;
 	private BufferedInputStream reader;
 	private List<Filter> filterList;
 	private String filterString;
@@ -27,7 +27,7 @@ public class Parser {
 
 	public Parser(String filterString) {
 		this.filterString = filterString;
-		filterStringBuffer = new StringBuffer();
+		filterStringBuffer = new StringBuilder();
 	}
 
 	private void initReader() {
@@ -87,7 +87,7 @@ public class Parser {
 				--parenthesisCounter;
 			} else if (currentChar == __separator && parenthesisCounter == 0) {
 				addFilter();
-				filterStringBuffer = new StringBuffer(); // clear buffer
+				clearBuffer();
 				skipSpaces();
 			}
 			filterStringBuffer.append((char) currentChar);
@@ -124,7 +124,7 @@ public class Parser {
 		return this;
 	}
 
-	public Parser skipChar(char character) throws IOException, ParseException {
+	public Parser skipChar(char character) throws IOException {
 		char readChar = (char) reader.read();
 		if (readChar != character) {
 			throw new ParseException("Couldn't skip '" + character + '\'');
@@ -132,7 +132,7 @@ public class Parser {
 		return this;
 	}
 
-	public Parser skipChars(char character, int amount) throws IOException, ParseException {
+	public Parser skipChars(char character, int amount) throws IOException {
 		if (amount == 0) return this;
 		int count = 0;
 		do {
@@ -144,7 +144,7 @@ public class Parser {
 		return this;
 	}
 
-	public Parser skipAtMostChars(char character, int amount) throws IOException, ParseException {
+	public Parser skipAtMostChars(char character, int amount) throws IOException {
 		if (amount == 0) return this;
 		int count = 0;
 		do {
@@ -166,7 +166,6 @@ public class Parser {
 	}
 
 	public String getCurrentBufferString() {
-		String result = filterStringBuffer.toString();
-		return result;
+		return filterStringBuffer.toString();
 	}
 }
