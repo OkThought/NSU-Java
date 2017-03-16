@@ -1,7 +1,7 @@
 package loc.filter.filters.Aggregate;
 
 import loc.FilterFactory;
-import loc.IFilterSerializer;
+import loc.filter.FilterSerializer;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -11,7 +11,7 @@ public class Not implements Filter {
 	public final Filter filter;
 
 
-	public static class Serializer implements IFilterSerializer {
+	public static class Serializer implements FilterSerializer {
 		@Override
 		public FilterNot parse(String string) throws Exception {
 			String filterString = new loc.Parser(string).skipSpaces().skipChar(prefix).readToTheEnd();
@@ -25,7 +25,7 @@ public class Not implements Filter {
 	}
 
 	@Override
-	public IFilterSerializer getSerializer() {
+	public FilterSerializer getSerializer() {
 		return new Serializer();
 	}
 

@@ -1,6 +1,7 @@
 package loc.filter.filters;
 
-import loc.IFilterSerializer;
+import loc.filter.Filter;
+import loc.filter.FilterSerializer;
 
 import java.nio.file.Path;
 
@@ -8,7 +9,7 @@ public final class FileExtensionFilter implements Filter {
     public static final char prefix = '.';
     public final String extension;
 
-    public static class Serializer implements IFilterSerializer {
+    public static class Serializer implements FilterSerializer {
         @Override
         public FileExtensionFilter parse(String string) throws Exception {
             String extension = new loc.Parser(string)
@@ -30,7 +31,7 @@ public final class FileExtensionFilter implements Filter {
     }
 
     @Override
-    public IFilterSerializer getSerializer() {
+    public FilterSerializer getSerializer() {
         return new Serializer();
     }
 

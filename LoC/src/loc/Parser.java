@@ -109,6 +109,13 @@ public class Parser {
 		filterList.add(filter);
 	}
 
+	public String readToTheEnd() throws IOException {
+		while ((currentChar = reader.read()) != -1) {
+			filterStringBuffer.append((char) currentChar);
+		}
+		return filterStringBuffer.toString();
+	}
+
 	public Parser skipCharIfExists(char character) throws IOException {
 		reader.mark(1);
 		if (reader.read() != character) {

@@ -1,6 +1,6 @@
 package loc.filter.filters.Aggregate;
 
-import loc.IFilterSerializer;
+import loc.filter.FilterSerializer;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -8,7 +8,7 @@ import java.nio.file.Path;
 public class FilterAnd extends AggregateFilter {
 	public static final char prefix = '&';
 
-	public static class Serializer implements IFilterSerializer {
+	public static class Serializer implements FilterSerializer {
 		@Override
 		public FilterAnd parse(String string) throws Exception {
 			String filterSequenceString = new loc.Parser(string)
@@ -28,7 +28,7 @@ public class FilterAnd extends AggregateFilter {
 	}
 
 	@Override
-	public IFilterSerializer getSerializer() {
+	public FilterSerializer getSerializer() {
 		return new Serializer();
 	}
 
