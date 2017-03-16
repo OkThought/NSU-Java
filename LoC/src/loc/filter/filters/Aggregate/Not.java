@@ -1,7 +1,8 @@
 package loc.filter.filters.Aggregate;
 
-import loc.FilterFactory;
+import loc.filter.FilterFactory;
 import loc.filter.FilterSerializer;
+import loc.filter.Filter;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -13,14 +14,15 @@ public class Not implements Filter {
 
 	public static class Serializer implements FilterSerializer {
 		@Override
-		public FilterNot parse(String string) throws Exception {
+		public Not parse(String string) throws Exception {
 			String filterString = new loc.Parser(string).skipSpaces().skipChar(prefix).readToTheEnd();
-			return new FilterNot(FilterFactory.create(filterString));
+			return new Not(FilterFactory.create(filterString));
 		}
 
 		@Override
-		public String serialize() throws Exception {
-			return null;
+		public String serialize(Filter filter) throws Exception {
+			Filter subFilter = Not.class.cast(filter).filter;
+			return prefix + subFilter.getSerializer().serialize(subFilter);
 		}
 	}
 
@@ -48,9 +50,9 @@ public class Not implements Filter {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		FilterNot filterNot = (FilterNot) o;
+		Not not = (Not) o;
 
-		return filter != null ? filter.equals(filterNot.filter) : filterNot.filter == null;
+		return filter != null ? filter.equals(not.filter) : not.filter == null;
 	}
 
 	@Override
