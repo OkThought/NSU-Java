@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilterParser {
+public class Parser {
 	public static final char __openParenthesis  = '(';
 	public static final char __closeParenthesis = ')';
 	public static final char __separator        = ' ';
@@ -20,13 +20,13 @@ public class FilterParser {
 	private List<IFilter> filterList;
 	private String filterString;
 
-	public static class FilterParseException extends Exception {
-		public FilterParseException(String message) {
+	public static class ParseException extends IOException {
+		public ParseException(String message) {
 			super(message);
 		}
 	}
 
-	public FilterParser(String filterString) {
+	public Parser(String filterString) {
 		this.filterString = filterString;
 		filterStringBuffer = new StringBuffer();
 	}
@@ -35,7 +35,7 @@ public class FilterParser {
 		reader = new BufferedInputStream(new ByteArrayInputStream(filterString.getBytes()));
 	}
 
-	public FilterParser clearBuffer() {
+	public Parser clearBuffer() {
 		filterStringBuffer.delete(0, filterStringBuffer.length());
 		return this;
 	}
@@ -44,10 +44,10 @@ public class FilterParser {
 		filterList = new ArrayList<>();
 	}
 
-	public FilterParser openParenthesis() throws FilterParseException, IOException {
+	public Parser openParenthesis() throws IOException {
 		currentChar = reader.read();
 		if (currentChar != __openParenthesis) {
-			throw new FilterParseException("Couldn't open parenthesis: first character is not '" + __openParenthesis + '\'');
+			throw new ParseException("Couldn't open parenthesis: first character is not '" + __openParenthesis + '\'');
 		}
 		parenthesisCounter = 1;
 		currentChar = reader.read();
@@ -67,10 +67,10 @@ public class FilterParser {
 		return this;
 	}
 
-	static public String openParenthesis(String filterString) throws FilterParseException {
+	static public String openParenthesis(String filterString) throws ParseException {
 		int open = filterString.indexOf(__openParenthesis);
 		int close = filterString.lastIndexOf(__closeParenthesis);
-		if (open == -1 || open > close) throw new FilterParseException("Couldn't open parenthesis in \"" + filterString + "\"");
+		if (open == -1 || open > close) throw new ParseException("Couldn't open parenthesis in \"" + filterString + "\"");
 		return filterString.substring(open + 1, close);
 	}
 
@@ -100,13 +100,13 @@ public class FilterParser {
 			currentChar = reader.read();
 		}
 		if (parenthesisCounter != 0) {
-			throw new FilterParseException(
+			throw new ParseException(
 					"Wrong parenthesis count " + parenthesisCounter +
 					" in \"" + filterString + '"');
 		}
 		if (filterStringBuffer.length() > 0) addFilter();
-		if (filterList.size() == 0) throw new FilterParseException("Empty filter sequence");
-		return filterList.toArray(new IFilter[filterList.size()]);
+		if (filterList.size() == 0) throw new ParseException("Empty filter sequence");
+		return filterList.toArray(new Filter[filterList.size()]);
 	}
 
 	private void addFilter() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
@@ -115,7 +115,7 @@ public class FilterParser {
 		filterList.add(filter);
 	}
 
-	public FilterParser skipCharIfExists(char character) throws IOException {
+	public Parser skipCharIfExists(char character) throws IOException {
 		reader.mark(1);
 		if (reader.read() != character) {
 			reader.reset();
@@ -123,27 +123,27 @@ public class FilterParser {
 		return this;
 	}
 
-	public FilterParser skipChar(char character) throws IOException, FilterParseException {
+	public Parser skipChar(char character) throws IOException, ParseException {
 		char readChar = (char) reader.read();
 		if (readChar != character) {
-			throw new FilterParseException("Couldn't skip '" + character + '\'');
+			throw new ParseException("Couldn't skip '" + character + '\'');
 		}
 		return this;
 	}
 
-	public FilterParser skipChars(char character, int amount) throws IOException, FilterParseException {
+	public Parser skipChars(char character, int amount) throws IOException, ParseException {
 		if (amount == 0) return this;
 		int count = 0;
 		do {
 			char readChar = (char) reader.read();
 			if (readChar != character) {
-				throw new FilterParseException("Couldn't skip " + amount + " '" + character + '\'');
+				throw new ParseException("Couldn't skip " + amount + " '" + character + '\'');
 			}
 		} while (++count < amount);
 		return this;
 	}
 
-	public FilterParser skipAtMostChars(char character, int amount) throws IOException, FilterParseException {
+	public Parser skipAtMostChars(char character, int amount) throws IOException, ParseException {
 		if (amount == 0) return this;
 		int count = 0;
 		do {
@@ -157,7 +157,7 @@ public class FilterParser {
 		return this;
 	}
 
-	public FilterParser skipSpaces() throws IOException {
+	public Parser skipSpaces() throws IOException {
 		while (Character.isSpaceChar(currentChar)) {
 			currentChar = reader.read();
 		}
