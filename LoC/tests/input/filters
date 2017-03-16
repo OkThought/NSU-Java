@@ -1,6 +1,6 @@
 .cpp
 .java
-Or(.cpp, .java)
-And(.cpp, .java)
+|(.cpp .java)
+&(.cpp .java)
 >1487311235
 <1487311235
