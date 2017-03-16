@@ -4,7 +4,7 @@ import loc.filter.Filter;
 
 import java.io.*;
 
-public class BufferedPrinter {
+public class FilterSequenceStringBuffer {
 	public static final char __openParenthesis  = '(';
 	public static final char __closeParenthesis = ')';
 	public static final char __separator        = ' ';
@@ -12,17 +12,12 @@ public class BufferedPrinter {
 	private StringBuffer buffer;
 	private OutputStream out;
 
-	public BufferedPrinter() {
+	public FilterSequenceStringBuffer() {
 		this.buffer = new StringBuffer();
 		this.out = System.out;
 	}
 
-	public BufferedPrinter(OutputStream out) {
-		this.buffer = new StringBuffer();
-		this.out = out;
-	}
-
-	public BufferedPrinter appendSequence(Filter[] filters) throws Exception {
+	public FilterSequenceStringBuffer append(Filter[] filters) throws Exception {
 		if (filters.length == 0) throw new IOException("Can't print sequence of 0 filter");
 		boolean first = true;
 		buffer.append(__openParenthesis);
