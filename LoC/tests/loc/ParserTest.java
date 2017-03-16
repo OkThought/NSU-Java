@@ -8,34 +8,34 @@ import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
-public class FilterParserTest {
-	@Test (expected = FilterParser.FilterParseException.class)
+public class ParserTest {
+	@Test (expected = Parser.ParseException.class)
 	public void parseEmpty() throws Exception {
-		new FilterParser().parseOr("");
+		new Or.Serializer().parse("");
 	}
 /* parenthesis are only for filter sequences now (used only in AggregateFilter)
-	@Test (expected = FilterParser.FilterParseException.class)
+	@Test (expected = FilterParser.ParseException.class)
 	public void parseEmptyParenthesis() throws Exception {
 		FilterParser.parseOr("()");
 	}
 
-	@Test (expected = FilterParser.FilterParseException.class)
+	@Test (expected = FilterParser.ParseException.class)
 	public void parseWrongParenthesisCount() throws Exception {
 		FilterParser.parseAnd("((()");
 	}
 
-	@Test (expected = FilterParser.FilterParseException.class)
+	@Test (expected = FilterParser.ParseException.class)
 	public void parseAndEmpty() throws Exception {
 		FilterParser.parseAnd("(() () ())");
 	}
 
-	@Test (expected = FilterParser.FilterParseException.class)
+	@Test (expected = FilterParser.ParseException.class)
 	public void parseEmptyCommaSeparatedSequence() throws Exception {
 		FilterParser.parseAnd("(   )");
 	}
 */
 
-	@Test (expected = FilterParser.FilterParseException.class)
+	@Test (expected = Parser.ParseException.class)
 	public void parse10EmptyLines() throws Exception {
 		ConfigFileReader.readFilters(Paths.get("tests/input/10lines"));
 	}

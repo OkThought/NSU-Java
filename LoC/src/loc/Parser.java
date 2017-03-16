@@ -4,7 +4,6 @@ import loc.filter.*;
 import loc.filter.FilterFactory;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +103,7 @@ public class Parser {
 		return filterList.toArray(new Filter[filterList.size()]);
 	}
 
-	private void addFilter() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+	private void addFilter() throws Exception {
 		String filterString = filterStringBuffer.toString();
 		Filter filter = FilterFactory.create(filterString);
 		filterList.add(filter);

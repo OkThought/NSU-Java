@@ -26,7 +26,7 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 	}
 
 	@Override
-	public String serialize() throws IFilterSerializer.FilterSerializerException {
+	public String serialize() throws Exception {
 		buffer = new StringBuffer();
 		filterStrings = new ArrayList<>();
 		fileStatistics = new ArrayList<>();

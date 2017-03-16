@@ -1,5 +1,3 @@
-
-import loc.IFilterSerializer;
 package loc.filter;
 
 import java.io.IOException;
