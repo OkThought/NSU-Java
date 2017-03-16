@@ -9,10 +9,10 @@ public class FilterSequenceStringBuffer {
 	public static final char __closeParenthesis = ')';
 	public static final char __separator        = ' ';
 
-	private StringBuffer buffer;
+	private StringBuilder buffer;
 
 	public FilterSequenceStringBuffer() {
-		this.buffer = new StringBuffer();
+		this.buffer = new StringBuilder();
 	}
 
 	public FilterSequenceStringBuffer append(Filter[] filters) throws Exception {
