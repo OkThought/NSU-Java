@@ -1,9 +1,27 @@
 package loc.filter.filters.Aggregate;
 
+import loc.FilterSequenceStringBuffer;
+import loc.filter.Filter;
+import loc.filter.FilterSerializer;
+
 import java.util.Arrays;
 
 public abstract class AggregateFilter implements Filter {
 	public Filter[] filters;
+
+
+	public static class Serializer implements FilterSerializer {
+		@Override
+		public AggregateFilter parse(String string) throws Exception {
+			return null;
+		}
+
+		@Override
+		public String serialize(Filter filter) throws Exception {
+			Filter[] filters = AggregateFilter.class.cast(filter).filters;
+			return new FilterSequenceStringBuffer().append(filters).toString();
+		}
+	}
 
 	public AggregateFilter(Filter[] filters) {
 		this.filters = filters;
@@ -27,7 +45,7 @@ public abstract class AggregateFilter implements Filter {
 
 	@Override
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append(getPrefix());
 		buffer.append('(');
 		boolean first = true;
