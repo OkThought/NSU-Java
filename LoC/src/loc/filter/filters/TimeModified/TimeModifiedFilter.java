@@ -5,7 +5,7 @@ import loc.filter.Filter;
 public abstract class TimeModifiedFilter implements Filter {
 	public final long timeBound;
 
-	protected ModifiedTimeFilter(long timeBound) {
+	protected TimeModifiedFilter(long timeBound) {
 		this.timeBound = timeBound;
 	}
 
@@ -14,7 +14,7 @@ public abstract class TimeModifiedFilter implements Filter {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		ModifiedTimeFilter that = (ModifiedTimeFilter) o;
+		TimeModifiedFilter that = (TimeModifiedFilter) o;
 
 		return timeBound == that.timeBound;
 	}
