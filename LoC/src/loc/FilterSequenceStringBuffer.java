@@ -10,11 +10,9 @@ public class FilterSequenceStringBuffer {
 	public static final char __separator        = ' ';
 
 	private StringBuffer buffer;
-	private OutputStream out;
 
 	public FilterSequenceStringBuffer() {
 		this.buffer = new StringBuffer();
-		this.out = System.out;
 	}
 
 	public FilterSequenceStringBuffer append(Filter[] filters) throws Exception {
@@ -27,9 +25,14 @@ public class FilterSequenceStringBuffer {
 			} else {
 				buffer.append(__separator);
 			}
-			buffer.append(filter.getSerializer().serialize());
+			buffer.append(filter.getSerializer().serialize(filter));
 		}
 		buffer.append(__closeParenthesis);
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		return buffer.toString();
 	}
 }
