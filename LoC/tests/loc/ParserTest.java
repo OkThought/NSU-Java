@@ -1,6 +1,10 @@
 package loc;
 
 import loc.filter.*;
+import loc.filter.filters.Aggregate.And;
+import loc.filter.filters.Aggregate.Or;
+import loc.filter.filters.FileExtensionFilter;
+import loc.filter.filters.TimeModified.ModifiedLater;
 import org.junit.Test;
 
 import java.nio.file.Path;
