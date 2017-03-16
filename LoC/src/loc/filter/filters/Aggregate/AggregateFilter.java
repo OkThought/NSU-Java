@@ -8,7 +8,7 @@ import loc.filter.FilterSerializer;
 import java.util.Arrays;
 
 public abstract class AggregateFilter implements Filter {
-	public Filter[] filters;
+	public final Filter[] filters;
 
 
 	public static class Serializer implements FilterSerializer {
