@@ -1,7 +1,6 @@
 package loc.statistics;
 
-import loc.FilterSerializer;
-import loc.IFilterSerializer;
+import loc.FilterSequenceStringBuffer;
 import loc.filter.*;
 
 import java.util.*;
@@ -14,7 +13,6 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 //	public static int underlineLength     = 10;
 	private Statistics statistics;
 	private SortedSet<Map.Entry<Filter, FileStatistics>> sortedStatistics;
-	private FilterSerializer filterSerializer = new FilterSerializer();
 	private StringBuffer buffer;
 	private List<String> filterStrings;
 	private List<FileStatistics> fileStatistics;
@@ -32,7 +30,8 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 		fileStatistics = new ArrayList<>();
 		int maxFilterStringLength = 0;
 		for (Map.Entry<Filter, FileStatistics> entry: sortedStatistics) {
-			String filterString = filterSerializer.serialize(entry.getKey());
+			Filter filter = entry.getKey();
+			String filterString = filter.getSerializer().serialize(filter);
 			filterStrings.add(filterString);
 			fileStatistics.add(entry.getValue());
 			maxFilterStringLength = Math.max(maxFilterStringLength, filterString.length());
