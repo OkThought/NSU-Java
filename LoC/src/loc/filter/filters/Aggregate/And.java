@@ -1,29 +1,30 @@
 package loc.filter.filters.Aggregate;
 
 import loc.filter.FilterSerializer;
+import loc.filter.Filter;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class FilterAnd extends AggregateFilter {
+public class And extends AggregateFilter {
 	public static final char prefix = '&';
 
 	public static class Serializer implements FilterSerializer {
 		@Override
-		public FilterAnd parse(String string) throws Exception {
+		public And parse(String string) throws Exception {
 			String filterSequenceString = new loc.Parser(string)
 					.skipSpaces()
 					.skipChar(prefix)
 					.skipSpaces()
 					.openParenthesis()
 					.getCurrentBufferString();
-			return new FilterAnd(filters);
 			Filter[] filters = new loc.Parser(filterSequenceString).parseSequence();
+			return new And(filters);
 		}
 
 		@Override
-		public String serialize() throws Exception {
-			return null;
+		public String serialize(Filter filter) throws Exception {
+			return new AggregateFilter.Serializer().serialize(filter);
 		}
 	}
 
@@ -32,7 +33,7 @@ public class FilterAnd extends AggregateFilter {
 		return new Serializer();
 	}
 
-	public FilterAnd(IFilter[] filters) {
+	public And(Filter[] filters) {
         super(filters);
     }
 
