@@ -43,30 +43,30 @@ public class FilterParserTest {
 	@Test
 	public void parse6FiltersInputFile() throws Exception {
 		Path config = Paths.get("tests/input/6filters.input");
-		IFilter[] actualFilters = ConfigFileReader.readFilters(config);
+		Filter[] actualFilters = ConfigFileReader.readFilters(config);
 		assertEquals(6, actualFilters.length);
-		IFilter extensionFilter = new FileExtensionFilter(".input");
-		IFilter timeFilter = new ModifiedLaterFilter(1487311235);
-		IFilter[] expectedFilters = {
+		Filter extensionFilter = new FileExtensionFilter(".input");
+		Filter timeFilter = new ModifiedLater(1487311235);
+		Filter[] expectedFilters = {
 				extensionFilter,
 				timeFilter,
-				new FilterAnd(new IFilter[]{
+				new And(new Filter[]{
 						timeFilter
 				}),
-				new FilterOr(new IFilter[]{
+				new Or(new Filter[]{
 						timeFilter, timeFilter
 				}),
-				new FilterAnd(new IFilter[]{
-						new FilterOr(new IFilter[]{
-								new FilterAnd(new IFilter[]{
+				new And(new Filter[]{
+						new Or(new Filter[]{
+								new And(new Filter[]{
 										timeFilter
 								})
 						})
 				}),
-				new FilterAnd(new IFilter[]{
+				new And(new Filter[]{
 						extensionFilter,
 						timeFilter,
-						new FilterOr(new IFilter[]{
+						new Or(new Filter[]{
 								timeFilter,
 								extensionFilter
 						})

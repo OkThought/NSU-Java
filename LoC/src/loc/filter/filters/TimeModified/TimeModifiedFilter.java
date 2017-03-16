@@ -1,6 +1,8 @@
 package loc.filter.filters.TimeModified;
 
-public abstract class ModifiedTimeFilter implements IFilter {
+import loc.filter.Filter;
+
+public abstract class TimeModifiedFilter implements Filter {
 	public final long timeBound;
 
 	protected ModifiedTimeFilter(long timeBound) {

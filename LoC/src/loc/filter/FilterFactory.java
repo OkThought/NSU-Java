@@ -15,7 +15,7 @@ public class FilterFactory {
 		filterMap.put(ModifiedLaterFilter.prefix,     ModifiedLaterFilter.Serializer.class);
 	}
 
-	public static IFilter create(String filterString) throws Exception {
+	public static Filter create(String filterString) throws Exception {
 		filterString = filterString.trim();
 		char prefix = filterString.charAt(0);
 		IFilterParser parser = (IFilterParser) filterMap.get(prefix).newInstance();

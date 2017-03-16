@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public class FilterOr extends AggregateFilter {
     public static final char prefix = '|';
-    public FilterOr(IFilter[] filters) {
+    public Or(Filter[] filters) {
         super(filters);
     }
 
@@ -20,8 +20,8 @@ public class FilterOr extends AggregateFilter {
 					.skipSpaces()
 					.openParenthesis()
 					.getCurrentBufferString();
-			IFilter[] filters = new loc.Parser(filterSequenceString).parseSequence();
 			return new FilterOr(filters);
+			Filter[] filters = new loc.Parser(filterSequenceString).parseSequence();
 		}
 
 		@Override
@@ -37,7 +37,7 @@ public class FilterOr extends AggregateFilter {
 
 	@Override
 	public boolean check(Path file) throws IOException {
-		for (IFilter filter: filters) {
+		for (Filter filter: filters) {
 			if (filter.check(file)) {
 				return true;
 			}

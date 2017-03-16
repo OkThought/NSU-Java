@@ -4,7 +4,7 @@ import loc.IFilterSerializer;
 
 import java.nio.file.Path;
 
-public final class FileExtensionFilter implements IFilter {
+public final class FileExtensionFilter implements Filter {
     public static final char prefix = '.';
     public final String extension;
 

@@ -17,7 +17,7 @@ public class Parser {
 	private int currentChar;
 	private StringBuffer filterStringBuffer;
 	private BufferedInputStream reader;
-	private List<IFilter> filterList;
+	private List<Filter> filterList;
 	private String filterString;
 
 	public static class ParseException extends IOException {
@@ -74,12 +74,7 @@ public class Parser {
 		return filterString.substring(open + 1, close);
 	}
 
-	public IFilter[] parseSequence() throws
-			FilterParseException,
-			IOException,
-			IllegalAccessException,
-			NoSuchMethodException,
-			InvocationTargetException {
+	public Filter[] parseSequence() throws Exception {
 		initFilterList();
 		initReader();
 		clearBuffer();
@@ -111,7 +106,7 @@ public class Parser {
 
 	private void addFilter() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 		String filterString = filterStringBuffer.toString();
-		IFilter filter = FilterFactory.create(filterString);
+		Filter filter = FilterFactory.create(filterString);
 		filterList.add(filter);
 	}
 

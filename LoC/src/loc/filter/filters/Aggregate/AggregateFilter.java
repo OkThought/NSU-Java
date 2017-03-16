@@ -2,10 +2,10 @@ package loc.filter.filters.Aggregate;
 
 import java.util.Arrays;
 
-public abstract class AggregateFilter implements IFilter {
-	public IFilter[] filters;
+public abstract class AggregateFilter implements Filter {
+	public Filter[] filters;
 
-	public AggregateFilter(IFilter[] filters) {
+	public AggregateFilter(Filter[] filters) {
 		this.filters = filters;
 	}
 
@@ -31,7 +31,7 @@ public abstract class AggregateFilter implements IFilter {
 		buffer.append(getPrefix());
 		buffer.append('(');
 		boolean first = true;
-		for (IFilter filter: filters) {
+		for (Filter filter: filters) {
 			if (!first){
 				buffer.append(' ');
 			}

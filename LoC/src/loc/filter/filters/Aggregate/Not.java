@@ -6,9 +6,9 @@ import loc.IFilterSerializer;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class FilterNot implements IFilter {
+public class Not implements Filter {
     public static final char prefix = '!';
-	public final IFilter filter;
+	public final Filter filter;
 
 
 	public static class Serializer implements IFilterSerializer {
@@ -29,7 +29,7 @@ public class FilterNot implements IFilter {
 		return new Serializer();
 	}
 
-	public FilterNot(IFilter filter) {
+	public Not(Filter filter) {
 		this.filter = filter;
 	}
 

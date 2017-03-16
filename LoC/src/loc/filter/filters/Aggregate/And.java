@@ -17,8 +17,8 @@ public class FilterAnd extends AggregateFilter {
 					.skipSpaces()
 					.openParenthesis()
 					.getCurrentBufferString();
-			IFilter[] filters = new loc.Parser(filterSequenceString).parseSequence();
 			return new FilterAnd(filters);
+			Filter[] filters = new loc.Parser(filterSequenceString).parseSequence();
 		}
 
 		@Override
@@ -38,7 +38,7 @@ public class FilterAnd extends AggregateFilter {
 
 	@Override
 	public boolean check(Path file) throws IOException {
-		for (IFilter filter: filters) {
+		for (Filter filter: filters) {
 			if (!filter.check(file)) {
 				return false;
 			}
