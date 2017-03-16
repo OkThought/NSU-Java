@@ -1,24 +1,30 @@
 package loc.filter;
 
+import loc.filter.filters.Aggregate.And;
+import loc.filter.filters.Aggregate.Not;
+import loc.filter.filters.Aggregate.Or;
+import loc.filter.filters.FileExtensionFilter;
+import loc.filter.filters.TimeModified.ModifiedEarlier;
+import loc.filter.filters.TimeModified.ModifiedLater;
 
 import java.util.HashMap;
 
 public class FilterFactory {
-	private static final HashMap<Character, Class> filterMap;
+	private static final HashMap<Character, Class> serializers;
 	static {
-		filterMap = new HashMap<>();
-		filterMap.put(FilterNot.prefix,               FilterNot.Serializer.class);
-		filterMap.put(FilterAnd.prefix,               FilterAnd.Serializer.class);
-		filterMap.put(FilterOr.prefix,                FilterOr.Serializer.class);
-		filterMap.put(FileExtensionFilter.prefix,     FileExtensionFilter.Serializer.class);
-		filterMap.put(ModifiedEarlierFilter.prefix,   ModifiedEarlierFilter.Parser.class);
-		filterMap.put(ModifiedLaterFilter.prefix,     ModifiedLaterFilter.Serializer.class);
+		serializers = new HashMap<>();
+		serializers.put(Not.prefix,                 Not.Serializer.class);
+		serializers.put(And.prefix,                 And.Serializer.class);
+		serializers.put(Or.prefix,                  Or.Serializer.class);
+		serializers.put(FileExtensionFilter.prefix, FileExtensionFilter.Serializer.class);
+		serializers.put(ModifiedEarlier.prefix,     ModifiedEarlier.Serializer.class);
+		serializers.put(ModifiedLater.prefix,       ModifiedLater.Serializer.class);
 	}
 
 	public static Filter create(String filterString) throws Exception {
 		filterString = filterString.trim();
 		char prefix = filterString.charAt(0);
-		IFilterParser parser = (IFilterParser) filterMap.get(prefix).newInstance();
+		FilterSerializer parser = (FilterSerializer) serializers.get(prefix).newInstance();
 		return parser.parse(filterString);
 	}
 }
