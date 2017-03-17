@@ -1,9 +1,6 @@
 package loc.filter.filters.Aggregate;
 
-import loc.filter.FilterSerializeException;
-import loc.filter.FilterSerializer;
-import loc.filter.Filter;
-import loc.filter.Parser;
+import loc.filter.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -14,13 +11,13 @@ public class And extends AggregateFilter {
 	public static class Serializer implements FilterSerializer {
 		@Override
 		public And serialize(String string) throws FilterSerializeException {
-			String filterSequenceString = new Parser(string)
-					.skipSpaces()
-					.skipChar(prefix)
-					.skipSpaces()
+			String filterSequenceString = new FilterStringStream(string)
+					.skipWhitespaces()
+					.skip(prefix)
+					.skipWhitespaces()
 					.openParenthesis()
-					.getCurrentBufferString();
-			Filter[] filters = new Parser(filterSequenceString).parseSequence();
+					.toString();
+			Filter[] filters = new FilterSequenceParser(filterSequenceString).parse();
 			return new And(filters);
 		}
 

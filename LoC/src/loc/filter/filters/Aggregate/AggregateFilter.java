@@ -1,6 +1,6 @@
 package loc.filter.filters.Aggregate;
 
-import loc.filter.FilterSequenceStringBuffer;
+import loc.filter.FilterStringStream;
 import loc.filter.Filter;
 import loc.filter.FilterSerializeException;
 import loc.filter.FilterSerializer;
@@ -21,7 +21,7 @@ public abstract class AggregateFilter implements Filter {
 		@Override
 		public String serialize(Filter filter) throws FilterSerializeException {
 			Filter[] filters = AggregateFilter.class.cast(filter).filters;
-			return new FilterSequenceStringBuffer().append(filters).toString();
+			return new FilterStringStream().append(filters).toString();
 		}
 	}
 

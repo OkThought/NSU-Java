@@ -1,8 +1,6 @@
 package loc.filter.filters;
 
-import loc.filter.Filter;
-import loc.filter.FilterSerializer;
-import loc.filter.Parser;
+import loc.filter.*;
 
 import java.nio.file.Path;
 
@@ -12,12 +10,12 @@ public final class FileExtensionFilter implements Filter {
 
     public static class Serializer implements FilterSerializer {
         @Override
-        public FileExtensionFilter serialize(String string) throws Parser.ParseException {
-            String extension = new Parser(string)
-                    .skipSpaces()
-                    .skipChar(prefix)
-                    .skipSpaces()
-                    .readToTheEnd();
+        public FileExtensionFilter serialize(String string) throws FilterSerializeException {
+            String extension = new FilterStringStream(string)
+                    .skipWhitespaces()
+                    .skip(prefix)
+                    .skipWhitespaces()
+                    .readAll();
             return new FileExtensionFilter(extension);
         }
 

@@ -1,8 +1,6 @@
 package loc.filter.filters.TimeModified;
 
-import loc.filter.Filter;
-import loc.filter.FilterSerializer;
-import loc.filter.Parser;
+import loc.filter.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,12 +12,12 @@ public class ModifiedLater extends TimeModifiedFilter {
 
 	public static class Serializer implements FilterSerializer {
 		@Override
-		public ModifiedLater serialize(String string) throws Parser.ParseException {
-			String timestampString = new Parser(string)
-					.skipSpaces()
-					.skipChar(prefix)
-					.skipSpaces()
-					.readToTheEnd();
+		public ModifiedLater serialize(String string) throws FilterSerializeException {
+			String timestampString = new FilterStringStream(string)
+					.skipWhitespaces()
+					.skip(prefix)
+					.skipWhitespaces()
+					.readAll();
 			return new ModifiedLater(Long.parseLong(timestampString));
 		}
 

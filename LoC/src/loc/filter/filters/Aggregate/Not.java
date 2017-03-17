@@ -13,7 +13,7 @@ public class Not implements Filter {
 	public static class Serializer implements FilterSerializer {
 		@Override
 		public Not serialize(String string) throws FilterSerializeException {
-			String filterString = new Parser(string).skipSpaces().skipChar(prefix).readToTheEnd();
+			String filterString = new FilterStringStream(string).skipWhitespaces().skip(prefix).readAll();
 			return new Not(FilterFactory.create(filterString));
 		}
 
