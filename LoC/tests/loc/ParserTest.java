@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 public class ParserTest {
-	@Test (expected = Parser.ParseException.class)
+	@Test (expected = FilterSerializeException.class)
 	public void parseEmpty() throws Exception {
 		new Or.Serializer().serialize("");
 	}
@@ -39,7 +39,7 @@ public class ParserTest {
 	}
 */
 
-	@Test (expected = Parser.ParseException.class)
+	@Test (expected = FilterSerializeException.class)
 	public void parse10EmptyLines() throws Exception {
 		ConfigFileReader.readFilters(Paths.get("tests/input/10lines"));
 	}
@@ -49,7 +49,7 @@ public class ParserTest {
 		Path config = Paths.get("tests/input/6filters.input");
 		Filter[] actualFilters = ConfigFileReader.readFilters(config);
 		assertEquals(6, actualFilters.length);
-		Filter extensionFilter = new FileExtensionFilter(".input");
+		Filter extensionFilter = new FileExtensionFilter("input");
 		Filter timeFilter = new ModifiedLater(1487311235);
 		Filter[] expectedFilters = {
 				extensionFilter,
