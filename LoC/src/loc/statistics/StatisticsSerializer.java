@@ -1,5 +1,6 @@
 package loc.statistics;
 
+import loc.SerializeException;
 import loc.filter.*;
 
 import java.util.*;
@@ -25,7 +26,7 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 	}
 
 	@Override
-	public String serialize() throws Exception {
+	public String serialize() throws SerializeException {
 		buffer = new StringBuffer();
 		filterStrings = new ArrayList<>();
 		fileStatistics = new ArrayList<>();

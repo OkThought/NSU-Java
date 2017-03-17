@@ -1,8 +1,8 @@
 package loc.filter;
 
-import java.io.IOException;
+import loc.SerializeException;
 
-public class FilterSerializeException extends IOException {
+public class FilterSerializeException extends SerializeException {
 	public FilterSerializeException(String message) {
 		super(message);
 	}

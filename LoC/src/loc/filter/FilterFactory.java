@@ -28,7 +28,7 @@ public class FilterFactory {
 			FilterSerializer parser = (FilterSerializer) serializers.get(prefix).newInstance();
 			return parser.serialize(filterString);
 		} catch (InstantiationException | IllegalAccessException e) {
-			throw new FilterSerializeException(e);
+			throw new FilterCreateException(e);
 		}
 	}
 }
