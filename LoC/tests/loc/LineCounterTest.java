@@ -15,8 +15,8 @@ public class LineCounterTest {
 
 	@Test
 	public void customFile() throws IOException {
-		Path path = Paths.get("tests/input/10lines");
+		Path path = Paths.get("tests/loc/LineCounterTest.java");
 		int count = LineCounter.count(path);
-		assertEquals(10, count);
+		assertEquals(22, count);
 	}
 }
