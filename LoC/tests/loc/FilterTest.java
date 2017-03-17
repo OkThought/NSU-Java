@@ -12,9 +12,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class FilterTest {
-	Filter extensionFilter0 = new FileExtensionFilter(".java");
-	Filter extensionFilter1 = new FileExtensionFilter(".java");
-	Filter extensionFilter2 = new FileExtensionFilter(".cpp");
+	Filter extensionFilter0 = new FileExtensionFilter("java");
+	Filter extensionFilter1 = new FileExtensionFilter("java");
+	Filter extensionFilter2 = new FileExtensionFilter("cpp");
 	Filter timeFilter0 = new ModifiedLater(1);
 	Filter timeFilter1 = new ModifiedLater(1);
 	Filter timeFilter2 = new ModifiedLater(2);
