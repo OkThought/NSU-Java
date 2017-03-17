@@ -9,12 +9,14 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 	public static String separator        = " - ";
 	public static String lineBreak        = "\n";
 	public static char underlineCharacter = '-';
-//	public static int underlineLength     = 10;
+
 	private Statistics statistics;
 	private SortedSet<Map.Entry<Filter, FileStatistics>> sortedStatistics;
 	private StringBuffer buffer;
 	private List<String> filterStrings;
 	private List<FileStatistics> fileStatistics;
+	private int maxLineCountLength = 0;
+	private int maxFileCountLength = 0;
 
 	public StatisticsSerializer(Statistics statistics) {
 		this.statistics = statistics;
@@ -39,15 +41,30 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 		return buffer.toString();
 	}
 
+	private void calculateMaxLineAndFileCounts() {
+		int maxLineCount = 0;
+		int maxFileCount = 0;
+		for (FileStatistics stats: fileStatistics) {
+			maxLineCount = Math.max(maxLineCount, stats.lineCount);
+			maxFileCount = Math.max(maxFileCount, stats.fileCount);
+		}
+		maxLineCountLength = String.valueOf(maxLineCount).length();
+		maxFileCountLength = String.valueOf(maxFileCount).length();
+	}
+
 	private void appendSerialized(int maxFilterStringLength) {
-		buffer.append("Total - ");
+		buffer.append("Total");
+		buffer.append(separator);
 		buffer.append(statistics.getTotalLineCount());
 		buffer.append(" lines in ");
 		buffer.append(statistics.getTotalFileCount());
 		buffer.append(" files");
-		buffer.append('\n');
+		buffer.append(lineBreak);
 		append(underlineCharacter, maxFilterStringLength);
-		buffer.append('\n');
+		buffer.append(lineBreak);
+
+		calculateMaxLineAndFileCounts();
+
 		for (int i = 0; i < filterStrings.size(); i++) {
 			String filterString = filterStrings.get(i);
 			buffer.append(filterString);
@@ -66,8 +83,10 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 
 	private void append(FileStatistics fileStatistics) {
 		buffer.append(fileStatistics.lineCount);
-		buffer.append(" \tlines in ");
+		append(space, maxLineCountLength - String.valueOf(fileStatistics.lineCount).length());
+		buffer.append(" lines in ");
 		buffer.append(fileStatistics.fileCount);
-		buffer.append(" \tfiles");
+		append(space, maxFileCountLength - String.valueOf(fileStatistics.fileCount).length());
+		buffer.append(" files");
 	}
 }
