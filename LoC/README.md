@@ -38,6 +38,7 @@ Filters files which were modified later/earlier than given unix-time in seconds 
 ### Aggregate Filter
 #### Format
 `[&|][ ](filter1[ filter2[ ...]])` (e.g. `$(.java >1400000000)`, `| (.cpp .c .cc)`)
+
 `![ ]filter` (e.g. `!.cpp`)
 #### Description
 Allows to create nested sequences of filters.
