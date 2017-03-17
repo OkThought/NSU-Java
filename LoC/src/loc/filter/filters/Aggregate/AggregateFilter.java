@@ -21,7 +21,7 @@ public abstract class AggregateFilter implements Filter {
 		@Override
 		public String serialize(Filter filter) throws FilterSerializeException {
 			Filter[] filters = AggregateFilter.class.cast(filter).filters;
-			return new FilterStringStream().append(filters).toString();
+			return new FilterStringStream().append(filter.getPrefix()).append(filters).toString();
 		}
 	}
 
