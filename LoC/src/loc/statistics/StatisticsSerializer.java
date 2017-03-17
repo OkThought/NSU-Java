@@ -41,9 +41,9 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 
 	private void appendSerialized(int maxFilterStringLength) {
 		buffer.append("Total - ");
-		buffer.append(statistics.getTotalLines());
+		buffer.append(statistics.getTotalLineCount());
 		buffer.append(" lines in ");
-		buffer.append(statistics.totalFiles());
+		buffer.append(statistics.getTotalFileCount());
 		buffer.append(" files");
 		buffer.append('\n');
 		append(underlineCharacter, maxFilterStringLength);

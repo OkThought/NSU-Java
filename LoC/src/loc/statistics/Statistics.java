@@ -29,11 +29,11 @@ public class Statistics {
 	    fileStatistics.lineCount += amount;
     }
 
-    public int getTotalLines() {
+    public int getTotalLineCount() {
         return totalLines;
     }
 
-    public int totalFiles() {
+    public int getTotalFileCount() {
         return pathSet.size();
     }
 
@@ -43,7 +43,7 @@ public class Statistics {
 
     @Override
     public String toString() {
-        String string = "Total " + totalLines + " lines in " + totalFiles() + " files";
+        String string = "Total " + totalLines + " lines in " + getTotalFileCount() + " files";
         return string;
     }
 }
