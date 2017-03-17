@@ -41,3 +41,24 @@ Filters files which were modified later/earlier than given unix-time in seconds 
 `![ ]filter` (e.g. `!.cpp`)
 #### Description
 Allows to create nested sequences of filters.
+
+## Examples
+### Possible config file
+  ```
+  .java
+      .txt  
+  >140505040
+  &(  .css <15000000  )
+  |( & (.h .c)  &     ( .hpp .cpp) .jar )
+  ```
+
+### Possible output
+
+  ```
+  Total - 8637 lines in 110 files
+  ---------------
+  >140505040                        - 8637 lines in 110 files
+  |( &( .h .c) &( .hpp .cpp) .jar ) - 4344 lines in 4 files
+  .java                             - 1646 lines in 36 files
+  .txt                              - 72 lines in 16 files
+  ```
