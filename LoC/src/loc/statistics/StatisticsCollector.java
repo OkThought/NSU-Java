@@ -21,6 +21,7 @@ public class StatisticsCollector extends SimpleFileVisitor<Path> {
 	private Filter[] filters;
 	public boolean printVisited = false;
 	public StatisticsCollector(Statistics statistics, Filter[] filters) throws NoFilterException {
+		if (statistics == null) throw new NullPointerException("Statistics is null");
 		if (filters.length == 0) throw new NoFilterException("No filter passed");
 		stats = statistics;
 		this.filters = filters;

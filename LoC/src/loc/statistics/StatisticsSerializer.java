@@ -20,6 +20,7 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 	private int maxFileCountLength = 0;
 
 	public StatisticsSerializer(Statistics statistics) {
+		if (statistics == null) throw new NullPointerException("Statistics is null");
 		this.statistics = statistics;
 		sortedStatistics = new TreeSet<>(new StatisticsComparator());
 		sortedStatistics.addAll(statistics.getFilterFileStatisticsMap().entrySet());
