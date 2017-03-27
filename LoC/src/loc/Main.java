@@ -5,6 +5,7 @@ import loc.statistics.Statistics;
 import loc.statistics.StatisticsCollector;
 import loc.statistics.StatisticsSerializer;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +28,7 @@ public class Main {
 			StatisticsCollector collector = new StatisticsCollector(stats, filters);
 //            collector.printVisited = true;
 
-            Files.walkFileTree(dirToWalk, collector);
+			Files.walkFileTree(dirToWalk, collector);
 			StatisticsSerializer serializer = new StatisticsSerializer(stats);
 			System.out.println(serializer.serialize());
 		} catch (Exception e) {

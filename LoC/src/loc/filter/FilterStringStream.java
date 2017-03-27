@@ -71,14 +71,9 @@ public class FilterStringStream {
 			} else {
 				buffer.append(__separator);
 			}
-			append(filter);
+			buffer.append(FilterFactory.getSerializer(filter).serialize(filter));
 		}
 		buffer.append(__closeParenthesis);
-		return this;
-	}
-
-	public FilterStringStream append(Filter filter) throws FilterSerializeException {
-		buffer.append(filter.getSerializer().serialize(filter));
 		return this;
 	}
 
@@ -176,28 +171,22 @@ public class FilterStringStream {
 		return toString();
 	}
 
-	/*
-	public String[] readFilterWords() {
-		return null;
-	}
-	*/
-
 	public String readAll() {
 		return buffer.toString() + filterBuffer.substring(__position);
 	}
 
-	public FilterStringStream openParenthesis() throws FilterSerializeException {
+	public FilterStringStream openParenthesis(char openParenthesis, char closeParenthesis) throws FilterSerializeException {
 		if (__endReached) {
 			throw new FilterSerializeException("Reached the end of buffer");
 		}
-		if (__current != __openParenthesis) {
-			throw new FilterSerializeException("Couldn't open parenthesis: first character is not '" + __openParenthesis + '\'');
+		if (__current != openParenthesis) {
+			throw new FilterSerializeException("Couldn't open parenthesis: first character is not '" + closeParenthesis + '\'');
 		}
 		int parenthesisCounter = 1;
 		while (increment()) {
-			if (__current == __openParenthesis) {
+			if (__current == openParenthesis) {
 				++parenthesisCounter;
-			} else if (__current == __closeParenthesis) {
+			} else if (__current == closeParenthesis) {
 				--parenthesisCounter;
 			}
 			if (parenthesisCounter > 0) {
@@ -209,8 +198,8 @@ public class FilterStringStream {
 		throw new FilterSerializeException("Bad parenthesis count in \"" + filterBuffer.toString());
 	}
 
-	public static String openParenthesis(String filterString) throws FilterSerializeException {
-		return new FilterStringStream(filterString).openParenthesis().toString();
+	public FilterStringStream openParenthesis() throws FilterSerializeException {
+		return openParenthesis(__openParenthesis, __closeParenthesis);
 	}
 
 	@Override

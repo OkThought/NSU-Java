@@ -1,10 +1,11 @@
 package loc;
 
 import loc.filter.*;
-import loc.filter.filters.Aggregate.And;
-import loc.filter.filters.Aggregate.Or;
+import loc.filter.filters.aggregate.And;
+import loc.filter.filters.aggregate.Or;
 import loc.filter.filters.FileExtensionFilter;
-import loc.filter.filters.TimeModified.ModifiedLater;
+import loc.filter.filters.time.ModifiedLater;
+import loc.filter.serializers.aggregate.OrFilterSerializer;
 import org.junit.Test;
 
 import java.nio.file.Path;
@@ -15,7 +16,7 @@ import static org.junit.Assert.*;
 public class ParserTest {
 	@Test (expected = FilterSerializeException.class)
 	public void parseEmpty() throws Exception {
-		new Or.Serializer().serialize("");
+		OrFilterSerializer.getInstance().serialize("");
 	}
 /* parenthesis are only for filter sequences now (used only in AggregateFilter)
 	@Test (expected = FilterParser.ParseException.class)

@@ -1,12 +1,12 @@
 package loc;
 
 import loc.filter.*;
-import loc.filter.filters.Aggregate.And;
-import loc.filter.filters.Aggregate.Not;
-import loc.filter.filters.Aggregate.Or;
+import loc.filter.filters.aggregate.And;
+import loc.filter.filters.aggregate.Not;
+import loc.filter.filters.aggregate.Or;
 import loc.filter.filters.FileExtensionFilter;
-import loc.filter.filters.TimeModified.ModifiedEarlier;
-import loc.filter.filters.TimeModified.ModifiedLater;
+import loc.filter.filters.time.ModifiedEarlier;
+import loc.filter.filters.time.ModifiedLater;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -1,4 +1,4 @@
-package loc.filter.filters.TimeModified;
+package loc.filter.filters.time;
 
 import loc.filter.Filter;
 
@@ -17,15 +17,5 @@ public abstract class TimeModifiedFilter implements Filter {
 		TimeModifiedFilter that = (TimeModifiedFilter) o;
 
 		return timeBound == that.timeBound;
-	}
-
-	@Override
-	public int hashCode() {
-		return (int) (getPrefix() * 37 + (timeBound ^ (timeBound >>> 32)));
-	}
-
-	@Override
-	public String toString() {
-		return getPrefix() + String.valueOf(timeBound);
 	}
 }

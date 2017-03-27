@@ -8,30 +8,8 @@ public final class FileExtensionFilter implements Filter {
     public static final char prefix = '.';
     public final String extension;
 
-    public static class Serializer implements FilterSerializer {
-        @Override
-        public FileExtensionFilter serialize(String string) throws FilterSerializeException {
-            String extension = new FilterStringStream(string)
-                    .skipWhitespaces()
-                    .skip(prefix)
-                    .skipWhitespaces()
-                    .readAll();
-            return new FileExtensionFilter(extension);
-        }
-
-        @Override
-        public String serialize(Filter filter) {
-            return prefix + FileExtensionFilter.class.cast(filter).extension;
-        }
-    }
-
     public FileExtensionFilter(String ext) {
         extension = ext;
-    }
-
-    @Override
-    public FilterSerializer getSerializer() {
-        return new Serializer();
     }
 
     @Override
@@ -58,9 +36,4 @@ public final class FileExtensionFilter implements Filter {
     public String toString() {
         return prefix + extension;
     }
-
-	@Override
-	public char getPrefix() {
-		return prefix;
-	}
 }

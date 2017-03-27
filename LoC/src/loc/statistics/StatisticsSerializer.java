@@ -33,7 +33,7 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 		int maxFilterStringLength = 0;
 		for (Map.Entry<Filter, FileStatistics> entry: sortedStatistics) {
 			Filter filter = entry.getKey();
-			String filterString = filter.getSerializer().serialize(filter);
+			String filterString = FilterFactory.getSerializer(filter).serialize(filter);
 			filterStrings.add(filterString);
 			fileStatistics.add(entry.getValue());
 			maxFilterStringLength = Math.max(maxFilterStringLength, filterString.length());

@@ -5,6 +5,4 @@ import java.nio.file.Path;
 
 public interface Filter {
     boolean check(Path file) throws IOException;
-	char getPrefix();
-	FilterSerializer getSerializer();
 }
