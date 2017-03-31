@@ -28,8 +28,13 @@ public class StatisticsCollector extends SimpleFileVisitor<Path> {
 	}
 
 	@Override
+	public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+		return FileVisitResult.SKIP_SUBTREE;
+	}
+
+	@Override
 	public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) throws IOException {
-//		try {
+		try {
 			if (attrs.isRegularFile()) {
 				if (printVisited)
 					System.out.println("\t" + filePath.getFileName() + ": " + attrs.lastModifiedTime().to(TimeUnit.SECONDS));
@@ -45,9 +50,9 @@ public class StatisticsCollector extends SimpleFileVisitor<Path> {
 					}
 				}
 			}
-//		} catch (IOException e) {
-//			System.err.println(e.getMessage());
-//		}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
 		return FileVisitResult.CONTINUE;
 	}
 
