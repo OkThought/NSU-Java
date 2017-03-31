@@ -1,5 +1,6 @@
 package loc.filter;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import loc.filter.filters.aggregate.And;
 import loc.filter.filters.aggregate.Not;
 import loc.filter.filters.aggregate.Or;
@@ -47,6 +48,9 @@ public class FilterFactory {
 	}
 
 	public static Filter create(String filterString) throws FilterSerializeException {
+		if (filterString == null) throw new NullPointerException("filterString is null");
+		filterString = filterString.trim();
+		if (filterString.isEmpty()) throw new FilterSerializeException("filterString is empty");
 		return getInstance().createByString(filterString);
 	}
 
