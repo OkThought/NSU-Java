@@ -12,6 +12,6 @@ public class StatisticsComparator implements Comparator<Map.Entry<Filter, FileSt
 		if (o1.getValue().lineCount < o2.getValue().lineCount) return 1;
 		if (o1.getValue().lineCount > o2.getValue().lineCount) return -1;
 		if (o1.getValue().fileCount < o2.getValue().fileCount) return 1;
-		return -1;
+		return 0;
 	}
 }
