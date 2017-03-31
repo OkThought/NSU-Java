@@ -6,10 +6,10 @@ import loc.filter.*;
 import java.util.*;
 
 public class StatisticsSerializer implements IStatisticsSerializer {
-	public static char space              = ' ';
-	public static String separator        = " - ";
-	public static String lineBreak        = "\n";
-	public static char underlineCharacter = '-';
+	private static char space              = ' ';
+	private static String separator        = " - ";
+	private static String lineBreak        = "\n";
+	private static char underlineCharacter = '-';
 
 	private Statistics statistics;
 	private SortedSet<Map.Entry<Filter, FileStatistics>> sortedStatistics;
@@ -18,6 +18,38 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 	private List<FileStatistics> fileStatistics;
 	private int maxLineCountLength = 0;
 	private int maxFileCountLength = 0;
+
+	public static char getSpace() {
+		return space;
+	}
+
+	public static void setSpace(char space) {
+		StatisticsSerializer.space = space;
+	}
+
+	public static String getSeparator() {
+		return separator;
+	}
+
+	public static void setSeparator(String separator) {
+		StatisticsSerializer.separator = separator;
+	}
+
+	public static String getLineBreak() {
+		return lineBreak;
+	}
+
+	public static void setLineBreak(String lineBreak) {
+		StatisticsSerializer.lineBreak = lineBreak;
+	}
+
+	public static char getUnderlineCharacter() {
+		return underlineCharacter;
+	}
+
+	public static void setUnderlineCharacter(char underlineCharacter) {
+		StatisticsSerializer.underlineCharacter = underlineCharacter;
+	}
 
 	public StatisticsSerializer(Statistics statistics) {
 		if (statistics == null) throw new NullPointerException("Statistics is null");
