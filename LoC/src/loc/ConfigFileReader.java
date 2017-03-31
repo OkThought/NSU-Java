@@ -16,6 +16,8 @@ public class ConfigFileReader {
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
 		String line;
 		while ((line = bufferedReader.readLine()) != null) {
+			line = line.trim();
+			if (line.isEmpty()) continue;
 			filterList.add(FilterFactory.create(line));
 		}
 		return filterList.toArray(new Filter[filterList.size()]);
