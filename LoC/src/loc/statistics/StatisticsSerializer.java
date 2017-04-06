@@ -12,7 +12,6 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 	private static char underlineCharacter = '-';
 
 	private Statistics statistics;
-	private SortedSet<Map.Entry<Filter, FileStatistics>> sortedStatistics;
 	private StringBuffer buffer;
 	private List<String> filterStrings;
 	private List<FileStatistics> fileStatistics;
@@ -54,8 +53,6 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 	public StatisticsSerializer(Statistics statistics) {
 		if (statistics == null) throw new NullPointerException("Statistics is null");
 		this.statistics = statistics;
-		sortedStatistics = new TreeSet<>(new StatisticsComparator());
-		sortedStatistics.addAll(statistics.getFilterFileStatisticsMap().entrySet());
 	}
 
 	@Override
@@ -64,6 +61,8 @@ public class StatisticsSerializer implements IStatisticsSerializer {
 		filterStrings = new ArrayList<>();
 		fileStatistics = new ArrayList<>();
 		int maxFilterStringLength = 0;
+		Set<Map.Entry<Filter, FileStatistics>> sortedStatistics = new TreeSet<>(new StatisticsComparator());
+		sortedStatistics.addAll(statistics.getFilterFileStatisticsMap().entrySet());
 		for (Map.Entry<Filter, FileStatistics> entry: sortedStatistics) {
 			Filter filter = entry.getKey();
 			String filterString = FilterFactory.getSerializer(filter).serialize(filter);
