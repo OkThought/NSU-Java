@@ -19,12 +19,21 @@ public class StatisticsCollector extends SimpleFileVisitor<Path> {
 
 	private Statistics stats;
 	private Filter[] filters;
-	public boolean printVisited = false;
+	private boolean printVisited = false;
 	public StatisticsCollector(Statistics statistics, Filter[] filters) throws NoFilterException {
 		if (statistics == null) throw new NullPointerException("Statistics is null");
+		if (filters == null) throw new NullPointerException("Filter array is null");
 		if (filters.length == 0) throw new NoFilterException("No filter passed");
 		stats = statistics;
 		this.filters = filters;
+	}
+
+	public boolean isPrintVisited() {
+		return printVisited;
+	}
+
+	public void setPrintVisited(boolean printVisited) {
+		this.printVisited = printVisited;
 	}
 
 	@Override
@@ -43,7 +52,7 @@ public class StatisticsCollector extends SimpleFileVisitor<Path> {
 				for (Filter filter : filters) {
 					if (filter.check(filePath)) {
 						if (!filterPassed) {
-							lineCount = LineCounter.count(filePath);
+							lineCount = LineCounter.count(filePath, 4096);
 							filterPassed = true;
 						}
 						stats.increaseLineCounter(filePath, filter, lineCount);

@@ -26,8 +26,7 @@ public class Main {
 			Statistics stats = new Statistics();
 			Filter[] filters = ConfigFileReader.readFilters(configFilePath);
 			StatisticsCollector collector = new StatisticsCollector(stats, filters);
-//            collector.printVisited = true;
-
+//			collector.setPrintVisited(true);
 			Files.walkFileTree(dirToWalk, collector);
 			StatisticsSerializer serializer = new StatisticsSerializer(stats);
 			System.out.println(serializer.serialize());
