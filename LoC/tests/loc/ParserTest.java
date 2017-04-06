@@ -18,27 +18,6 @@ public class ParserTest {
 	public void parseEmpty() throws Exception {
 		OrFilterSerializer.getInstance().serialize("");
 	}
-/* parenthesis are only for filter sequences now (used only in AggregateFilter)
-	@Test (expected = FilterParser.ParseException.class)
-	public void parseEmptyParenthesis() throws Exception {
-		FilterParser.parseOr("()");
-	}
-
-	@Test (expected = FilterParser.ParseException.class)
-	public void parseWrongParenthesisCount() throws Exception {
-		FilterParser.parseAnd("((()");
-	}
-
-	@Test (expected = FilterParser.ParseException.class)
-	public void parseAndEmpty() throws Exception {
-		FilterParser.parseAnd("(() () ())");
-	}
-
-	@Test (expected = FilterParser.ParseException.class)
-	public void parseEmptyCommaSeparatedSequence() throws Exception {
-		FilterParser.parseAnd("(   )");
-	}
-*/
 
 	@Test (expected = FilterSerializeException.class)
 	public void parse10EmptyLines() throws Exception {
