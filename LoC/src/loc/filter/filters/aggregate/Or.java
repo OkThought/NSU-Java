@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 public class Or extends AggregateFilter {
-	private static final char __prefix = '&';
+	private static final char __prefix = '|';
 	private static final char __open_parenthesis = '(';
 	private static final char __close_parenthesis = ')';
 	private static final char __delimiter = ' ';
