@@ -29,7 +29,7 @@ public class OrFilterSerializer implements FilterSerializer {
 	public String serialize(Filter filter) throws FilterSerializeException {
 		return new FilterStringStream()
 				.append(prefix)
-				.append(And.class.cast(filter).filters)
+				.append(Or.class.cast(filter).filters)
 				.toString();
 	}
 
