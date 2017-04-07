@@ -1,6 +1,5 @@
 package loc.filter;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import loc.filter.filters.aggregate.And;
 import loc.filter.filters.aggregate.Not;
 import loc.filter.filters.aggregate.Or;
