@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class StatisticsCollectorTest {
+public class LoCOverallTest {
 	private final String inputDir = "tests/input"; // CAUTION: this dir will be removed after test
 	private final String customConfigFile = inputDir + "/config.txt";
 	private long minuteBefore;
