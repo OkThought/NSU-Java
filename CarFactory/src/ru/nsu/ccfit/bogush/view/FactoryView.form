@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ru.nsu.ccfit.bogush.view.FactoryView">
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="20" y="20" width="649" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="8200f" binding="infoPanel" layout-manager="GridLayoutManager" row-count="10" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="10"/>
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <vspacer id="136ce">
+            <constraints>
+              <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </vspacer>
+          <component id="8b6c2" class="javax.swing.JLabel" binding="carsSoldLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Cars sold: "/>
+              <toolTipText value="Amount of cars sold"/>
+            </properties>
+          </component>
+          <component id="a6988" class="javax.swing.JLabel" binding="tasksAwaitingLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Tasks awaiting: "/>
+              <toolTipText value="Size of task queue"/>
+            </properties>
+          </component>
+          <component id="fe55e" class="javax.swing.JLabel" binding="carEngineStorageSizeLabel">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Engine Storage Size: "/>
+              <toolTipText value=""/>
+            </properties>
+          </component>
+          <component id="e69ed" class="javax.swing.JLabel" binding="carBodyStorageSizeLabel">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Car Body Storage Size: "/>
+              <toolTipText value=""/>
+            </properties>
+          </component>
+          <component id="c5b0e" class="javax.swing.JLabel" binding="carAccessoryStorageSizeLabel">
+            <constraints>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Car Accessory Storage Size:         "/>
+              <toolTipText value=""/>
+            </properties>
+          </component>
+          <component id="a651d" class="javax.swing.JLabel" binding="carStorageSizeLabel">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Car Storage Size: "/>
+              <toolTipText value=""/>
+            </properties>
+          </component>
+          <component id="5ce17" class="javax.swing.JLabel" binding="workersLabel">
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Workers: "/>
+              <toolTipText value=""/>
+            </properties>
+          </component>
+          <component id="fbb4b" class="javax.swing.JLabel" binding="dealersLabel">
+            <constraints>
+              <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Dealers: "/>
+              <toolTipText value=""/>
+            </properties>
+          </component>
+          <component id="f38e2" class="javax.swing.JLabel" binding="accessorySuppliersLabel">
+            <constraints>
+              <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Accessory suppliers: "/>
+              <toolTipText value=""/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="5c05a" binding="controlPanel" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="10" bottom="0" right="0"/>
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="4645a" class="javax.swing.JSlider" binding="carDealerPeriodSlider">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <enabled value="true"/>
+              <majorTickSpacing value="1"/>
+              <maximum value="10"/>
+              <minorTickSpacing value="0"/>
+              <paintLabels value="true"/>
+              <paintTicks value="false"/>
+              <paintTrack value="true"/>
+              <snapToTicks value="true"/>
+              <toolTipText value="Seconds between car dealer's requests"/>
+              <value value="1"/>
+              <valueIsAdjusting value="true"/>
+            </properties>
+            <clientProperties>
+              <Slider.paintThumbArrowShape class="java.lang.Boolean" value="false"/>
+            </clientProperties>
+          </component>
+          <vspacer id="ef225">
+            <constraints>
+              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </vspacer>
+          <component id="7bbf1" class="javax.swing.JSlider" binding="engineSupplierPeriodSlider">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <enabled value="true"/>
+              <majorTickSpacing value="1"/>
+              <maximum value="10"/>
+              <minimum value="0"/>
+              <minorTickSpacing value="0"/>
+              <paintLabels value="true"/>
+              <paintTicks value="false"/>
+              <paintTrack value="true"/>
+              <snapToTicks value="true"/>
+              <toolTipText value="Seconds between supplies"/>
+              <value value="1"/>
+              <valueIsAdjusting value="true"/>
+            </properties>
+            <clientProperties>
+              <Slider.paintThumbArrowShape class="java.lang.Boolean" value="true"/>
+            </clientProperties>
+          </component>
+          <component id="3cf79" class="javax.swing.JSlider" binding="bodySupplierPeriodSlider">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <enabled value="true"/>
+              <majorTickSpacing value="1"/>
+              <maximum value="10"/>
+              <minorTickSpacing value="0"/>
+              <paintLabels value="true"/>
+              <paintTicks value="false"/>
+              <paintTrack value="true"/>
+              <snapToTicks value="true"/>
+              <toolTipText value="Seconds between supplies"/>
+              <value value="1"/>
+              <valueIsAdjusting value="true"/>
+            </properties>
+            <clientProperties>
+              <Slider.paintThumbArrowShape class="java.lang.Boolean" value="true"/>
+            </clientProperties>
+          </component>
+          <component id="ce0bc" class="javax.swing.JSlider" binding="accessorySuppliersPeriodSlider">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <enabled value="true"/>
+              <majorTickSpacing value="1"/>
+              <maximum value="10"/>
+              <minorTickSpacing value="0"/>
+              <paintLabels value="true"/>
+              <paintTicks value="false"/>
+              <paintTrack value="true"/>
+              <snapToTicks value="true"/>
+              <toolTipText value="Seconds between supplies"/>
+              <value value="1"/>
+              <valueIsAdjusting value="true"/>
+            </properties>
+            <clientProperties>
+              <Slider.paintThumbArrowShape class="java.lang.Boolean" value="true"/>
+            </clientProperties>
+          </component>
+          <component id="18fe" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Car dealer period"/>
+              <toolTipText value="Seconds between car dealer's requests"/>
+            </properties>
+          </component>
+          <component id="721bd" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Engine supplier period"/>
+              <toolTipText value="Seconds between supplies"/>
+            </properties>
+          </component>
+          <component id="be390" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Car body supplier period"/>
+              <toolTipText value="Seconds between supplies"/>
+            </properties>
+          </component>
+          <component id="22575" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Accessory suppliers period"/>
+              <toolTipText value="Seconds between supplies"/>
+            </properties>
+          </component>
+          <component id="2c757" class="javax.swing.JButton" binding="resetButton">
+            <constraints>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Reset"/>
+            </properties>
+          </component>
+          <component id="32661" class="javax.swing.JButton" binding="startButton">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Start"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
