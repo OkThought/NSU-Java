@@ -92,7 +92,7 @@ public class FactoryView implements CarSellSubscriber, TaskSubscriber, StorageSi
 		JFrame frame = new JFrame("Car Factory");
 		frame.setContentPane(mainPanel);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//		frame.setResizable(false);
+		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.pack();
 		frame.setVisible(true);
