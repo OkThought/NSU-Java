@@ -10,13 +10,12 @@ import static org.junit.Assert.*;
 public class LineCounterTest {
 	@Test (expected = IOException.class)
 	public void inexistantFile() throws Exception {
-		LineCounter.count(Paths.get("no file"));
+		new LineCounter("no file").count();
 	}
 
 	@Test
 	public void customFile() throws IOException {
-		Path path = Paths.get("tests/loc/LineCounterTest.java");
-		int count = LineCounter.count(path);
+		int count = new LineCounter("tests/loc/LineCounterTest.java").count();
 		assertEquals(22, count);
 	}
 }

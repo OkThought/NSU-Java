@@ -2,11 +2,24 @@ package loc;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class LineCounter {
-	public static final int defaultBufferSize = 1024;
+	public static final int DEFAULT_BUFFER_SIZE = 1024;
+	private Path filePath;
+	private File file;
 
-	public static int count(Path filePath, int bufferSize) throws IOException {
+	public LineCounter(Path filePath) {
+		this.filePath = filePath;
+		file = filePath.toFile();
+	}
+
+	public LineCounter(String filePath) {
+		this.filePath = Paths.get(filePath);
+		file = this.filePath.toFile();
+	}
+
+	public int count(int bufferSize) throws IOException {
         try (InputStream is = new BufferedInputStream(new FileInputStream(filePath.toFile()))) {
             boolean empty = true;
             byte bytes[] = new byte[bufferSize];
@@ -28,7 +41,7 @@ public class LineCounter {
         }
 	}
 
-	public static int count(Path filePath) throws IOException {
-		return count(filePath, defaultBufferSize);
+	public int count() throws IOException {
+		return count(DEFAULT_BUFFER_SIZE);
 	}
 }
