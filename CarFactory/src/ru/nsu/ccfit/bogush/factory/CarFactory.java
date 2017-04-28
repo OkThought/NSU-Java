@@ -2,15 +2,13 @@ package ru.nsu.ccfit.bogush.factory;
 
 import ru.nsu.ccfit.bogush.factory.storage.CarStorage;
 import ru.nsu.ccfit.bogush.factory.storage.Storage;
-import ru.nsu.ccfit.bogush.factory.thing.CarAccessory;
-import ru.nsu.ccfit.bogush.factory.thing.CarBody;
-import ru.nsu.ccfit.bogush.factory.thing.CarEngine;
+import ru.nsu.ccfit.bogush.factory.thing.Car;
 import ru.nsu.ccfit.bogush.threadpool.ThreadPool;
 
 public class CarFactory extends SimplyNamed {
-	private Storage<CarAccessory> carAccessoryStorage;
-	private Storage<CarBody> carBodyStorage;
-	private Storage<CarEngine> carEngineStorage;
+	private Storage<Car.Accessories> carAccessoriesStorage;
+	private Storage<Car.Body> carBodyStorage;
+	private Storage<Car.Engine> carEngineStorage;
 	private CarStorage carStorage;
 	private ThreadPool threadPool;
 
@@ -18,15 +16,15 @@ public class CarFactory extends SimplyNamed {
 		this.threadPool = new ThreadPool(amountOfWorkers);
 	}
 
-	public void setCarAccessoryStorage(Storage<CarAccessory> carAccessoryStorage) {
-		this.carAccessoryStorage = carAccessoryStorage;
+	public void setCarAccessoriesStorage(Storage<Car.Accessories> carAccessoriesStorage) {
+		this.carAccessoriesStorage = carAccessoriesStorage;
 	}
 
-	public void setCarBodyStorage(Storage<CarBody> carBodyStorage) {
+	public void setCarBodyStorage(Storage<Car.Body> carBodyStorage) {
 		this.carBodyStorage = carBodyStorage;
 	}
 
-	public void setCarEngineStorage(Storage<CarEngine> carEngineStorage) {
+	public void setCarEngineStorage(Storage<Car.Engine> carEngineStorage) {
 		this.carEngineStorage = carEngineStorage;
 	}
 
@@ -34,15 +32,15 @@ public class CarFactory extends SimplyNamed {
 		this.carStorage = carStorage;
 	}
 
-	public Storage<CarAccessory> getCarAccessoryStorage() {
-		return carAccessoryStorage;
+	public Storage<Car.Accessories> getCarAccessoriesStorage() {
+		return carAccessoriesStorage;
 	}
 
-	public Storage<CarBody> getCarBodyStorage() {
+	public Storage<Car.Body> getCarBodyStorage() {
 		return carBodyStorage;
 	}
 
-	public Storage<CarEngine> getCarEngineStorage() {
+	public Storage<Car.Engine> getCarEngineStorage() {
 		return carEngineStorage;
 	}
 
@@ -61,7 +59,7 @@ public class CarFactory extends SimplyNamed {
 		Worker worker = new Worker();
 		worker.setCarEngineStorage(carEngineStorage);
 		worker.setCarBodyStorage(carBodyStorage);
-		worker.setCarAccessoryStorage(carAccessoryStorage);
+		worker.setCarAccessoryStorage(carAccessoriesStorage);
 		worker.setCarStorage(carStorage);
 		return worker;
 	}
