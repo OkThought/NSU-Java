@@ -8,5 +8,6 @@ public class Config {
 	public int accessorySuppliers;
 	public int workers;
 	public int carDealers;
+
 	public boolean logSale;
 }
