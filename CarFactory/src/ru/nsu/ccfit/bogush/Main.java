@@ -16,7 +16,7 @@ public class Main {
 	public static void main(String[] args) {
 		try {
 			prepare(CONFIG_FILE);
-			FactoryView view = new FactoryView(model);
+			new FactoryView(model);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
