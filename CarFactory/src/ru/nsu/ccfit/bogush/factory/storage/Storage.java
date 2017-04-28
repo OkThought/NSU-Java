@@ -9,7 +9,7 @@ public class Storage <T extends Thing> {
 	private BlockingQueue<T> queue;
 	private final int capacity;
 	private Class<T> type;
-	private LinkedList<StorageSizeSubscriber> subscribers = new LinkedList<>();
+	private LinkedList<Subscriber> subscribers = new LinkedList<>();
 
 	public Storage(Class<T> type, int capacity) {
 		this.type = type;
@@ -19,22 +19,22 @@ public class Storage <T extends Thing> {
 
 	public void store(T thing) throws InterruptedException {
 		queue.put(thing);
-		sizeChanged();
+		sizeChanged(size());
 	}
 
 	public T take() throws InterruptedException {
 		T result = queue.take();
-		sizeChanged();
+		sizeChanged(size());
 		return result;
 	}
 
-	private void sizeChanged() {
-		for (StorageSizeSubscriber subscriber: subscribers) {
-			subscriber.sizeChanged();
+	private void sizeChanged(int size) {
+		for (Subscriber subscriber: subscribers) {
+			subscriber.sizeChanged(size);
 		}
 	}
 
-	public void subscribe(StorageSizeSubscriber subscriber) {
+	public void subscribe(Subscriber subscriber) {
 		subscribers.add(subscriber);
 	}
 
@@ -55,5 +55,9 @@ public class Storage <T extends Thing> {
 	@Override
 	public String toString() {
 		return "Storage<" + type.getSimpleName() + ">(capacity=" + queue.size() + " maxsize=" + capacity + ")";
+	}
+
+	public static interface Subscriber {
+		void sizeChanged(int size);
 	}
 }
