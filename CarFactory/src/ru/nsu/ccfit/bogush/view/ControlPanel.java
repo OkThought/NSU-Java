@@ -40,17 +40,17 @@ public class ControlPanel extends JPanel {
 		accessoriesPeriod.setValue(INITIAL_PERIOD);
 		dealersPeriod.setValue(INITIAL_PERIOD);
 
-		enginePeriod.addListener(value -> model.engineSupplier.setPeriod(value));
+		enginePeriod.addListener(value -> model.getEngineSupplier().setPeriod(value));
 
-		bodyPeriod.addListener(value -> model.bodySupplier.setPeriod(value));
+		bodyPeriod.addListener(value -> model.getBodySupplier().setPeriod(value));
 
 		accessoriesPeriod.addListener(value -> {
-			for (Supplier supplier: model.accessorySuppliers)
+			for (Supplier supplier: model.getAccessorySuppliers())
 				supplier.setPeriod(value);
 		});
 
 		dealersPeriod.addListener(value -> {
-			for (CarDealer dealer: model.dealers) {
+			for (CarDealer dealer: model.getDealers()) {
 				dealer.setPeriod(value);
 			}
 		});

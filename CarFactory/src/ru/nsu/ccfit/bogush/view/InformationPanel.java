@@ -45,9 +45,9 @@ public class InformationPanel extends JPanel implements TaskSubscriber, CarSellS
 
 	public InformationPanel(CarFactoryModel model) {
 		this.model = model;
-		workersCount = model.workersCount;
-		dealersCount = model.carDealersCount;
-		accessoriesSuppliersCount = model.accessorySuppliersCount;
+		workersCount = model.getWorkersCount();
+		dealersCount = model.getCarDealersCount();
+		accessoriesSuppliersCount = model.getAccessorySuppliersCount();
 	}
 
 	@Override
@@ -83,14 +83,10 @@ public class InformationPanel extends JPanel implements TaskSubscriber, CarSellS
 		sold.setValue(SOLD_INITIAL);
 		awaiting.setValue(AWAITING_INITIAL);
 
-		model.engineStorage.subscribe(size -> engineStorage.setValue(size));
-
-		model.bodyStorage.subscribe(size -> bodyStorage.setValue(size));
-
-		model.accessoriesStorage.subscribe(size -> accessoriesStorage.setValue(size));
-
-		model.carStorage.subscribe(size -> carStorage.setValue(size));
-
-		model.carFactory.getThreadPool().subscribe(tasksAwaiting -> awaiting.setValue(tasksAwaiting));
+		model.getEngineStorage().subscribe(size -> engineStorage.setValue(size));
+		model.getBodyStorage().subscribe(size -> bodyStorage.setValue(size));
+		model.getAccessoriesStorage().subscribe(size -> accessoriesStorage.setValue(size));
+		model.getCarStorage().subscribe(size -> carStorage.setValue(size));
+		model.getCarFactory().getThreadPool().subscribe(tasksAwaiting -> awaiting.setValue(tasksAwaiting));
 	}
 }

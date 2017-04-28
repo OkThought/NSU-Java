@@ -23,12 +23,12 @@ public class ButtonPanel extends JComponent {
 				startButton.setActionCommand(PAUSE);
 				startButton.setText("Pause");
 
-				model.engineSupplier.getThread().start();
-				model.bodySupplier.getThread().start();
-				for (Supplier supplier: model.accessorySuppliers) {
+				model.getEngineSupplier().getThread().start();
+				model.getBodySupplier().getThread().start();
+				for (Supplier supplier: model.getAccessorySuppliers()) {
 					supplier.getThread().start();
 				}
-				model.store.start();
+				model.getStore().start();
 			} else if (PAUSE.equals(e.getActionCommand())) {
 				startButton.setActionCommand(CONTINUE);
 				startButton.setText("Continue");
