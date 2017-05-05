@@ -7,9 +7,8 @@ public class LabeledValue extends JComponent {
 	private JLabel label;
 	private JPanel panel;
 
-	public LabeledValue(String labelText, boolean enabled) {
+	public LabeledValue(String labelText) {
 		label.setText(labelText);
-		valueLabel.setEnabled(enabled);
 		label.addPropertyChangeListener(evt -> {
 			if ("label".equals(evt.getPropertyName())) {
 				label.setText((String) evt.getNewValue());

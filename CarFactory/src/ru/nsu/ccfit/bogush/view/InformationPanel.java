@@ -49,15 +49,15 @@ public class InformationPanel extends JPanel {
 	}
 
 	private void createUIComponents() {
-		workers = new LabeledValue(WORKERS_TEXT, false);
-		dealers = new LabeledValue(DEALERS_TEXT, false);
-		accessoriesSuppliers = new LabeledValue(ACCESSORIES_SUPPLIERS_TEXT, false);
-		carStorage = new LabeledValue(CAR_STORAGE_TEXT, false);
-		engineStorage = new LabeledValue(ENGINE_STORAGE_TEXT, false);
-		bodyStorage = new LabeledValue(BODY_STORAGE_TEXT, false);
-		accessoriesStorage = new LabeledValue(ACCESSORIES_STORAGE_TEXT, false);
-		sold = new LabeledValue(SOLD_TEXT, false);
-		taskQueueSize = new LabeledValue(TASK_QUEUE_SIZE_TEXT, false);
+		workers = new LabeledValue(WORKERS_TEXT);
+		dealers = new LabeledValue(DEALERS_TEXT);
+		accessoriesSuppliers = new LabeledValue(ACCESSORIES_SUPPLIERS_TEXT);
+		carStorage = new LabeledValue(CAR_STORAGE_TEXT);
+		engineStorage = new LabeledValue(ENGINE_STORAGE_TEXT);
+		bodyStorage = new LabeledValue(BODY_STORAGE_TEXT);
+		accessoriesStorage = new LabeledValue(ACCESSORIES_STORAGE_TEXT);
+		sold = new LabeledValue(SOLD_TEXT);
+		taskQueueSize = new LabeledValue(TASK_QUEUE_SIZE_TEXT);
 
 		workers.setValue(workersCount);
 		dealers.setValue(dealersCount);
