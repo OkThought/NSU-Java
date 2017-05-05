@@ -36,17 +36,16 @@ public class CarStorageController extends SimplyNamed implements Runnable {
 	}
 
 	private int carsNeeded() {
-//		return carStorage.isFull() ? 0 : 1;
 		logger.debug("calculate amount of cars needed");
-		/*int carsAssembling = carFactory.getThreadPool().getRunningNumber();
+		int carsAssembling = carFactory.getThreadPool().getRunningNumber();
 		logger.debug("carsAssembling = " + carsAssembling);
 		int taskQueueSize = carFactory.getThreadPool().getAwaitingNumber();
-		logger.debug("taskQueueSize = " + taskQueueSize);*/
+		logger.debug("taskQueueSize = " + taskQueueSize);
 		int carStorageSize = carStorage.size();
 		logger.debug("carStorageSize = " + carStorageSize);
 		int carStorageCapacity = carStorage.capacity();
 		logger.debug("carStorageCapacity = " + carStorageCapacity);
-		int result = carStorageCapacity - carStorageSize/* - carsAssembling - taskQueueSize*/;
+		int result = carStorageCapacity - carStorageSize - carsAssembling - taskQueueSize;
 		logger.debug("carsNeeded = " + result);
 		return result;
 	}
