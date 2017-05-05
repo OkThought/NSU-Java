@@ -58,8 +58,8 @@ public class ThreadPool {
 		queue.put(task);
 	}
 
-	public void subscribe(BlockingQueue.SizeSubscriber subscriber) {
-		queue.subscribe(subscriber);
+	public void addTaskQueueSizeSubscriber(BlockingQueue.SizeSubscriber subscriber) {
+		queue.addSizeSubscriber(subscriber);
 	}
 
 	public class TaskRunner implements Runnable {

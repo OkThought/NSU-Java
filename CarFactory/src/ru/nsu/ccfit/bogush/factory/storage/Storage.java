@@ -33,9 +33,9 @@ public class Storage <T extends Thing> extends SimplyNamed {
 		return result;
 	}
 
-	public void subscribe(BlockingQueue.SizeSubscriber sizeSubscriber) {
-		logger.trace("subscribe " + sizeSubscriber);
-		queue.subscribe(sizeSubscriber);
+	public void addSizeSubscriber(BlockingQueue.SizeSubscriber sizeSubscriber) {
+		logger.trace("addCarSoldSubscriber " + sizeSubscriber);
+		queue.addSizeSubscriber(sizeSubscriber);
 	}
 
 	public int size() {

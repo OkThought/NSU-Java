@@ -72,8 +72,8 @@ public class CarStore {
 		}
 	}
 
-	public void subscribe(CarSoldSubscriber subscriber) {
-		logger.trace("subscribe " + subscriber);
+	public void addCarSoldSubscriber(CarSoldSubscriber subscriber) {
+		logger.trace("addCarSoldSubscriber " + subscriber);
 		carSoldSubscribers.add(subscriber);
 	}
 

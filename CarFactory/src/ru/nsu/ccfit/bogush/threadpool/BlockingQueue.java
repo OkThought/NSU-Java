@@ -67,7 +67,7 @@ public class BlockingQueue<T> {
 		return capacity;
 	}
 
-	public void subscribe(SizeSubscriber sizeSubscriber) {
+	public void addSizeSubscriber(SizeSubscriber sizeSubscriber) {
 
 		sizeSubscribers.add(sizeSubscriber);
 	}

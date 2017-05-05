@@ -1,21 +1,19 @@
 package ru.nsu.ccfit.bogush.view;
 
 import ru.nsu.ccfit.bogush.CarFactoryModel;
-import ru.nsu.ccfit.bogush.factory.store.CarSoldSubscriber;
-import ru.nsu.ccfit.bogush.threadpool.BlockingQueue;
 
 import javax.swing.*;
 
-public class InformationPanel extends JPanel implements BlockingQueue.SizeSubscriber, CarSoldSubscriber {
-	public LabeledTextField workers;
-	public LabeledTextField dealers;
-	public LabeledTextField accessoriesSuppliers;
-	public LabeledTextField carStorage;
-	public LabeledTextField engineStorage;
-	public LabeledTextField bodyStorage;
-	public LabeledTextField accessoriesStorage;
-	public LabeledTextField sold;
-	public LabeledTextField taskQueueSize;
+public class InformationPanel extends JPanel {
+	public LabeledValue workers;
+	public LabeledValue dealers;
+	public LabeledValue accessoriesSuppliers;
+	public LabeledValue carStorage;
+	public LabeledValue engineStorage;
+	public LabeledValue bodyStorage;
+	public LabeledValue accessoriesStorage;
+	public LabeledValue sold;
+	public LabeledValue taskQueueSize;
 	private JPanel panel;
 
 	private static final String WORKERS_TEXT = "Workers: ";
@@ -50,27 +48,16 @@ public class InformationPanel extends JPanel implements BlockingQueue.SizeSubscr
 		accessoriesSuppliersCount = model.getAccessorySuppliersCount();
 	}
 
-	@Override
-	public void sizeChanged(int size) {
-		taskQueueSize.setValue(size);
-	}
-
-	@Override
-	public void carSold() {
-		soldCount++;
-		sold.setValue(soldCount);
-	}
-
 	private void createUIComponents() {
-		workers = new LabeledTextField(WORKERS_TEXT, false);
-		dealers = new LabeledTextField(DEALERS_TEXT, false);
-		accessoriesSuppliers = new LabeledTextField(ACCESSORIES_SUPPLIERS_TEXT, false);
-		carStorage = new LabeledTextField(CAR_STORAGE_TEXT, false);
-		engineStorage = new LabeledTextField(ENGINE_STORAGE_TEXT, false);
-		bodyStorage = new LabeledTextField(BODY_STORAGE_TEXT, false);
-		accessoriesStorage = new LabeledTextField(ACCESSORIES_STORAGE_TEXT, false);
-		sold = new LabeledTextField(SOLD_TEXT, false);
-		taskQueueSize = new LabeledTextField(TASK_QUEUE_SIZE_TEXT, false);
+		workers = new LabeledValue(WORKERS_TEXT, false);
+		dealers = new LabeledValue(DEALERS_TEXT, false);
+		accessoriesSuppliers = new LabeledValue(ACCESSORIES_SUPPLIERS_TEXT, false);
+		carStorage = new LabeledValue(CAR_STORAGE_TEXT, false);
+		engineStorage = new LabeledValue(ENGINE_STORAGE_TEXT, false);
+		bodyStorage = new LabeledValue(BODY_STORAGE_TEXT, false);
+		accessoriesStorage = new LabeledValue(ACCESSORIES_STORAGE_TEXT, false);
+		sold = new LabeledValue(SOLD_TEXT, false);
+		taskQueueSize = new LabeledValue(TASK_QUEUE_SIZE_TEXT, false);
 
 		workers.setValue(workersCount);
 		dealers.setValue(dealersCount);
@@ -83,10 +70,14 @@ public class InformationPanel extends JPanel implements BlockingQueue.SizeSubscr
 		sold.setValue(SOLD_INITIAL);
 		taskQueueSize.setValue(TASK_QUEUE_SIZE_INITIAL);
 
-		model.getEngineStorage().subscribe(size -> engineStorage.setValue(size));
-		model.getBodyStorage().subscribe(size -> bodyStorage.setValue(size));
-		model.getAccessoriesStorage().subscribe(size -> accessoriesStorage.setValue(size));
-		model.getCarStorage().subscribe(size -> carStorage.setValue(size));
-		model.getCarFactory().getThreadPool().subscribe(size -> taskQueueSize.setValue(size));
+		model.getStore().addCarSoldSubscriber(() -> {
+			sold.setValue(Integer.parseInt(sold.getText()) + 1);
+		});
+
+		model.getEngineStorage().addSizeSubscriber(size -> engineStorage.setValue(size));
+		model.getBodyStorage().addSizeSubscriber(size -> bodyStorage.setValue(size));
+		model.getAccessoriesStorage().addSizeSubscriber(size -> accessoriesStorage.setValue(size));
+		model.getCarStorage().addSizeSubscriber(size -> carStorage.setValue(size));
+		model.getCarFactory().getThreadPool().addTaskQueueSizeSubscriber(size -> taskQueueSize.setValue(size));
 	}
 }

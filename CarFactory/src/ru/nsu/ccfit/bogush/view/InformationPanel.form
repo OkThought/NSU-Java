@@ -21,17 +21,17 @@
         <properties/>
         <border type="none"/>
         <children>
-          <nested-form id="4aed5" form-file="ru/nsu/ccfit/bogush/view/LabeledTextField.form" binding="workers" custom-create="true">
+          <nested-form id="4aed5" form-file="ru/nsu/ccfit/bogush/view/LabeledValue.form" binding="workers" custom-create="true">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </nested-form>
-          <nested-form id="4703f" form-file="ru/nsu/ccfit/bogush/view/LabeledTextField.form" binding="dealers" custom-create="true">
+          <nested-form id="4703f" form-file="ru/nsu/ccfit/bogush/view/LabeledValue.form" binding="dealers" custom-create="true">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </nested-form>
-          <nested-form id="554e" form-file="ru/nsu/ccfit/bogush/view/LabeledTextField.form" binding="accessoriesSuppliers" custom-create="true">
+          <nested-form id="554e" form-file="ru/nsu/ccfit/bogush/view/LabeledValue.form" binding="accessoriesSuppliers" custom-create="true">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -46,22 +46,22 @@
         <properties/>
         <border type="none"/>
         <children>
-          <nested-form id="f3e03" form-file="ru/nsu/ccfit/bogush/view/LabeledTextField.form" binding="carStorage" custom-create="true">
+          <nested-form id="f3e03" form-file="ru/nsu/ccfit/bogush/view/LabeledValue.form" binding="carStorage" custom-create="true">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </nested-form>
-          <nested-form id="a23e3" form-file="ru/nsu/ccfit/bogush/view/LabeledTextField.form" binding="engineStorage" custom-create="true">
+          <nested-form id="a23e3" form-file="ru/nsu/ccfit/bogush/view/LabeledValue.form" binding="engineStorage" custom-create="true">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </nested-form>
-          <nested-form id="52ef0" form-file="ru/nsu/ccfit/bogush/view/LabeledTextField.form" binding="bodyStorage" custom-create="true">
+          <nested-form id="52ef0" form-file="ru/nsu/ccfit/bogush/view/LabeledValue.form" binding="bodyStorage" custom-create="true">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </nested-form>
-          <nested-form id="bcfe8" form-file="ru/nsu/ccfit/bogush/view/LabeledTextField.form" binding="accessoriesStorage" custom-create="true">
+          <nested-form id="bcfe8" form-file="ru/nsu/ccfit/bogush/view/LabeledValue.form" binding="accessoriesStorage" custom-create="true">
             <constraints>
               <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -76,12 +76,12 @@
         <properties/>
         <border type="none"/>
         <children>
-          <nested-form id="794ee" form-file="ru/nsu/ccfit/bogush/view/LabeledTextField.form" binding="sold" custom-create="true">
+          <nested-form id="794ee" form-file="ru/nsu/ccfit/bogush/view/LabeledValue.form" binding="sold" custom-create="true">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </nested-form>
-          <nested-form id="728a" form-file="ru/nsu/ccfit/bogush/view/LabeledTextField.form" binding="taskQueueSize" custom-create="true">
+          <nested-form id="728a" form-file="ru/nsu/ccfit/bogush/view/LabeledValue.form" binding="taskQueueSize" custom-create="true">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
