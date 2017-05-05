@@ -2,14 +2,14 @@ package ru.nsu.ccfit.bogush.view;
 
 import javax.swing.*;
 
-public class LabeledTextField extends JComponent {
-	private JTextField textField;
+public class LabeledValue extends JComponent {
+	private JLabel valueLabel;
 	private JLabel label;
 	private JPanel panel;
 
-	public LabeledTextField(String labelText, boolean enabled) {
+	public LabeledValue(String labelText, boolean enabled) {
 		label.setText(labelText);
-		textField.setEnabled(enabled);
+		valueLabel.setEnabled(enabled);
 		label.addPropertyChangeListener(evt -> {
 			if ("label".equals(evt.getPropertyName())) {
 				label.setText((String) evt.getNewValue());
@@ -18,7 +18,7 @@ public class LabeledTextField extends JComponent {
 	}
 
 	public void setEnabled(boolean enabled) {
-		textField.setEnabled(enabled);
+		valueLabel.setEnabled(enabled);
 	}
 
 	public void setValue(int value) {
@@ -26,10 +26,10 @@ public class LabeledTextField extends JComponent {
 	}
 
 	public void setText(String text) {
-		textField.setText(text);
+		valueLabel.setText(text);
 	}
 
 	public String getText() {
-		return textField.getText();
+		return valueLabel.getText();
 	}
 }
