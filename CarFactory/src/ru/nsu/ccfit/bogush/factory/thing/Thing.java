@@ -17,6 +17,6 @@ public class Thing extends SimplyNamed implements Identifiable {
 
 	@Override
 	public String toString() {
-		return super.toString() + String.valueOf(getId());
+		return super.toString() + "-" + String.valueOf(getId());
 	}
 }
