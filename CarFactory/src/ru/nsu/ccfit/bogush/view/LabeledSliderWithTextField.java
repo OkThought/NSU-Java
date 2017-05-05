@@ -16,7 +16,7 @@ public class LabeledSliderWithTextField extends JComponent {
 	private JPanel panel;
 	private int minValue;
 	private int maxValue;
-	private List<Listener> listeners = new ArrayList<>();
+	private List<ValueChangeListener> valueChangeListeners = new ArrayList<>();
 	private boolean failedToParse = false;
 
 	private static final String LOGGER_NAME = "LabeledSliderWithTextField";
@@ -111,17 +111,17 @@ public class LabeledSliderWithTextField extends JComponent {
 
 	private void valueChanged(int value) {
 		logger.debug("value changed to " + value);
-		for (Listener listener: listeners) {
-			listener.valueChanged(value);
+		for (ValueChangeListener valueChangeListener : valueChangeListeners) {
+			valueChangeListener.valueChanged(value);
 		}
 	}
 
-	public void addListener(Listener listener) {
-		listeners.add(listener);
+	public void addValueChangeListener(ValueChangeListener valueChangeListener) {
+		valueChangeListeners.add(valueChangeListener);
 	}
 
 
-	public interface Listener {
+	public interface ValueChangeListener {
 		void valueChanged(int value);
 	}
 }
