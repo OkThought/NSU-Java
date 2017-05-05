@@ -1,41 +1,41 @@
 package ru.nsu.ccfit.bogush.factory.storage;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import ru.nsu.ccfit.bogush.factory.SimplyNamed;
 import ru.nsu.ccfit.bogush.factory.thing.Thing;
 import ru.nsu.ccfit.bogush.threadpool.BlockingQueue;
 
-import java.util.LinkedList;
 
-public class Storage <T extends Thing> {
+public class Storage <T extends Thing> extends SimplyNamed {
 	private BlockingQueue<T> queue;
 	private final int capacity;
-	private Class<T> type;
-	private LinkedList<Subscriber> subscribers = new LinkedList<>();
+	private Class<T> contentType;
 
-	public Storage(Class<T> type, int capacity) {
-		this.type = type;
+	private static final String LOGGER_NAME = "Storage";
+	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
+
+	public Storage(Class<T> contentType, int capacity) {
+		logger.trace("initialize Storage<" + contentType.getSimpleName() + "> with capacity " + capacity);
+		this.contentType = contentType;
 		this.capacity = capacity;
 		this.queue = new BlockingQueue<T>(capacity);
 	}
 
 	public void store(T thing) throws InterruptedException {
 		queue.put(thing);
-		sizeChanged(size());
+		logger.debug(thing + " stored in " + this);
 	}
 
 	public T take() throws InterruptedException {
 		T result = queue.take();
-		sizeChanged(size());
+		logger.debug(result + " taken from " + this);
 		return result;
 	}
 
-	private void sizeChanged(int size) {
-		for (Subscriber subscriber: subscribers) {
-			subscriber.sizeChanged(size);
-		}
-	}
-
-	public void subscribe(Subscriber subscriber) {
-		subscribers.add(subscriber);
+	public void subscribe(BlockingQueue.SizeSubscriber sizeSubscriber) {
+		logger.trace("subscribe " + sizeSubscriber);
+		queue.subscribe(sizeSubscriber);
 	}
 
 	public int size() {
@@ -54,10 +54,6 @@ public class Storage <T extends Thing> {
 
 	@Override
 	public String toString() {
-		return "Storage<" + type.getSimpleName() + ">(capacity=" + queue.size() + " maxsize=" + capacity + ")";
-	}
-
-	public static interface Subscriber {
-		void sizeChanged(int size);
+		return super.toString() + "(size=" + queue.size() + " capacity=" + capacity + ")";
 	}
 }

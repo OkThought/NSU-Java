@@ -1,5 +1,8 @@
 package ru.nsu.ccfit.bogush;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,14 +16,10 @@ public class ConfigSerializer {
 	private static final String ACCESSORY_SUPPLIERS_PROP = "AccessorySuppliers";
 	private static final String WORKERS_PROP = "Workers";
 	private static final String CAR_DEALERS_PROP = "CarDealers";
-	private static final String LOG_SALE_PROP = "LogSale";
-	private static final String CLASS_PATH =
-			ConfigSerializer.class.getResource(ConfigSerializer.class.getSimpleName() + ".class").getPath();
-	private static final String CLASS_DIR_PATH =
-			CLASS_PATH.substring(0, CLASS_PATH.lastIndexOf('/'));
-	private static final String DEFAULT_PROPERTIES_FILE_PATH = CLASS_DIR_PATH + "/default.properties";
-	private final Properties defaultProperties = new Properties();
-	{
+	private static final String LOG_SALES_PROP = "LogSales";
+	private static final String DEFAULT_PROPERTIES_FILE_PATH = "default.properties";
+	private static final Properties defaultProperties = new Properties();
+	static {
 		try (FileInputStream inputStream = new FileInputStream(DEFAULT_PROPERTIES_FILE_PATH)) {
 			defaultProperties.load(inputStream);
 		} catch (IOException e) {
@@ -28,36 +27,43 @@ public class ConfigSerializer {
 		}
 	}
 
+	private static final String LOGGER_NAME = "ConfigSerializer";
+	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
+
 	private Properties properties = new Properties(defaultProperties);
 
 	public ConfigSerializer() {}
 
 	public ConfigSerializer(Config config) {
-		properties.setProperty(ENGINE_STORAGE_SIZE_PROP, String.valueOf(config.engineStorageSize));
-		properties.setProperty(CAR_BODY_STORAGE_SIZE_PROP, String.valueOf(config.carBodyStorageSize));
-		properties.setProperty(ACCESSORY_STORAGE_SIZE_PROP, String.valueOf(config.accessoryStorageSize));
-		properties.setProperty(CAR_STORAGE_SIZE_PROP, String.valueOf(config.carStorageSize));
-		properties.setProperty(ACCESSORY_SUPPLIERS_PROP, String.valueOf(config.accessorySuppliers));
-		properties.setProperty(WORKERS_PROP, String.valueOf(config.workers));
-		properties.setProperty(CAR_DEALERS_PROP, String.valueOf(config.carDealers));
-		properties.setProperty(LOG_SALE_PROP, String.valueOf(config.logSale));
+		properties.setProperty(ENGINE_STORAGE_SIZE_PROP, String.valueOf(config.getEngineStorageSize()));
+		properties.setProperty(CAR_BODY_STORAGE_SIZE_PROP, String.valueOf(config.getCarBodyStorageSize()));
+		properties.setProperty(ACCESSORY_STORAGE_SIZE_PROP, String.valueOf(config.getAccessoryStorageSize()));
+		properties.setProperty(CAR_STORAGE_SIZE_PROP, String.valueOf(config.getCarStorageSize()));
+		properties.setProperty(ACCESSORY_SUPPLIERS_PROP, String.valueOf(config.getAccessorySuppliers()));
+		properties.setProperty(WORKERS_PROP, String.valueOf(config.getWorkers()));
+		properties.setProperty(CAR_DEALERS_PROP, String.valueOf(config.getCarDealers()));
+		properties.setProperty(LOG_SALES_PROP, String.valueOf(config.isLoggingSales()));
 	}
 
 	public Config load(String configFilePath) throws IOException {
+		logger.trace("loading config file " + configFilePath);
 		try (FileInputStream inputStream = new FileInputStream(configFilePath)) {
 			properties.load(inputStream);
 		} catch (IOException e) {
 			throw e;
 		}
+		logger.trace("config file loaded successfully");
 		Config config = new Config();
-		config.engineStorageSize = Integer.parseInt(properties.getProperty(ENGINE_STORAGE_SIZE_PROP));
-		config.carBodyStorageSize = Integer.parseInt(properties.getProperty(CAR_BODY_STORAGE_SIZE_PROP));
-		config.accessoryStorageSize = Integer.parseInt(properties.getProperty(ACCESSORY_STORAGE_SIZE_PROP));
-		config.carStorageSize = Integer.parseInt(properties.getProperty(CAR_STORAGE_SIZE_PROP));
-		config.accessorySuppliers = Integer.parseInt(properties.getProperty(ACCESSORY_SUPPLIERS_PROP));
-		config.workers = Integer.parseInt(properties.getProperty(WORKERS_PROP));
-		config.carDealers = Integer.parseInt(properties.getProperty(CAR_DEALERS_PROP));
-		config.logSale = Boolean.parseBoolean(properties.getProperty(LOG_SALE_PROP));
+		config.setEngineStorageSize(Integer.parseInt(properties.getProperty(ENGINE_STORAGE_SIZE_PROP)));
+		config.setCarBodyStorageSize(Integer.parseInt(properties.getProperty(CAR_BODY_STORAGE_SIZE_PROP)));
+		config.setAccessoryStorageSize(Integer.parseInt(properties.getProperty(ACCESSORY_STORAGE_SIZE_PROP)));
+		config.setCarStorageSize(Integer.parseInt(properties.getProperty(CAR_STORAGE_SIZE_PROP)));
+		config.setAccessorySuppliers(Integer.parseInt(properties.getProperty(ACCESSORY_SUPPLIERS_PROP)));
+		config.setWorkers(Integer.parseInt(properties.getProperty(WORKERS_PROP)));
+		config.setCarDealers(Integer.parseInt(properties.getProperty(CAR_DEALERS_PROP)));
+		config.setLoggingSales(Boolean.parseBoolean(properties.getProperty(LOG_SALES_PROP)));
+		logger.trace("config object created");
+		logger.trace("config = " + config);
 		return config;
 	}
 

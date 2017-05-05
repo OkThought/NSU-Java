@@ -1,5 +1,5 @@
 package ru.nsu.ccfit.bogush.factory.store;
 
-public interface CarSellSubscriber {
+public interface CarSoldSubscriber {
 	void carSold();
 }

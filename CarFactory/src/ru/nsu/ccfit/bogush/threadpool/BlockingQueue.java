@@ -1,23 +1,34 @@
 package ru.nsu.ccfit.bogush.threadpool;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class BlockingQueue<T> {
 	private Queue<T> queue = new LinkedList<T>();
-	private final int size;
+	private List<SizeSubscriber> sizeSubscribers = new ArrayList<>();
+
+	private final int capacity;
 	private final Object sync = new Object();
 
+	private static final String LOGGER_NAME = "BlockingQueue";
+	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
+
 	public BlockingQueue() {
-		size = Integer.MAX_VALUE;
+		this(Integer.MAX_VALUE);
 	}
 
-	public BlockingQueue(int size) {
-		this.size = size;
+	public BlockingQueue(int capacity) {
+		logger.trace("initialize BlockingQueue of capacity " + capacity);
+		this.capacity = capacity;
 	}
 
 	public boolean isFull() {
-		return queue.size() == size;
+		return queue.size() == capacity;
 	}
 
 	public boolean isEmpty() {
@@ -30,6 +41,7 @@ public class BlockingQueue<T> {
 				sync.wait();
 			}
 			queue.add(t);
+			sizeChanged(size());
 			sync.notifyAll();
 		}
 	}
@@ -41,6 +53,7 @@ public class BlockingQueue<T> {
 				sync.wait();
 			}
 			result = queue.remove();
+			sizeChanged(size());
 			sync.notifyAll();
 		}
 		return result;
@@ -48,5 +61,24 @@ public class BlockingQueue<T> {
 
 	public int size() {
 		return queue.size();
+	}
+
+	public int getCapacity() {
+		return capacity;
+	}
+
+	public void subscribe(SizeSubscriber sizeSubscriber) {
+
+		sizeSubscribers.add(sizeSubscriber);
+	}
+
+	private void sizeChanged(int size) {
+		for (SizeSubscriber sizeSubscriber: sizeSubscribers) {
+			sizeSubscriber.sizeChanged(size);
+		}
+	}
+
+	public static interface SizeSubscriber {
+		void sizeChanged(int size);
 	}
 }

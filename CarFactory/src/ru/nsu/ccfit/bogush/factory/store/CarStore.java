@@ -1,43 +1,122 @@
 package ru.nsu.ccfit.bogush.factory.store;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import ru.nsu.ccfit.bogush.factory.storage.CarStorage;
 import ru.nsu.ccfit.bogush.factory.thing.Car;
+import ru.nsu.ccfit.bogush.factory.thing.periodical.SimplePeriodical;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CarStore {
-	private CarStorage storage;
-	private CarDealer[] dealers;
-	private List<CarSellSubscriber> carSellSubscribers = new ArrayList<>();
+	private Dealer[] dealers;
+	private Thread[] dealerThreads;
+	private List<CarSoldSubscriber> carSoldSubscribers = new ArrayList<>();
+
+	private static final String LOGGER_NAME = "Store";
+	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
+
+	private static final Marker OFF_MARKER = MarkerManager.getMarker("OFF");
+	private static final Marker CAR_SOLD_MARKER = MarkerManager.getMarker("SOLD");
+	private Marker carSoldMarker;
+
+	private static final long DEFAULT_PERIOD = 0;
 
 	public CarStore(CarStorage storage, int amountOfDealers) {
-		this.storage = storage;
-		this.dealers = new CarDealer[amountOfDealers];
+		this(storage, amountOfDealers, DEFAULT_PERIOD);
+	}
+
+	public CarStore(CarStorage storage, int amountOfDealers, long period) {
+		this.dealers = new Dealer[amountOfDealers];
+		this.dealerThreads = new Thread[amountOfDealers];
 		for (int i = 0; i < amountOfDealers; ++i) {
-			CarDealer dealer = new CarDealer(storage, this);
+			Dealer dealer = new Dealer(storage, this, period);
 			dealers[i] = dealer;
+			dealerThreads[i] = dealer.thread;
+		}
+	}
+
+	public void setLoggingSales(boolean loggingSales) {
+		this.carSoldMarker = loggingSales ? CAR_SOLD_MARKER: OFF_MARKER;
+	}
+
+	public boolean isLoggingSales() {
+		return carSoldMarker == CAR_SOLD_MARKER;
+	}
+
+	public Dealer[] getDealers() {
+		return dealers;
+	}
+
+	public void setPeriod(long period) {
+		logger.trace("set period " + period + " milliseconds");
+		for (Dealer dealer: dealers) {
+			dealer.setPeriod(period);
 		}
 	}
 
 	public void start() {
-		for (CarDealer dealer: dealers) {
-			dealer.getThread().start();
+		for (Thread dealerThread: dealerThreads) {
+			logger.trace("start " + dealerThread.getName());
+			dealerThread.start();
 		}
 	}
 
-	public void sell(Car car) {
-//		System.out.println("Sell a car with id: " + car.getId());
-		for (CarSellSubscriber subscriber: carSellSubscribers) {
+	private void sell(Car car) {
+		logger.trace(CAR_SOLD_MARKER, car.getInfo());
+		for (CarSoldSubscriber subscriber: carSoldSubscribers) {
 			subscriber.carSold();
 		}
 	}
 
-	public CarDealer[] getDealers() {
-		return dealers;
+	public void subscribe(CarSoldSubscriber subscriber) {
+		logger.trace("subscribe " + subscriber);
+		carSoldSubscribers.add(subscriber);
 	}
 
-	public void subscribe(CarSellSubscriber subscriber) {
-		carSellSubscribers.add(subscriber);
+	public static class Dealer extends SimplePeriodical implements Runnable {
+		private CarStorage storage;
+		private CarStore store;
+		private Thread thread;
+
+		private static final String LOGGER_NAME = "Dealer";
+		private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
+
+		private Dealer(CarStorage storage, CarStore store, long period) {
+			super(period);
+			logger.trace("initialize with period " + period);
+			this.storage = storage;
+			this.store = store;
+			this.thread = new Thread(this);
+			thread.setName(toString());
+		}
+
+		@Override
+		public void run() {
+			while(true) {
+				try {
+					logger.debug("request car from storage");
+					Car car = storage.take();
+					logger.debug(car + " taken");
+					store.sell(car);
+					Thread.sleep(getPeriod());
+				} catch (InterruptedException e) {
+					logger.error(e);
+					e.printStackTrace();
+				}
+			}
+		}
+
+		@Override
+		public String toString() {
+			return this.getClass().getSimpleName() + "-" + thread.getId();
+		}
+
+		public Thread getThread() {
+			return thread;
+		}
 	}
 }

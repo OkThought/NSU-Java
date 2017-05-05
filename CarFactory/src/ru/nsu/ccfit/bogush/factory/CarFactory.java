@@ -1,5 +1,7 @@
 package ru.nsu.ccfit.bogush.factory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.factory.storage.CarStorage;
 import ru.nsu.ccfit.bogush.factory.storage.Storage;
 import ru.nsu.ccfit.bogush.factory.thing.Car;
@@ -10,10 +12,18 @@ public class CarFactory extends SimplyNamed {
 	private Storage<Car.Body> carBodyStorage;
 	private Storage<Car.Engine> carEngineStorage;
 	private CarStorage carStorage;
-	private ThreadPool threadPool;
+	private ThreadPool workers;
+
+	private static final String LOGGER_NAME = "CarFactory";
+	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public CarFactory(int amountOfWorkers) {
-		this.threadPool = new ThreadPool(amountOfWorkers);
+		logger.trace("initialize CarFactory with " + amountOfWorkers + " workers");
+		if (amountOfWorkers < 1) {
+			logger.fatal("amount of workers is either zero or negative");
+			throw new IllegalArgumentException("amount of workers must be positive");
+		}
+		this.workers = new ThreadPool(amountOfWorkers);
 	}
 
 	public void setCarAccessoriesStorage(Storage<Car.Accessories> carAccessoriesStorage) {
@@ -48,23 +58,24 @@ public class CarFactory extends SimplyNamed {
 		return carStorage;
 	}
 
+	public ThreadPool getThreadPool() {
+		return workers;
+	}
+
 	public void requestCars(int count) throws InterruptedException {
-		System.out.println(this + ": new order: produce " + count + " cars");
+		logger.trace( count + " cars requested");
 		for (int i = 0; i < count; i++) {
-			threadPool.addTask(createWorker());
+			workers.addTask(createTask());
 		}
 	}
 
-	private Worker createWorker() {
-		Worker worker = new Worker();
-		worker.setCarEngineStorage(carEngineStorage);
-		worker.setCarBodyStorage(carBodyStorage);
-		worker.setCarAccessoryStorage(carAccessoriesStorage);
-		worker.setCarStorage(carStorage);
-		return worker;
-	}
-
-	public ThreadPool getThreadPool() {
-		return threadPool;
+	private AssembleTask createTask() {
+		logger.trace("create task");
+		AssembleTask assembleTask = new AssembleTask();
+		assembleTask.setCarEngineStorage(carEngineStorage);
+		assembleTask.setCarBodyStorage(carBodyStorage);
+		assembleTask.setCarAccessoryStorage(carAccessoriesStorage);
+		assembleTask.setCarStorage(carStorage);
+		return assembleTask;
 	}
 }

@@ -1,13 +1,22 @@
 package ru.nsu.ccfit.bogush.factory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.factory.storage.Storage;
 import ru.nsu.ccfit.bogush.factory.thing.Car;
 
-public class Worker extends SimplyNamed implements Runnable {
-	private Storage<Car.Accessories> carAccessoryStorage;
-	private Storage<Car.Body>        carBodyStorage;
-	private Storage<Car.Engine>      carEngineStorage;
-	private Storage<Car>            carStorage;
+public class AssembleTask extends SimplyNamed implements Runnable {
+	private Storage<Car.Accessories>    carAccessoryStorage;
+	private Storage<Car.Body>           carBodyStorage;
+	private Storage<Car.Engine>         carEngineStorage;
+	private Storage<Car>                carStorage;
+
+	private static final String LOGGER_NAME = "AssembleTask";
+	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
+
+	public AssembleTask() {
+		logger.trace("initialize");
+	}
 
 	public void setCarAccessoryStorage(Storage<Car.Accessories> carAccessoryStorage) {
 		this.carAccessoryStorage = carAccessoryStorage;
@@ -28,14 +37,15 @@ public class Worker extends SimplyNamed implements Runnable {
 	@Override
 	public void run() {
 		try {
+			logger.debug(this + ": start assembling car");
 			Car.Engine engine = carEngineStorage.take();
-			System.out.println(this + ": " + engine + " taken");
+			logger.debug(this + ": " + engine + " taken");
 			Car.Body body = carBodyStorage.take();
-			System.out.println(this + ": " + body + " taken");
+			logger.debug(this + ": " + body + " taken");
 			Car.Accessories accessories = carAccessoryStorage.take();
-			System.out.println(this + ": " + accessories + " taken");
+			logger.debug(this + ": " + accessories + " taken");
 			Car car = new Car(engine, body, accessories);
-			System.out.println(this + ": " + car + " assembled");
+			logger.debug(this + ": " + car + " assembled");
 			carStorage.store(car);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
