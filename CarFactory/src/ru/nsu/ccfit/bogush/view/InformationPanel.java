@@ -1,12 +1,12 @@
 package ru.nsu.ccfit.bogush.view;
 
 import ru.nsu.ccfit.bogush.CarFactoryModel;
-import ru.nsu.ccfit.bogush.factory.store.CarSellSubscriber;
-import ru.nsu.ccfit.bogush.threadpool.TaskSubscriber;
+import ru.nsu.ccfit.bogush.factory.store.CarSoldSubscriber;
+import ru.nsu.ccfit.bogush.threadpool.BlockingQueue;
 
 import javax.swing.*;
 
-public class InformationPanel extends JPanel implements TaskSubscriber, CarSellSubscriber {
+public class InformationPanel extends JPanel implements BlockingQueue.SizeSubscriber, CarSoldSubscriber {
 	public LabeledTextField workers;
 	public LabeledTextField dealers;
 	public LabeledTextField accessoriesSuppliers;
@@ -15,7 +15,7 @@ public class InformationPanel extends JPanel implements TaskSubscriber, CarSellS
 	public LabeledTextField bodyStorage;
 	public LabeledTextField accessoriesStorage;
 	public LabeledTextField sold;
-	public LabeledTextField awaiting;
+	public LabeledTextField taskQueueSize;
 	private JPanel panel;
 
 	private static final String WORKERS_TEXT = "Workers: ";
@@ -26,7 +26,7 @@ public class InformationPanel extends JPanel implements TaskSubscriber, CarSellS
 	private static final String BODY_STORAGE_TEXT = "Body Storage: ";
 	private static final String ACCESSORIES_STORAGE_TEXT = "Accessories Storage: ";
 	private static final String SOLD_TEXT = "Sold: ";
-	private static final String AWAITING_TEXT = "Awaiting: ";
+	private static final String TASK_QUEUE_SIZE_TEXT = "Task queue size: ";
 
 	private int workersCount;
 	private int dealersCount;
@@ -37,7 +37,7 @@ public class InformationPanel extends JPanel implements TaskSubscriber, CarSellS
 	private static final int BODY_STORAGE_INITIAL = 0;
 	private static final int ACCESSORIES_STORAGE_INITIAL = 0;
 	private static final int SOLD_INITIAL = 0;
-	private static final int AWAITING_INITIAL = 0;
+	private static final int TASK_QUEUE_SIZE_INITIAL = 0;
 
 	private int soldCount = SOLD_INITIAL;
 
@@ -51,8 +51,8 @@ public class InformationPanel extends JPanel implements TaskSubscriber, CarSellS
 	}
 
 	@Override
-	public void queueSizeChanged(int tasksAwaiting) {
-		awaiting.setValue(tasksAwaiting);
+	public void sizeChanged(int size) {
+		taskQueueSize.setValue(size);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class InformationPanel extends JPanel implements TaskSubscriber, CarSellS
 		bodyStorage = new LabeledTextField(BODY_STORAGE_TEXT, false);
 		accessoriesStorage = new LabeledTextField(ACCESSORIES_STORAGE_TEXT, false);
 		sold = new LabeledTextField(SOLD_TEXT, false);
-		awaiting = new LabeledTextField(AWAITING_TEXT, false);
+		taskQueueSize = new LabeledTextField(TASK_QUEUE_SIZE_TEXT, false);
 
 		workers.setValue(workersCount);
 		dealers.setValue(dealersCount);
@@ -81,12 +81,12 @@ public class InformationPanel extends JPanel implements TaskSubscriber, CarSellS
 		bodyStorage.setValue(BODY_STORAGE_INITIAL);
 		accessoriesStorage.setValue(ACCESSORIES_STORAGE_INITIAL);
 		sold.setValue(SOLD_INITIAL);
-		awaiting.setValue(AWAITING_INITIAL);
+		taskQueueSize.setValue(TASK_QUEUE_SIZE_INITIAL);
 
 		model.getEngineStorage().subscribe(size -> engineStorage.setValue(size));
 		model.getBodyStorage().subscribe(size -> bodyStorage.setValue(size));
 		model.getAccessoriesStorage().subscribe(size -> accessoriesStorage.setValue(size));
 		model.getCarStorage().subscribe(size -> carStorage.setValue(size));
-		model.getCarFactory().getThreadPool().subscribe(tasksAwaiting -> awaiting.setValue(tasksAwaiting));
+		model.getCarFactory().getThreadPool().subscribe(size -> taskQueueSize.setValue(size));
 	}
 }
