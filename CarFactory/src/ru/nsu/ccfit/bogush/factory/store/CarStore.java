@@ -66,7 +66,7 @@ public class CarStore {
 	}
 
 	private void sell(Car car) {
-		logger.trace(CAR_SOLD_MARKER, car.getInfo());
+		logger.trace(CAR_SOLD_MARKER, "sold " + car.getInfo());
 		for (CarSoldSubscriber subscriber: carSoldSubscribers) {
 			subscriber.carSold();
 		}
