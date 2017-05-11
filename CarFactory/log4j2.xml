@@ -9,7 +9,7 @@
             <PatternLayout pattern="%date [%-5level]: [%thread] %logger{1} - %msg%n"/>
         </Console>
         <RollingFile name="RollingFile" fileName="logs/app.log"
-                     filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+                     filePattern="logs/$${date:yyyy-MM}/app-%d{dd-MM-yyyy}-%i.log.gz">
             <PatternLayout pattern="%date [%-5level]: [%thread] %logger{1} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy />
