@@ -29,20 +29,18 @@ public class SimplePeriodical implements Periodical {
 	@Override
 	public void waitPeriod() {
 		long timeToWait = period;
-		long time = System.currentTimeMillis();
-		try {
-			synchronized (lock) {
-				while (timeToWait > 0) {
+		while (timeToWait > 0) {
+			long time = System.currentTimeMillis();
+			try {
+				synchronized (lock) {
 					lock.wait(timeToWait);
-					long newTime = System.currentTimeMillis();
-					timeToWait -= newTime - time;
-					time = newTime;
+					timeToWait -= System.currentTimeMillis() - time;
 				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				logger.error(e);
+				System.exit(1);
 			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			logger.error(e);
-			System.exit(1);
 		}
 	}
 
