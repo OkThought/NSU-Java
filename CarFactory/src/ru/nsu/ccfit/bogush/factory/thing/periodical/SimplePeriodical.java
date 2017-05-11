@@ -23,6 +23,7 @@ public class SimplePeriodical implements Periodical {
 			throw new IllegalArgumentException("period must be greater than or equal to 0");
 		}
 		this.period = period;
+		lock.notifyAll();
 	}
 
 	@Override
