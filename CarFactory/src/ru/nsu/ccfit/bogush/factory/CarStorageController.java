@@ -61,8 +61,8 @@ public class CarStorageController extends SimplyNamed implements Runnable {
 					while (!updateRequested) {
 						sync.wait();
 					}
+					updateRequested = false;
 				}
-				updateRequested = false;
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
