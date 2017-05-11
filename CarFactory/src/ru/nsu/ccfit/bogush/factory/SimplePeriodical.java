@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.bogush.factory.thing.periodical;
+package ru.nsu.ccfit.bogush.factory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

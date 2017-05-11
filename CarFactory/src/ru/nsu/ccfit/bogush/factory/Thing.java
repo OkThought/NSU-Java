@@ -1,7 +1,4 @@
-package ru.nsu.ccfit.bogush.factory.thing;
-
-import ru.nsu.ccfit.bogush.factory.thing.identifiable.Identifiable;
-import ru.nsu.ccfit.bogush.factory.SimplyNamed;
+package ru.nsu.ccfit.bogush.factory;
 
 public class Thing extends SimplyNamed implements Identifiable {
 	private final long id;

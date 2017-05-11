@@ -1,9 +1,7 @@
-package ru.nsu.ccfit.bogush.factory.storage;
+package ru.nsu.ccfit.bogush.factory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.factory.CarFactory;
-import ru.nsu.ccfit.bogush.factory.SimplyNamed;
 
 public class CarStorageController extends SimplyNamed implements Runnable {
 	private CarStorage carStorage;

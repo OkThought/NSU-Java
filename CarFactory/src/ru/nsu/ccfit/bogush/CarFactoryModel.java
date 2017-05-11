@@ -4,11 +4,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.factory.CarFactory;
 import ru.nsu.ccfit.bogush.factory.Supplier;
-import ru.nsu.ccfit.bogush.factory.storage.CarStorage;
-import ru.nsu.ccfit.bogush.factory.storage.CarStorageController;
-import ru.nsu.ccfit.bogush.factory.storage.Storage;
-import ru.nsu.ccfit.bogush.factory.store.CarStore;
-import ru.nsu.ccfit.bogush.factory.thing.Car;
+import ru.nsu.ccfit.bogush.factory.CarStorage;
+import ru.nsu.ccfit.bogush.factory.CarStorageController;
+import ru.nsu.ccfit.bogush.factory.Storage;
+import ru.nsu.ccfit.bogush.factory.CarStore;
+import ru.nsu.ccfit.bogush.factory.Car;
 
 public class CarFactoryModel {
 	private CarFactory carFactory;

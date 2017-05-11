@@ -1,8 +1,7 @@
-package ru.nsu.ccfit.bogush.factory.storage;
+package ru.nsu.ccfit.bogush.factory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.factory.thing.Car;
 
 public class CarStorage extends Storage<Car> {
 	private final CarStorageController controller;

@@ -2,8 +2,6 @@ package ru.nsu.ccfit.bogush.factory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.factory.storage.Storage;
-import ru.nsu.ccfit.bogush.factory.thing.Car;
 
 public class AssembleTask extends SimplyNamed implements Runnable {
 	private Storage<Car.Accessories>    carAccessoryStorage;

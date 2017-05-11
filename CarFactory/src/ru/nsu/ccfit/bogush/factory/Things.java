@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.bogush.factory.thing;
+package ru.nsu.ccfit.bogush.factory;
 
 public class Things {
 	private long count = 0;

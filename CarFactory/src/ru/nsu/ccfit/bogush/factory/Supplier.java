@@ -2,9 +2,6 @@ package ru.nsu.ccfit.bogush.factory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.factory.storage.Storage;
-import ru.nsu.ccfit.bogush.factory.thing.Thing;
-import ru.nsu.ccfit.bogush.factory.thing.periodical.SimplePeriodical;
 
 public class Supplier<T extends Thing> extends SimplePeriodical implements Runnable {
 	private Storage<T> storage;

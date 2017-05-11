@@ -2,9 +2,6 @@ package ru.nsu.ccfit.bogush.factory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.factory.storage.CarStorage;
-import ru.nsu.ccfit.bogush.factory.storage.Storage;
-import ru.nsu.ccfit.bogush.factory.thing.Car;
 import ru.nsu.ccfit.bogush.threadpool.ThreadPool;
 
 public class CarFactory extends SimplyNamed {

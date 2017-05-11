@@ -1,9 +1,9 @@
-package ru.nsu.ccfit.bogush.factory.storage;
+package ru.nsu.ccfit.bogush.factory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.factory.SimplyNamed;
-import ru.nsu.ccfit.bogush.factory.thing.Thing;
+import ru.nsu.ccfit.bogush.factory.Thing;
 import ru.nsu.ccfit.bogush.threadpool.BlockingQueue;
 
 

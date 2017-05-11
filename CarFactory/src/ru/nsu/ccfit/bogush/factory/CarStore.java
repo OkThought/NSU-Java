@@ -1,12 +1,9 @@
-package ru.nsu.ccfit.bogush.factory.store;
+package ru.nsu.ccfit.bogush.factory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import ru.nsu.ccfit.bogush.factory.storage.CarStorage;
-import ru.nsu.ccfit.bogush.factory.thing.Car;
-import ru.nsu.ccfit.bogush.factory.thing.periodical.SimplePeriodical;
 
 import java.util.ArrayList;
 import java.util.List;

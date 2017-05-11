@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.bogush.factory.thing.periodical;
+package ru.nsu.ccfit.bogush.factory;
 
 public interface Periodical {
 	void setPeriod(long millis);
