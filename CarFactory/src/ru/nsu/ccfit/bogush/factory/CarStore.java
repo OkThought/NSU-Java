@@ -116,4 +116,8 @@ public class CarStore {
 			return thread;
 		}
 	}
+
+	public interface CarSoldSubscriber {
+		void carSold();
+	}
 }
