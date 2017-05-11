@@ -3,7 +3,7 @@ package ru.nsu.ccfit.bogush.factory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Supplier<T extends Thing> extends SimplePeriodical implements Runnable {
+public class Supplier<T extends CarFactoryObject> extends SimplePeriodical implements Runnable {
 	private Storage<T> storage;
 	private static final long DEFAULT_PERIOD = 0;
 	private Class<T> thingClass;

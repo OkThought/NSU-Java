@@ -1,10 +1,10 @@
 package ru.nsu.ccfit.bogush.factory;
 
-public class Thing extends SimplyNamed implements Identifiable {
+public class CarFactoryObject extends SimplyNamed implements Identifiable {
 	private final long id;
 
-	public Thing() {
-		this.id = Things.getNewId();
+	public CarFactoryObject() {
+		this.id = Thread.currentThread().getId() * 13 + this.hashCode();
 	}
 
 	@Override

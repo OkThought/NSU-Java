@@ -2,12 +2,10 @@ package ru.nsu.ccfit.bogush.factory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.factory.SimplyNamed;
-import ru.nsu.ccfit.bogush.factory.Thing;
 import ru.nsu.ccfit.bogush.threadpool.BlockingQueue;
 
 
-public class Storage <T extends Thing> extends SimplyNamed {
+public class Storage <T extends CarFactoryObject> extends SimplyNamed {
 	private BlockingQueue<T> queue;
 	private final int capacity;
 	private Class<T> contentType;
