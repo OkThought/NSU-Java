@@ -102,7 +102,7 @@ public class CarStore {
 					Car car = storage.take();
 					logger.debug(car + " taken");
 					store.sell(car);
-					Thread.sleep(getPeriod());
+					waitPeriod();
 				} catch (InterruptedException e) {
 					logger.error(e);
 					e.printStackTrace();

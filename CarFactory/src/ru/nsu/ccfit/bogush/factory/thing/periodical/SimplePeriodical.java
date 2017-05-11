@@ -13,6 +13,8 @@ public class SimplePeriodical implements Periodical {
 		this.period = period;
 	}
 
+	private final Object lock = new Object();
+
 	@Override
 	public void setPeriod(long period) {
 		logger.trace("set period " + period + " milliseconds");
@@ -21,6 +23,26 @@ public class SimplePeriodical implements Periodical {
 			throw new IllegalArgumentException("period must be greater than or equal to 0");
 		}
 		this.period = period;
+	}
+
+	@Override
+	public void waitPeriod() {
+		long timeToWait = period;
+		long time = System.currentTimeMillis();
+		try {
+			synchronized (lock) {
+				while (timeToWait > 0) {
+					lock.wait(timeToWait);
+					long newTime = System.currentTimeMillis();
+					timeToWait -= newTime - time;
+					time = newTime;
+				}
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			logger.error(e);
+			System.exit(1);
+		}
 	}
 
 	@Override

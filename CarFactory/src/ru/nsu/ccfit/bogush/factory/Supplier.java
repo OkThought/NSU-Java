@@ -33,7 +33,7 @@ public class Supplier<T extends Thing> extends SimplePeriodical implements Runna
 		while (true) {
 			try {
 				storage.store(thingClass.newInstance());
-				Thread.sleep(getPeriod());
+				waitPeriod();
 			} catch (InterruptedException | IllegalAccessException | InstantiationException e) {
 				e.printStackTrace();
 			}
