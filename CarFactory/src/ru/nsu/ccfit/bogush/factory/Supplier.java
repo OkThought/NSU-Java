@@ -6,21 +6,21 @@ import org.apache.logging.log4j.Logger;
 public class Supplier<T extends CarFactoryObject> extends SimplePeriodical implements Runnable {
 	private Storage<T> storage;
 	private static final long DEFAULT_PERIOD = 0;
-	private Class<T> thingClass;
+	private Class<T> contentType;
 	private Thread thread;
 
 	private static final String LOGGER_NAME = "Supplier";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
-	public Supplier(Storage<T> storage, Class<T> thingClass) {
-		this(storage, thingClass, DEFAULT_PERIOD);
+	public Supplier(Storage<T> storage, Class<T> contentType) {
+		this(storage, contentType, DEFAULT_PERIOD);
 	}
 
-	public Supplier(Storage<T> storage, Class<T> thingClass, long period) {
+	public Supplier(Storage<T> storage, Class<T> contentType, long period) {
 		super(period);
 		logger.trace("initialize with period " + period);
 		this.storage = storage;
-		this.thingClass = thingClass;
+		this.contentType = contentType;
 		this.thread = new Thread(this);
 		thread.setName(toString());
 	}
@@ -29,7 +29,7 @@ public class Supplier<T extends CarFactoryObject> extends SimplePeriodical imple
 	public void run() {
 		while (true) {
 			try {
-				storage.store(thingClass.newInstance());
+				storage.store(contentType.newInstance());
 				waitPeriod();
 			} catch (InterruptedException | IllegalAccessException | InstantiationException e) {
 				e.printStackTrace();
@@ -39,7 +39,7 @@ public class Supplier<T extends CarFactoryObject> extends SimplePeriodical imple
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "-" + thread.getId();
+		return contentType.getSimpleName() + "-" + getClass().getSimpleName() + "-" + thread.getId();
 	}
 
 	public Thread getThread() {
