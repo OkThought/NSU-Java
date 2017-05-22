@@ -41,6 +41,7 @@ public class BlockingQueue<T> {
 				sync.wait();
 			}
 			queue.add(t);
+			logger.trace(t + " was put");
 			sizeChanged(size());
 			sync.notifyAll();
 		}
@@ -53,6 +54,7 @@ public class BlockingQueue<T> {
 				sync.wait();
 			}
 			result = queue.remove();
+			logger.trace(result + " was taken");
 			sizeChanged(size());
 			sync.notifyAll();
 		}
@@ -68,17 +70,18 @@ public class BlockingQueue<T> {
 	}
 
 	public void addSizeSubscriber(SizeSubscriber sizeSubscriber) {
-
+		logger.trace("add SizeSubscriber " + sizeSubscriber);
 		sizeSubscribers.add(sizeSubscriber);
 	}
 
 	private void sizeChanged(int size) {
 		for (SizeSubscriber sizeSubscriber: sizeSubscribers) {
+			logger.trace("send new size (" + size + ") to subscriber " + sizeSubscriber);
 			sizeSubscriber.sizeChanged(size);
 		}
 	}
 
-	public static interface SizeSubscriber {
+	public interface SizeSubscriber {
 		void sizeChanged(int size);
 	}
 }
