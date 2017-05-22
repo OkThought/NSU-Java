@@ -34,7 +34,7 @@ public class LabeledSliderWithTextField extends JComponent {
 		slider.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				logger.debug("slider action");
+				logger.trace("slider action");
 				int value = slider.getValue();
 				syncTextField(value);
 				valueChanged(value);
@@ -42,37 +42,37 @@ public class LabeledSliderWithTextField extends JComponent {
 		});
 
 		textField.addActionListener(e -> {
-			logger.debug("textField action");
+			logger.trace("textField action");
 			syncSlider(textField.getText());
 		});
 	}
 
 	public void setTextAndValue(int value) {
-		logger.debug("set text and value to " + value);
+		logger.trace(this + ": set text and value to " + value);
 		setValue(value);
 		setText(String.valueOf(value));
 	}
 
 	public void setTextAndValue(String valueString) {
-		logger.debug("set text and value to " + valueString);
+		logger.trace(this + ": set text and value to " + valueString);
 		setValue(valueString);
 		setText(String.valueOf(valueString));
 	}
 
 	public void setValue(int value) {
-		logger.debug("set slider's value to " + value);
+		logger.trace(this + ": set slider's value to " + value);
 		slider.setValue(value);
 	}
 
 	public void setValue(String valueString) {
-		logger.debug("set slider's value to " + valueString);
+		logger.trace(this + ": set slider's value to " + valueString);
 		int value = parseValue(valueString);
 		if (failedToParse) return;
 		setValue(value);
 	}
 
 	public void setText(String text) {
-		logger.debug("set text field's text to " + text);
+		logger.trace(this + ": set text field's text to " + text);
 		textField.setText(text);
 	}
 
@@ -85,12 +85,12 @@ public class LabeledSliderWithTextField extends JComponent {
 	}
 
 	private void syncSlider(String valueString) {
-		logger.debug("sync slider with text field's text '" + valueString + '\'');
+		logger.trace(this + ": sync slider with text field's text '" + valueString + '\'');
 		setValue(valueString);
 	}
 
 	private void syncTextField(int value) {
-		logger.debug("sync text field with slider's value " + value);
+		logger.trace(this + ": sync text field with slider's value " + value);
 		setText(String.valueOf(value));
 	}
 
@@ -110,7 +110,7 @@ public class LabeledSliderWithTextField extends JComponent {
 	}
 
 	private void valueChanged(int value) {
-		logger.debug("value changed to " + value);
+		logger.trace(this + ": value changed to " + value);
 		for (ValueChangeListener valueChangeListener : valueChangeListeners) {
 			valueChangeListener.valueChanged(value);
 		}
@@ -120,6 +120,10 @@ public class LabeledSliderWithTextField extends JComponent {
 		valueChangeListeners.add(valueChangeListener);
 	}
 
+	@Override
+	public String toString() {
+		return label.getText();
+	}
 
 	public interface ValueChangeListener {
 		void valueChanged(int value);
