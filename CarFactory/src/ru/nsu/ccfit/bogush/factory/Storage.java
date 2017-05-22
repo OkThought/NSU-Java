@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.threadpool.BlockingQueue;
 
 
-public class Storage <T extends CarFactoryObject> extends SimplyNamed {
+public class Storage <T extends CarFactoryObject> {
 	private BlockingQueue<T> queue;
 	private final int capacity;
 	private Class<T> contentType;
@@ -22,12 +22,12 @@ public class Storage <T extends CarFactoryObject> extends SimplyNamed {
 
 	public void store(T thing) throws InterruptedException {
 		queue.put(thing);
-		logger.debug(thing + " stored in " + this);
+		logger.trace(thing + " stored in " + this);
 	}
 
 	public T take() throws InterruptedException {
 		T result = queue.take();
-		logger.debug(result + " taken from " + this);
+		logger.trace(result + " taken from " + this);
 		return result;
 	}
 
@@ -52,6 +52,8 @@ public class Storage <T extends CarFactoryObject> extends SimplyNamed {
 
 	@Override
 	public String toString() {
-		return super.toString() + "(size=" + queue.size() + " capacity=" + capacity + ")";
+		return  getClass().getSimpleName() + "<" + contentType.getSimpleName() +
+				">(size=" + queue.size() +
+				" capacity=" + capacity + ")";
 	}
 }
