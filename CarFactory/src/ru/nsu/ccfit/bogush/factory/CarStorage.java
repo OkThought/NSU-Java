@@ -20,6 +20,7 @@ public class CarStorage extends Storage<Car> {
 
 	@Override
 	public Car take() throws InterruptedException {
+		logger.trace("take car");
 		Car car = super.take();
 		logger.trace(car + " taken from " + this);
 		controller.carTaken();
