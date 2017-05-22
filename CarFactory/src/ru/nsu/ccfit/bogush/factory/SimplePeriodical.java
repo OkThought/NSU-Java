@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 public class SimplePeriodical implements Periodical {
 	private long period;
+	private boolean periodChanged = true;
 
 	private static final String LOGGER_NAME = "SimplePeriodical";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
@@ -17,24 +18,34 @@ public class SimplePeriodical implements Periodical {
 
 	@Override
 	public void setPeriod(long period) {
-		logger.trace("set period " + period + " milliseconds");
+		logger.trace("set period " + period + " milliseconds to " + this);
 		if (period < 0) {
 			logger.error("period < 0");
 			throw new IllegalArgumentException("period must be greater than or equal to 0");
 		}
 		this.period = period;
-		lock.notifyAll();
+		synchronized (lock) {
+			periodChanged = true;
+			lock.notifyAll();
+		}
 	}
 
 	@Override
 	public void waitPeriod() {
 		long timeToWait = period;
+		logger.trace("begin waiting for " + timeToWait + " millis");
 		while (timeToWait > 0) {
 			long time = System.currentTimeMillis();
 			try {
 				synchronized (lock) {
 					lock.wait(timeToWait);
-					timeToWait -= System.currentTimeMillis() - time;
+					if (periodChanged) {
+						logger.trace("period changed while waiting");
+						timeToWait = period;
+						periodChanged = false;
+					} else {
+						timeToWait -= System.currentTimeMillis() - time;
+					}
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
