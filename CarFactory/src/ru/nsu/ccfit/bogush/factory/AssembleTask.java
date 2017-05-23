@@ -35,15 +35,15 @@ public class AssembleTask extends SimplyNamed implements Runnable {
 	@Override
 	public void run() {
 		try {
-			logger.debug(this + ": start assembling car");
+			logger.debug("start assembling car");
 			Car.Engine engine = carEngineStorage.take();
-			logger.debug(this + ": " + engine + " taken");
+			logger.debug(engine + " taken");
 			Car.Body body = carBodyStorage.take();
-			logger.debug(this + ": " + body + " taken");
+			logger.debug(body + " taken");
 			Car.Accessories accessories = carAccessoryStorage.take();
-			logger.debug(this + ": " + accessories + " taken");
+			logger.debug(accessories + " taken");
 			Car car = new Car(engine, body, accessories);
-			logger.debug(this + ": " + car + " assembled");
+			logger.debug(car + " assembled");
 			carStorage.store(car);
 		} catch (InterruptedException e) {
 			e.printStackTrace();

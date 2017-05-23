@@ -70,7 +70,7 @@ public class CarStore {
 	}
 
 	public void addCarSoldSubscriber(CarSoldSubscriber subscriber) {
-		logger.trace("add CarSoldSubscriber " + subscriber);
+		logger.trace("add CarSoldSubscriber " + subscriber.getClass().getSimpleName());
 		carSoldSubscribers.add(subscriber);
 	}
 

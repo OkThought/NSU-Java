@@ -54,7 +54,7 @@ public class BlockingQueue<T> {
 				sync.wait();
 			}
 			result = queue.remove();
-			logger.trace(result + " was taken");
+			logger.trace(result + " taken");
 			sizeChanged(size());
 			sync.notifyAll();
 		}
@@ -76,7 +76,7 @@ public class BlockingQueue<T> {
 
 	private void sizeChanged(int size) {
 		for (SizeSubscriber sizeSubscriber: sizeSubscribers) {
-			logger.trace("send new size (" + size + ") to subscriber " + sizeSubscriber);
+			logger.trace("send new size (" + size + ") to subscriber " + sizeSubscriber.getClass().getSimpleName());
 			sizeSubscriber.sizeChanged(size);
 		}
 	}
