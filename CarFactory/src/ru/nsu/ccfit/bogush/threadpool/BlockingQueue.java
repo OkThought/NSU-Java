@@ -69,8 +69,8 @@ public class BlockingQueue<T> {
 		return capacity;
 	}
 
-	public void addSizeSubscriber(SizeSubscriber sizeSubscriber) {
-		logger.trace("add SizeSubscriber " + sizeSubscriber);
+	public synchronized void addSizeSubscriber(SizeSubscriber sizeSubscriber) {
+		logger.trace("add SizeSubscriber " + sizeSubscriber.getClass().getSimpleName());
 		sizeSubscribers.add(sizeSubscriber);
 	}
 
