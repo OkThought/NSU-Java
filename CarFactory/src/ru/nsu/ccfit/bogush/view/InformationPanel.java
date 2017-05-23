@@ -1,5 +1,7 @@
 package ru.nsu.ccfit.bogush.view;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.CarFactoryModel;
 
 import javax.swing.*;
@@ -41,23 +43,18 @@ public class InformationPanel extends JPanel {
 
 	private CarFactoryModel model;
 
+	private static final String LOGGER_NAME = "InformationPanel";
+	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
+
 	public InformationPanel(CarFactoryModel model) {
 		this.model = model;
-		workersCount = model.getWorkersCount();
-		dealersCount = model.getCarDealersCount();
-		accessoriesSuppliersCount = model.getAccessorySuppliersCount();
-	}
-
-	private void createUIComponents() {
-		workers = new LabeledValue(WORKERS_TEXT);
-		dealers = new LabeledValue(DEALERS_TEXT);
-		accessoriesSuppliers = new LabeledValue(ACCESSORIES_SUPPLIERS_TEXT);
-		carStorage = new LabeledValue(CAR_STORAGE_TEXT);
-		engineStorage = new LabeledValue(ENGINE_STORAGE_TEXT);
-		bodyStorage = new LabeledValue(BODY_STORAGE_TEXT);
-		accessoriesStorage = new LabeledValue(ACCESSORIES_STORAGE_TEXT);
-		sold = new LabeledValue(SOLD_TEXT);
-		taskQueueSize = new LabeledValue(TASK_QUEUE_SIZE_TEXT);
+		this.workersCount = model.getWorkersCount();
+		this.dealersCount = model.getCarDealersCount();
+		this.accessoriesSuppliersCount = model.getAccessorySuppliersCount();
+		logger.trace("Initialize");
+		logger.trace("workersCount = " + workersCount);
+		logger.trace("dealersCount = " + dealersCount);
+		logger.trace("accessoriesSuppliersCount = " + accessoriesSuppliersCount);
 
 		workers.setValue(workersCount);
 		dealers.setValue(dealersCount);
@@ -70,11 +67,23 @@ public class InformationPanel extends JPanel {
 		sold.setValue(SOLD_INITIAL);
 		taskQueueSize.setValue(TASK_QUEUE_SIZE_INITIAL);
 
-		model.getStore().addCarSoldSubscriber(() -> sold.setValue(Integer.parseInt(sold.getText()) + 1));
+		model.getStore().addCarSoldSubscriber(() -> sold.setValue(sold.getValue() + 1));
 		model.getEngineStorage().addSizeSubscriber(size -> engineStorage.setValue(size));
 		model.getBodyStorage().addSizeSubscriber(size -> bodyStorage.setValue(size));
 		model.getAccessoriesStorage().addSizeSubscriber(size -> accessoriesStorage.setValue(size));
 		model.getCarStorage().addSizeSubscriber(size -> carStorage.setValue(size));
 		model.getCarFactory().getThreadPool().addTaskQueueSizeSubscriber(size -> taskQueueSize.setValue(size));
+	}
+
+	private void createUIComponents() {
+		workers = new LabeledValue(WORKERS_TEXT);
+		dealers = new LabeledValue(DEALERS_TEXT);
+		accessoriesSuppliers = new LabeledValue(ACCESSORIES_SUPPLIERS_TEXT);
+		carStorage = new LabeledValue(CAR_STORAGE_TEXT);
+		engineStorage = new LabeledValue(ENGINE_STORAGE_TEXT);
+		bodyStorage = new LabeledValue(BODY_STORAGE_TEXT);
+		accessoriesStorage = new LabeledValue(ACCESSORIES_STORAGE_TEXT);
+		sold = new LabeledValue(SOLD_TEXT);
+		taskQueueSize = new LabeledValue(TASK_QUEUE_SIZE_TEXT);
 	}
 }
