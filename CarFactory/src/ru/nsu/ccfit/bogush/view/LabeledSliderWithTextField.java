@@ -4,10 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +16,10 @@ public class LabeledSliderWithTextField extends JComponent {
 	private JPanel panel;
 	private int minValue;
 	private int maxValue;
+	private int value;
+	private String valueString;
 	private List<ValueChangeListener> valueChangeListeners = new ArrayList<>();
-	private boolean failedToParse = false;
+	private boolean parseFailed = false;
 
 	private static final String LOGGER_NAME = "LabeledSliderWithTextField";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
@@ -37,90 +37,72 @@ public class LabeledSliderWithTextField extends JComponent {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				logger.trace("slider action");
-				int value = slider.getValue();
-				syncTextField(value);
-				valueChanged(value);
+				setValue(slider.getValue());
 			}
 		});
 
 		textField.addActionListener(e -> {
 			logger.trace("textField action");
-			String valueString = textField.getText();
-			syncSlider(valueString);
-			valueChanged(parseValue(valueString));
+			setValue(textField.getText().trim());
 		});
 
-		textField.addFocusListener(new FocusAdapter() {
+		textField.addKeyListener(new KeyAdapter() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				logger.trace("focus lost, update value");
-				String valueString = textField.getText();
-				syncSlider(valueString);
-				valueChanged(parseValue(valueString));
+			public void keyTyped(KeyEvent e) {
+				String text = (textField.getText() + e.getKeyChar()).trim();
+				logger.trace("key typed, current string: " + text);
+				textField.setForeground(isInteger(text) ? Color.BLACK:Color.RED);
 			}
 		});
 	}
 
-	public void setTextAndValue(int value) {
-		logger.trace(this + ": set text and value to " + value);
-		setValue(value);
-		setText(String.valueOf(value));
-	}
-
-	public void setTextAndValue(String valueString) {
-		logger.trace(this + ": set text and value to " + valueString);
-		setValue(valueString);
-		setText(String.valueOf(valueString));
-	}
-
 	public void setValue(int value) {
-		logger.trace(this + ": set slider's value to " + value);
+		logger.trace(this + ": set value to " + value);
+		this.value = value;
+		this.valueString = String.valueOf(value);
 		slider.setValue(value);
+		textField.setText(valueString);
+		valueChanged(value);
 	}
 
 	public void setValue(String valueString) {
-		logger.trace(this + ": set slider's value to " + valueString);
-		int value = parseValue(valueString);
-		if (failedToParse) return;
-		setValue(value);
+		logger.trace(this + ": set value to " + valueString);
+		valueString = valueString.trim();
+		int prevValue = value;
+		if (parseValue(valueString)) {
+			this.valueString = valueString;
+			slider.setValue(value);
+			textField.setText(valueString);
+			valueChanged(value);
+		} else {
+			value = prevValue;
+		}
 	}
 
-	public void setText(String text) {
-		logger.trace(this + ": set text field's text to " + text);
-		textField.setText(text);
-	}
-
-	public int getValue() {
-		return slider.getValue();
-	}
-
-	public String getText() {
-		return textField.getText();
-	}
-
-	private void syncSlider(String valueString) {
-		logger.trace(this + ": sync slider with text field's text '" + valueString + '\'');
-		setValue(valueString);
-	}
-
-	private void syncTextField(int value) {
-		logger.trace(this + ": sync text field with slider's value " + value);
-		setText(String.valueOf(value));
-	}
-
-	private int parseValue(String valueString) {
-		failedToParse = false;
-		int value;
+	private boolean parseValue(String valueString) {
+		if (!isInteger(valueString)) {
+			logger.error(valueString + " is not an Integer");
+			return false;
+		}
 		try {
 			value = Integer.parseInt(valueString);
 		} catch (NumberFormatException e) {
 			logger.error(e.getMessage() + ": couldn't parse value from '" + valueString + '\'');
-			failedToParse = true;
-			return 0;
+			return false;
 		}
 		value = Integer.max(minValue, value);
 		value = Integer.min(maxValue, value);
-		return value;
+		return true;
+	}
+
+	private static boolean isInteger(String str) {
+		if (str.isEmpty()) return false;
+		boolean hasSign = str.charAt(0) == '-' || str.charAt(0) == '+';
+		if (hasSign && str.length() == 1) return false;
+		for (int i = hasSign ? 1:0; i < str.length(); i++) {
+			if (!Character.isDigit(str.charAt(i))) return false;
+		}
+		return true;
 	}
 
 	private void valueChanged(int value) {
@@ -139,7 +121,9 @@ public class LabeledSliderWithTextField extends JComponent {
 		return label.getText();
 	}
 
-	public interface ValueChangeListener {
-		void valueChanged(int value);
+	public int getValue() {
+		return slider.getValue();
 	}
+
+	public interface ValueChangeListener { void valueChanged(int value); }
 }

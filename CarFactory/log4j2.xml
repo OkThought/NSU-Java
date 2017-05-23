@@ -6,11 +6,11 @@
             <PatternLayout pattern="%date{HH:mm:ss.SSS}: %thread - %msg%n"/>
         </Console>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%date [%-5level]: [%thread] %logger{1} - %msg%n"/>
+            <PatternLayout pattern="%date [%-5level]: [%-24thread] %-26logger{1} - %msg%n"/>
         </Console>
         <RollingFile name="RollingFile" fileName="logs/app.log"
                      filePattern="logs/$${date:yyyy-MM}/app-%d{dd-MM-yyyy}-%i.log.gz">
-            <PatternLayout pattern="%date [%-5level]: [%thread] %logger{1} - %msg%n"/>
+            <PatternLayout pattern="%date [%-5level]: [%-24thread] %-26logger{1} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="250 MB"/>

@@ -34,10 +34,10 @@ public class ControlPanel extends JPanel {
 		accessoriesPeriod = new LabeledSliderWithTextField(ACCESSORIES_PERIOD_LABEL_TEXT, MIN_PERIOD, MAX_PERIOD, INTERVAL);
 		dealersPeriod = new LabeledSliderWithTextField(DEALERS_PERIOD_LABEL_TEXT, MIN_PERIOD, MAX_PERIOD, INTERVAL);
 
-		enginePeriod.setTextAndValue(INITIAL_PERIOD);
-		bodyPeriod.setTextAndValue(INITIAL_PERIOD);
-		accessoriesPeriod.setTextAndValue(INITIAL_PERIOD);
-		dealersPeriod.setTextAndValue(INITIAL_PERIOD);
+		enginePeriod.setValue(INITIAL_PERIOD);
+		bodyPeriod.setValue(INITIAL_PERIOD);
+		accessoriesPeriod.setValue(INITIAL_PERIOD);
+		dealersPeriod.setValue(INITIAL_PERIOD);
 
 		enginePeriod.addValueChangeListener(value -> model.getEngineSupplier().setPeriod(value));
 
