@@ -13,7 +13,7 @@ public class BlockingQueue<T> {
 	private List<SizeSubscriber> sizeSubscribers = new ArrayList<>();
 
 	private final int capacity;
-	private final Object sync = new Object();
+	private final Object lock = new Object();
 
 	private static final String LOGGER_NAME = "BlockingQueue";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
@@ -36,33 +36,35 @@ public class BlockingQueue<T> {
 	}
 
 	public void put(T t) throws InterruptedException {
-		synchronized (sync) {
+		synchronized (lock) {
 			while (isFull()) {
-				sync.wait();
+				lock.wait();
 			}
 			queue.add(t);
 			logger.trace(t + " was put");
 			sizeChanged(size());
-			sync.notifyAll();
+			lock.notifyAll();
 		}
 	}
 
 	public T take() throws InterruptedException {
 		T result;
-		synchronized (sync) {
+		synchronized (lock) {
 			while (isEmpty()) {
-				sync.wait();
+				lock.wait();
 			}
 			result = queue.remove();
 			logger.trace(result + " taken");
 			sizeChanged(size());
-			sync.notifyAll();
+			lock.notifyAll();
 		}
 		return result;
 	}
 
 	public int size() {
-		return queue.size();
+		synchronized (lock) {
+			return queue.size();
+		}
 	}
 
 	public int getCapacity() {

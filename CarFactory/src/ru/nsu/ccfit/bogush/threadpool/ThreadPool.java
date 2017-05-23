@@ -9,12 +9,13 @@ public class ThreadPool {
 	private BlockingQueue<Runnable> queue;
 
 	private boolean started = false;
-	private int runningCount = 0;
 
 	private static final String THREAD_NAME_PREFIX = "PoolThread-";
 
 	private static final String LOGGER_NAME = "ThreadPool";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
+
+	private final Object lock = new Object();
 
 	public ThreadPool(int capacity) {
 		logger.trace("initialize ThreadPool of capacity " + capacity);
@@ -41,14 +42,6 @@ public class ThreadPool {
 		}
 	}
 
-	public int capacity() {
-		return pool.length;
-	}
-
-	public int getRunningNumber() {
-		return runningCount;
-	}
-
 	public int getAwaitingNumber() {
 		return queue.size();
 	}
@@ -70,10 +63,10 @@ public class ThreadPool {
 					logger.debug("request task");
 					Runnable task = queue.take();
 					logger.debug("task " + task + " taken");
-					++runningCount;
 					logger.debug("run task");
-					task.run();
-					--runningCount;
+					synchronized (lock) {
+						task.run();
+					}
 				}
 			} catch (InterruptedException e) {
 				logger.error(e);

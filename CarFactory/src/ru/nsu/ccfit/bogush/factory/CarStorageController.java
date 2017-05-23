@@ -9,7 +9,7 @@ public class CarStorageController extends SimplyNamed implements Runnable {
 	private Thread thread;
 	private boolean updateRequested = false;
 
-	private static final Object sync = new Object();
+	private static final Object lock = new Object();
 
 	private static final String LOGGER_NAME = "CarStorageController";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
@@ -25,25 +25,23 @@ public class CarStorageController extends SimplyNamed implements Runnable {
 		this.carStorage = carStorage;
 	}
 
-	public void carTaken() {
-		logger.trace("car taken from storage - update");
-		updateRequested = true;
-		synchronized (sync) {
-			sync.notifyAll();
+	public void update() {
+		logger.trace("update");
+		synchronized (lock) {
+			updateRequested = true;
+			lock.notifyAll();
 		}
 	}
 
 	private int carsNeeded() {
 		logger.debug("calculate amount of cars needed");
-		int carsAssembling = carFactory.getThreadPool().getRunningNumber();
-		logger.debug("carsAssembling = " + carsAssembling);
 		int taskQueueSize = carFactory.getThreadPool().getAwaitingNumber();
-		logger.debug("taskQueueSize = " + taskQueueSize);
 		int carStorageSize = carStorage.size();
-		logger.debug("carStorageSize = " + carStorageSize);
 		int carStorageCapacity = carStorage.capacity();
+		int result = carStorageCapacity - carStorageSize - taskQueueSize;
+		logger.debug("taskQueueSize = " + taskQueueSize);
+		logger.debug("carStorageSize = " + carStorageSize);
 		logger.debug("carStorageCapacity = " + carStorageCapacity);
-		int result = carStorageCapacity - carStorageSize - carsAssembling - taskQueueSize;
 		logger.debug("carsNeeded = " + result);
 		return result;
 	}
@@ -57,9 +55,9 @@ public class CarStorageController extends SimplyNamed implements Runnable {
 		try {
 			while (true) {
 				carFactory.requestCars(carsNeeded());
-				synchronized (sync) {
+				synchronized (lock) {
 					while (!updateRequested) {
-						sync.wait();
+						lock.wait();
 					}
 					updateRequested = false;
 				}
