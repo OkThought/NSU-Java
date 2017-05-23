@@ -7,28 +7,22 @@ public class LabeledValue extends JPanel {
 	private JLabel label;
 	private JPanel panel;
 
+	private int value;
+
 	public LabeledValue(String labelText) {
 		label.setText(labelText);
-		label.addPropertyChangeListener(evt -> {
-			if ("label".equals(evt.getPropertyName())) {
-				label.setText((String) evt.getNewValue());
-			}
-		});
 	}
 
-	public synchronized void setEnabled(boolean enabled) {
+	public void setEnabled(boolean enabled) {
 		valueLabel.setEnabled(enabled);
 	}
 
 	public synchronized void setValue(int value) {
-		setText(String.valueOf(value));
+		this.value = value;
+		valueLabel.setText(String.valueOf(value));
 	}
 
-	public synchronized void setText(String text) {
-		valueLabel.setText(text);
-	}
-
-	public String getText() {
-		return valueLabel.getText();
+	public synchronized int getValue() {
+		return value;
 	}
 }
