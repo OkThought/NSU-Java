@@ -43,6 +43,7 @@ public class SimplePeriodical implements Periodical {
 						logger.trace("period changed while waiting");
 						timeToWait = period;
 						periodChanged = false;
+						return;
 					} else {
 						timeToWait -= System.currentTimeMillis() - time;
 					}
