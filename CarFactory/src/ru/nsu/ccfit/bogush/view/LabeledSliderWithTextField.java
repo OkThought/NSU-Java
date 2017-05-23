@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -43,7 +45,19 @@ public class LabeledSliderWithTextField extends JComponent {
 
 		textField.addActionListener(e -> {
 			logger.trace("textField action");
-			syncSlider(textField.getText());
+			String valueString = textField.getText();
+			syncSlider(valueString);
+			valueChanged(parseValue(valueString));
+		});
+
+		textField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				logger.trace("focus lost, update value");
+				String valueString = textField.getText();
+				syncSlider(valueString);
+				valueChanged(parseValue(valueString));
+			}
 		});
 	}
 
