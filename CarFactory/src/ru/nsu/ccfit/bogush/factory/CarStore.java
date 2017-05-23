@@ -70,7 +70,7 @@ public class CarStore {
 	}
 
 	public void addCarSoldSubscriber(CarSoldSubscriber subscriber) {
-		logger.trace("addCarSoldSubscriber " + subscriber);
+		logger.trace("add CarSoldSubscriber " + subscriber);
 		carSoldSubscribers.add(subscriber);
 	}
 

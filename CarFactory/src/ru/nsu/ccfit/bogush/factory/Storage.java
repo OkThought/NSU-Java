@@ -32,7 +32,6 @@ public class Storage <T extends CarFactoryObject> {
 	}
 
 	public synchronized void addSizeSubscriber(BlockingQueue.SizeSubscriber sizeSubscriber) {
-		logger.trace("addCarSoldSubscriber " + sizeSubscriber);
 		queue.addSizeSubscriber(sizeSubscriber);
 	}
 
