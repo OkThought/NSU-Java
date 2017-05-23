@@ -20,18 +20,18 @@ public class Storage <T extends CarFactoryObject> {
 		this.queue = new BlockingQueue<T>(capacity);
 	}
 
-	public void store(T thing) throws InterruptedException {
+	public synchronized void store(T thing) throws InterruptedException {
 		queue.put(thing);
 		logger.trace(thing + " stored in " + this);
 	}
 
-	public T take() throws InterruptedException {
+	public synchronized T take() throws InterruptedException {
 		T result = queue.take();
 		logger.trace(result + " taken from " + this);
 		return result;
 	}
 
-	public void addSizeSubscriber(BlockingQueue.SizeSubscriber sizeSubscriber) {
+	public synchronized void addSizeSubscriber(BlockingQueue.SizeSubscriber sizeSubscriber) {
 		logger.trace("addCarSoldSubscriber " + sizeSubscriber);
 		queue.addSizeSubscriber(sizeSubscriber);
 	}

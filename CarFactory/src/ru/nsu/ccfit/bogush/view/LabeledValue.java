@@ -16,15 +16,15 @@ public class LabeledValue extends JComponent {
 		});
 	}
 
-	public void setEnabled(boolean enabled) {
+	public synchronized void setEnabled(boolean enabled) {
 		valueLabel.setEnabled(enabled);
 	}
 
-	public void setValue(int value) {
+	public synchronized void setValue(int value) {
 		setText(String.valueOf(value));
 	}
 
-	public void setText(String text) {
+	public synchronized void setText(String text) {
 		valueLabel.setText(text);
 	}
 
