@@ -20,12 +20,13 @@ public class Storage <T extends CarFactoryObject> {
 		this.queue = new BlockingQueue<T>(capacity);
 	}
 
-	public synchronized void store(T thing) throws InterruptedException {
+	public void store(T thing) throws InterruptedException {
 		queue.put(thing);
 		logger.trace(thing + " stored in " + this);
 	}
 
-	public synchronized T take() throws InterruptedException {
+	public T take() throws InterruptedException {
+		logger.trace("take " + contentType.getSimpleName());
 		T result = queue.take();
 		logger.trace(result + " taken from " + this);
 		return result;
