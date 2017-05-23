@@ -18,7 +18,7 @@ public class FactoryView extends JPanel {
 		frame.setContentPane(mainPanel);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
+		frame.setLocation(0, 0);
 		frame.pack();
 		frame.setVisible(true);
 	}

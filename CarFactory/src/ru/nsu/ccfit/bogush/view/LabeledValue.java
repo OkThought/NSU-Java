@@ -2,7 +2,7 @@ package ru.nsu.ccfit.bogush.view;
 
 import javax.swing.*;
 
-public class LabeledValue extends JComponent {
+public class LabeledValue extends JPanel {
 	private JLabel valueLabel;
 	private JLabel label;
 	private JPanel panel;

@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ru.nsu.ccfit.bogush.view.InformationPanel">
-  <grid id="27dc6" binding="panel" layout-manager="GridLayoutManager" row-count="10" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-    <margin top="10" left="0" bottom="10" right="0"/>
+  <grid id="27dc6" binding="panel" layout-manager="GridLayoutManager" row-count="9" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
       <xy x="20" y="20" width="302" height="366"/>
     </constraints>
     <properties/>
-    <border type="none"/>
+    <border type="none" title="Information"/>
     <children>
-      <vspacer id="3f68a">
-        <constraints>
-          <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </vspacer>
       <grid id="3e845" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
+        <margin top="2" left="0" bottom="3" right="0"/>
         <constraints>
           <grid row="0" column="0" row-span="3" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
-        <border type="none"/>
+        <border type="etched"/>
         <children>
           <nested-form id="4aed5" form-file="ru/nsu/ccfit/bogush/view/LabeledValue.form" binding="workers" custom-create="true">
             <constraints>
@@ -39,12 +34,12 @@
         </children>
       </grid>
       <grid id="1f295" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
+        <margin top="2" left="0" bottom="3" right="0"/>
         <constraints>
           <grid row="3" column="0" row-span="4" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
-        <border type="none"/>
+        <border type="etched"/>
         <children>
           <nested-form id="f3e03" form-file="ru/nsu/ccfit/bogush/view/LabeledValue.form" binding="carStorage" custom-create="true">
             <constraints>
@@ -69,12 +64,12 @@
         </children>
       </grid>
       <grid id="12c34" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
+        <margin top="2" left="0" bottom="3" right="0"/>
         <constraints>
           <grid row="7" column="0" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
-        <border type="none"/>
+        <border type="etched"/>
         <children>
           <nested-form id="794ee" form-file="ru/nsu/ccfit/bogush/view/LabeledValue.form" binding="sold" custom-create="true">
             <constraints>
