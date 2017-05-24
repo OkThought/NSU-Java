@@ -27,13 +27,17 @@ public class Supplier<T extends CarFactoryObject> extends SimplePeriodical imple
 
 	@Override
 	public void run() {
-		while (true) {
-			try {
+		try {
+			while (true) {
 				storage.store(contentType.newInstance());
 				waitPeriod();
-			} catch (InterruptedException | IllegalAccessException | InstantiationException e) {
-				e.printStackTrace();
 			}
+		} catch (IllegalAccessException | InstantiationException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			logger.trace("interrupted");
+		} finally {
+			logger.trace("stopped");
 		}
 	}
 
