@@ -62,6 +62,13 @@ public class CarStore {
 		}
 	}
 
+	public void stop() {
+		for (Thread dealerThread: dealerThreads) {
+			logger.trace("stop " + dealerThread.getName());
+			dealerThread.interrupt();
+		}
+	}
+
 	private void sell(Car car) {
 		logger.trace(CAR_SOLD_MARKER, "sold " + car.getInfo());
 		for (CarSoldSubscriber subscriber: carSoldSubscribers) {
@@ -93,17 +100,18 @@ public class CarStore {
 
 		@Override
 		public void run() {
-			while(true) {
-				try {
+			try {
+				while(true) {
 					logger.debug("request car from storage");
 					Car car = storage.take();
 					logger.debug(car + " taken");
 					store.sell(car);
 					waitPeriod();
-				} catch (InterruptedException e) {
-					logger.error(e);
-					e.printStackTrace();
 				}
+			} catch (InterruptedException e) {
+				logger.trace("interrupted");
+			} finally {
+				logger.trace("stopped");
 			}
 		}
 

@@ -42,6 +42,19 @@ public class ThreadPool {
 		}
 	}
 
+	public void stop() {
+		logger.trace("stop");
+		if (!started) {
+			logger.error("not running");
+			throw new ThreadPoolException("Stop failed, not running");
+		}
+		started = false;
+		for (Thread thread: pool) {
+			logger.trace("stop " + thread.getName());
+			thread.interrupt();
+		}
+	}
+
 	public int getAwaitingNumber() {
 		return queue.size();
 	}
@@ -69,9 +82,9 @@ public class ThreadPool {
 					}
 				}
 			} catch (InterruptedException e) {
-				logger.error(e);
-				e.printStackTrace();
-				System.exit(1);
+				logger.trace("interrupted");
+			} finally {
+				logger.trace("stopped");
 			}
 		}
 	}
