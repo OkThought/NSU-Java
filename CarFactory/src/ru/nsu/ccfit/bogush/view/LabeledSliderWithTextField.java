@@ -33,6 +33,8 @@ public class LabeledSliderWithTextField extends JComponent {
 		slider.setMajorTickSpacing(interval);
 		slider.setMinorTickSpacing(interval);
 
+		slider.addChangeListener(e -> textField.setText(String.valueOf(slider.getValue())));
+
 		slider.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
