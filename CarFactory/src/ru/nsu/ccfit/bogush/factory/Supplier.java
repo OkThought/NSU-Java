@@ -28,7 +28,7 @@ public class Supplier<T extends CarFactoryObject> extends SimplePeriodical imple
 	@Override
 	public void run() {
 		try {
-			while (true) {
+			while (!Thread.interrupted()) {
 				storage.store(contentType.newInstance());
 				waitPeriod();
 			}

@@ -15,8 +15,6 @@ public class ThreadPool {
 	private static final String LOGGER_NAME = "ThreadPool";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
-	private final Object lock = new Object();
-
 	public ThreadPool(int capacity) {
 		logger.trace("initialize ThreadPool of capacity " + capacity);
 		if (capacity < 1) {
@@ -45,13 +43,13 @@ public class ThreadPool {
 	public void stop() {
 		logger.trace("stop");
 		if (!started) {
-			logger.error("not running");
-			throw new ThreadPoolException("Stop failed, not running");
-		}
-		started = false;
-		for (Thread thread: pool) {
-			logger.trace("stop " + thread.getName());
-			thread.interrupt();
+			logger.trace("not running, do nothing");
+		} else {
+			started = false;
+			for (Thread thread: pool) {
+				logger.trace("stop " + thread.getName());
+				thread.interrupt();
+			}
 		}
 	}
 
@@ -68,23 +66,24 @@ public class ThreadPool {
 		queue.addSizeSubscriber(subscriber);
 	}
 
+	private static final String TASK_RUNNER_LOGGER_NAME = "TaskRunner";
+	private static final Logger taskRunnerLogger = LogManager.getLogger(TASK_RUNNER_LOGGER_NAME);
+
 	public class TaskRunner implements Runnable {
 		@Override
 		public void run() {
 			try {
-				while (true) {
-					logger.debug("request task");
+				while (!Thread.interrupted()) {
+					taskRunnerLogger.trace("request task");
 					Runnable task = queue.take();
-					logger.debug("task " + task + " taken");
-					logger.debug("run task");
-					synchronized (lock) {
-						task.run();
-					}
+					taskRunnerLogger.trace("task " + task + " taken");
+					taskRunnerLogger.trace("run task");
+					task.run();
 				}
 			} catch (InterruptedException e) {
-				logger.trace("interrupted");
+				taskRunnerLogger.trace("interrupted");
 			} finally {
-				logger.trace("stopped");
+				taskRunnerLogger.trace("stopped");
 			}
 		}
 	}

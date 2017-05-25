@@ -101,10 +101,10 @@ public class CarStore {
 		@Override
 		public void run() {
 			try {
-				while(true) {
-					logger.debug("request car from storage");
+				while(!Thread.interrupted()) {
+					logger.trace("request car from storage");
 					Car car = storage.take();
-					logger.debug(car + " taken");
+					logger.trace(car + " taken");
 					store.sell(car);
 					waitPeriod();
 				}

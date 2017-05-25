@@ -29,6 +29,7 @@ public class FactoryView extends JPanel {
 				for (Supplier s : model.getAccessorySuppliers()) {
 					s.getThread().interrupt();
 				}
+				model.getCarStorageController().stop();
 				model.getCarFactory().getThreadPool().stop();
 			}
 		});

@@ -34,15 +34,15 @@ public class CarStorageController extends SimplyNamed implements Runnable {
 	}
 
 	private int carsNeeded() {
-		logger.debug("calculate amount of cars needed");
+		logger.trace("calculate amount of cars needed");
 		int taskQueueSize = carFactory.getThreadPool().getAwaitingNumber();
 		int carStorageSize = carStorage.size();
 		int carStorageCapacity = carStorage.capacity();
 		int result = carStorageCapacity - carStorageSize - taskQueueSize;
-		logger.debug("taskQueueSize = " + taskQueueSize);
-		logger.debug("carStorageSize = " + carStorageSize);
-		logger.debug("carStorageCapacity = " + carStorageCapacity);
-		logger.debug("carsNeeded = " + result);
+		logger.trace("taskQueueSize = " + taskQueueSize);
+		logger.trace("carStorageSize = " + carStorageSize);
+		logger.trace("carStorageCapacity = " + carStorageCapacity);
+		logger.trace("carsNeeded = " + result);
 		return result;
 	}
 
@@ -50,10 +50,14 @@ public class CarStorageController extends SimplyNamed implements Runnable {
 		thread.start();
 	}
 
+	public void stop() {
+		thread.interrupt();
+	}
+
 	@Override
 	public void run() {
 		try {
-			while (true) {
+			while (!Thread.interrupted()) {
 				carFactory.requestCars(carsNeeded());
 				synchronized (lock) {
 					while (!updateRequested) {
@@ -63,7 +67,9 @@ public class CarStorageController extends SimplyNamed implements Runnable {
 				}
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.trace("interrupted");
+		} finally {
+			logger.trace("stopped");
 		}
 	}
 }

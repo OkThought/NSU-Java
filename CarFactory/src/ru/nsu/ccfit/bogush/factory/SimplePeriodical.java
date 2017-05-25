@@ -2,10 +2,12 @@ package ru.nsu.ccfit.bogush.factory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.nsu.ccfit.bogush.Pauser;
 
-public class SimplePeriodical implements Periodical {
+public class SimplePeriodical implements Periodical, Pauser.Pausable {
 	private long period;
 	private boolean periodChanged = true;
+	private boolean paused = false;
 
 	private static final String LOGGER_NAME = "SimplePeriodical";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
@@ -31,29 +33,59 @@ public class SimplePeriodical implements Periodical {
 	}
 
 	@Override
-	public void waitPeriod() {
+	public void waitPeriod() throws InterruptedException {
 		long timeToWait = period;
 		logger.trace("begin waiting for " + timeToWait + " millis");
-		while (timeToWait > 0) {
-			long time = System.currentTimeMillis();
-			try {
-				synchronized (lock) {
-					lock.wait(timeToWait);
-					if (periodChanged) {
-						logger.trace("period changed while waiting");
-						timeToWait = period;
-						periodChanged = false;
-						return;
-					} else {
-						timeToWait -= System.currentTimeMillis() - time;
-					}
+		synchronized (lock) {
+			while (timeToWait > 0) {
+				long time = System.currentTimeMillis();
+				lock.wait(timeToWait);
+				if (periodChanged) {
+					logger.trace("period was changed while waiting");
+					periodChanged = false;
+					return;
+				} else {
+					timeToWait -= System.currentTimeMillis() - time;
 				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				logger.error(e);
-				System.exit(1);
+				while (paused) {
+					lock.wait();
+				}
+			}
+			while (paused) {
+				lock.wait();
 			}
 		}
+	}
+
+	@Override
+	public void pause() {
+		logger.trace("pause");
+		if (!paused) {
+			paused = true;
+			synchronized (lock) {
+				lock.notifyAll();
+			}
+		} else {
+			logger.trace("already paused");
+		}
+	}
+
+	@Override
+	public void resume() {
+		logger.trace("resume");
+		if (paused) {
+			paused = false;
+			synchronized (lock) {
+				lock.notifyAll();
+			}
+		} else {
+			logger.trace("wasn't paused");
+		}
+	}
+
+	@Override
+	public boolean isPaused() {
+		return paused;
 	}
 
 	@Override
