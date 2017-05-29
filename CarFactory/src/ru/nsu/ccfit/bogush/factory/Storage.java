@@ -21,6 +21,7 @@ public class Storage <T extends CarFactoryObject> {
 	}
 
 	public void store(T thing) throws InterruptedException {
+		logger.trace("store " + thing);
 		queue.put(thing);
 		logger.trace(thing + " stored in " + this);
 	}
