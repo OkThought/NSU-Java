@@ -12,6 +12,7 @@ public class CarStore {
 	private Dealer[] dealers;
 	private Thread[] dealerThreads;
 	private List<CarSoldSubscriber> carSoldSubscribers = new ArrayList<>();
+	private int carsSoldCount = 0;
 
 	private static final String LOGGER_NAME = "Store";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
@@ -69,10 +70,11 @@ public class CarStore {
 		}
 	}
 
-	private void sell(Car car) {
+	private synchronized void sell(Car car) {
 		logger.trace(CAR_SOLD_MARKER, "sold " + car.getInfo());
+		carsSoldCount++;
 		for (CarSoldSubscriber subscriber: carSoldSubscribers) {
-			subscriber.carSold();
+			subscriber.carSoldCountChanged(carsSoldCount);
 		}
 	}
 
@@ -126,6 +128,6 @@ public class CarStore {
 	}
 
 	public interface CarSoldSubscriber {
-		void carSold();
+		void carSoldCountChanged(int count);
 	}
 }

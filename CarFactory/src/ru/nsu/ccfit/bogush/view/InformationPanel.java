@@ -67,7 +67,7 @@ public class InformationPanel extends JPanel {
 		sold.setValue(SOLD_INITIAL);
 		taskQueueSize.setValue(TASK_QUEUE_SIZE_INITIAL);
 
-		model.getStore().addCarSoldSubscriber(() -> sold.setValue(sold.getValue() + 1));
+		model.getStore().addCarSoldSubscriber(count -> sold.setValue(count));
 		model.getEngineStorage().addSizeSubscriber(size -> engineStorage.setValue(size));
 		model.getBodyStorage().addSizeSubscriber(size -> bodyStorage.setValue(size));
 		model.getAccessoriesStorage().addSizeSubscriber(size -> accessoriesStorage.setValue(size));
