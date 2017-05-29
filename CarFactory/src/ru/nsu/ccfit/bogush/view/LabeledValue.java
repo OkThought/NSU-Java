@@ -17,12 +17,12 @@ public class LabeledValue extends JPanel {
 		valueLabel.setEnabled(enabled);
 	}
 
-	public synchronized void setValue(int value) {
+	public void setValue(int value) {
 		this.value = value;
 		valueLabel.setText(String.valueOf(value));
 	}
 
-	public synchronized int getValue() {
+	public int getValue() {
 		return value;
 	}
 }

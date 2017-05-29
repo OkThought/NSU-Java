@@ -62,9 +62,7 @@ public class BlockingQueue<T> {
 	}
 
 	public int size() {
-		synchronized (lock) {
-			return queue.size();
-		}
+		return queue.size();
 	}
 
 	public int getCapacity() {
