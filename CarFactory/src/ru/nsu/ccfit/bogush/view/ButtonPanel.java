@@ -9,20 +9,23 @@ import ru.nsu.ccfit.bogush.factory.Supplier;
 import javax.swing.*;
 import java.util.Arrays;
 
-class ButtonPanel extends JComponent {
+class ButtonPanel extends JPanel {
 	private static final String START = "start";
 	private static final String PAUSE = "pause";
 	private static final String RESUME = "resume";
+
+	private JPanel panel;
+	private FactoryView mainView;
 	private JButton startButton;
 	private JButton resetButton;
-	private JPanel panel;
 	private JCheckBox logSalesCheckBox;
 	private Pauser pauser;
 
 	private static final String LOGGER_NAME = "ButtonPanel";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
-	public ButtonPanel(CarFactoryModel model) {
+	public ButtonPanel(CarFactoryModel model, FactoryView mainView) {
+		this.mainView = mainView;
 		startButton.setActionCommand(START);
 		startButton.addActionListener(e -> {
 			logger.trace("Start button: action command '" + e.getActionCommand() + '\'');
@@ -59,9 +62,7 @@ class ButtonPanel extends JComponent {
 			}
 		});
 
-		resetButton.addActionListener(e -> {
-			// TODO: reset
-		});
+		resetButton.addActionListener(e -> mainView.getControlPanel().reset());
 
 		logSalesCheckBox.setSelected(model.isLoggingSales());
 

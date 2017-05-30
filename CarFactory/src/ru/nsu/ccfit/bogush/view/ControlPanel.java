@@ -34,10 +34,7 @@ class ControlPanel extends JPanel {
 		accessoriesPeriod = new LabeledSliderWithTextField(ACCESSORIES_PERIOD_LABEL_TEXT, MIN_PERIOD, MAX_PERIOD, INTERVAL);
 		dealersPeriod = new LabeledSliderWithTextField(DEALERS_PERIOD_LABEL_TEXT, MIN_PERIOD, MAX_PERIOD, INTERVAL);
 
-		enginePeriod.setValue(INITIAL_PERIOD);
-		bodyPeriod.setValue(INITIAL_PERIOD);
-		accessoriesPeriod.setValue(INITIAL_PERIOD);
-		dealersPeriod.setValue(INITIAL_PERIOD);
+		reset();
 
 		enginePeriod.addValueChangeListener(value -> model.getEngineSupplier().setPeriod(value));
 
@@ -56,5 +53,12 @@ class ControlPanel extends JPanel {
 		for (Supplier supplier: model.getAccessorySuppliers()) {
 			supplier.setPeriod(enginePeriod.getValue());
 		}
+	}
+
+	void reset() {
+		enginePeriod.setValue(INITIAL_PERIOD);
+		bodyPeriod.setValue(INITIAL_PERIOD);
+		accessoriesPeriod.setValue(INITIAL_PERIOD);
+		dealersPeriod.setValue(INITIAL_PERIOD);
 	}
 }

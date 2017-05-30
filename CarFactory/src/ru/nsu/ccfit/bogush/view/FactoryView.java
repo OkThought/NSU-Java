@@ -12,7 +12,6 @@ public class FactoryView extends JPanel {
 	private ControlPanel controlPanel;
 	private InformationPanel infoPanel;
 	private ButtonPanel buttonPanel;
-
 	private final CarFactoryModel model;
 
 	public FactoryView(CarFactoryModel model) {
@@ -42,6 +41,18 @@ public class FactoryView extends JPanel {
 	private void createUIComponents() {
 		controlPanel = new ControlPanel(model);
 		infoPanel = new InformationPanel(model);
-		buttonPanel = new ButtonPanel(model);
+		buttonPanel = new ButtonPanel(model, this);
+	}
+
+	public ControlPanel getControlPanel() {
+		return controlPanel;
+	}
+
+	public InformationPanel getInfoPanel() {
+		return infoPanel;
+	}
+
+	public ButtonPanel getButtonPanel() {
+		return buttonPanel;
 	}
 }
