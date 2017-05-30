@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Appenders>
-        <Console name="CarSellLogger" target="SYSTEM_OUT">
-            <MarkerFilter marker="SOLD" onMatch="ACCEPT" onMismatch="DENY"/>
+        <Console name="CarSoldAppender" target="SYSTEM_OUT">
             <PatternLayout pattern="%date{HH:mm:ss.SSS}: %thread - %msg%n"/>
         </Console>
         <Console name="Console" target="SYSTEM_OUT">
@@ -18,10 +17,13 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="trace">
+        <Root level="debug">
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="CarSellLogger"/>
             <AppenderRef ref="RollingFile"/>
         </Root>
+        <Logger name="CarSoldLogger" level="trace" additivity="false">
+            <MarkerFilter marker="SOLD" onMatch="ACCEPT" onMismatch="DENY"/>
+            <AppenderRef ref="CarSoldAppender"/>
+        </Logger>
     </Loggers>
 </Configuration>

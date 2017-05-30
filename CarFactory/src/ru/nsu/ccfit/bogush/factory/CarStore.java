@@ -17,6 +17,9 @@ public class CarStore {
 	private static final String LOGGER_NAME = "Store";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
+	private static final String CAR_SOLD_LOGGER_NAME = "CarSoldLogger";
+	private static final Logger carSoldLogger = LogManager.getLogger(CAR_SOLD_LOGGER_NAME);
+
 	private static final Marker OFF_MARKER = MarkerManager.getMarker("OFF");
 	private static final Marker CAR_SOLD_MARKER = MarkerManager.getMarker("SOLD");
 	private Marker carSoldMarker;
@@ -71,7 +74,9 @@ public class CarStore {
 	}
 
 	private synchronized void sell(Car car) {
-		logger.trace(CAR_SOLD_MARKER, "sold " + car.getInfo());
+		carSoldLogger.info(carSoldMarker, "sold " + car.getInfo());
+		carSoldLogger.debug("marker: {}", carSoldMarker);
+
 		carsSoldCount++;
 		for (CarSoldSubscriber subscriber: carSoldSubscribers) {
 			subscriber.carSoldCountChanged(carsSoldCount);
