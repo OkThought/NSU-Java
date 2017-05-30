@@ -41,7 +41,6 @@ class InformationPanel extends JPanel {
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public InformationPanel(CarFactoryModel model) {
-		CarFactoryModel model1 = model;
 		int workersCount = model.getWorkersCount();
 		int dealersCount = model.getCarDealersCount();
 		int accessoriesSuppliersCount = model.getAccessorySuppliersCount();

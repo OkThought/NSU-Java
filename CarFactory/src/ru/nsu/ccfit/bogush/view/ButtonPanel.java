@@ -23,7 +23,6 @@ class ButtonPanel extends JComponent {
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public ButtonPanel(CarFactoryModel model) {
-		CarFactoryModel model1 = model;
 		startButton.setActionCommand(START);
 		startButton.addActionListener(e -> {
 			logger.trace("Start button: action command '" + e.getActionCommand() + '\'');
