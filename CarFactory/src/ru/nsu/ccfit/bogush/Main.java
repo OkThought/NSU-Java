@@ -4,8 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.view.FactoryView;
 
-import java.io.IOException;
-
 public class Main {
 	private static final String CONFIG_FILE = "config.properties";
 	private static final String LOG_CONFIG_FILE = "log4j2.xml";

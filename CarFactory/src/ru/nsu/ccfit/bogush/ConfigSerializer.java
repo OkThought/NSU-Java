@@ -49,8 +49,6 @@ public class ConfigSerializer {
 		logger.trace("loading config file " + configFilePath);
 		try (FileInputStream inputStream = new FileInputStream(configFilePath)) {
 			properties.load(inputStream);
-		} catch (IOException e) {
-			throw e;
 		}
 		logger.trace("config file loaded successfully");
 		Config config = new Config();
@@ -70,8 +68,6 @@ public class ConfigSerializer {
 	public void store(String configFilePath) throws IOException {
 		try (FileOutputStream outputStream = new FileOutputStream(configFilePath)) {
 			properties.store(outputStream, null);
-		} catch (IOException e) {
-			throw e;
 		}
 	}
 }

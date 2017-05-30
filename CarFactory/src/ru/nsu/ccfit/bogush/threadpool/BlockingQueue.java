@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Queue;
 
 public class BlockingQueue<T> {
-	private Queue<T> queue = new LinkedList<T>();
+	private Queue<T> queue = new LinkedList<>();
 	private List<SizeSubscriber> sizeSubscribers = new ArrayList<>();
 
 	private final int capacity;

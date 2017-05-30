@@ -48,9 +48,7 @@ public class ControlPanel extends JPanel {
 				supplier.setPeriod(value);
 		});
 
-		dealersPeriod.addValueChangeListener(value -> {
-			model.getStore().setPeriod(value);
-		});
+		dealersPeriod.addValueChangeListener(value -> model.getStore().setPeriod(value));
 
 		model.getStore().setPeriod(dealersPeriod.getValue());
 		model.getBodySupplier().setPeriod(bodyPeriod.getValue());

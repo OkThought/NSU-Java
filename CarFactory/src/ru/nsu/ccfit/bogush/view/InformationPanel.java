@@ -28,10 +28,6 @@ public class InformationPanel extends JPanel {
 	private static final String SOLD_TEXT = "Sold: ";
 	private static final String TASK_QUEUE_SIZE_TEXT = "Task queue size: ";
 
-	private int workersCount;
-	private int dealersCount;
-	private int accessoriesSuppliersCount;
-
 	private static final int CAR_STORAGE_INITIAL = 0;
 	private static final int ENGINE_STORAGE_INITIAL = 0;
 	private static final int BODY_STORAGE_INITIAL = 0;
@@ -41,16 +37,14 @@ public class InformationPanel extends JPanel {
 
 	private int soldCount = SOLD_INITIAL;
 
-	private CarFactoryModel model;
-
 	private static final String LOGGER_NAME = "InformationPanel";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public InformationPanel(CarFactoryModel model) {
-		this.model = model;
-		this.workersCount = model.getWorkersCount();
-		this.dealersCount = model.getCarDealersCount();
-		this.accessoriesSuppliersCount = model.getAccessorySuppliersCount();
+		CarFactoryModel model1 = model;
+		int workersCount = model.getWorkersCount();
+		int dealersCount = model.getCarDealersCount();
+		int accessoriesSuppliersCount = model.getAccessorySuppliersCount();
 		logger.trace("Initialize");
 		logger.trace("workersCount = " + workersCount);
 		logger.trace("dealersCount = " + dealersCount);

@@ -17,14 +17,13 @@ public class ButtonPanel extends JComponent {
 	private JButton resetButton;
 	private JPanel panel;
 	private JCheckBox logSalesCheckBox;
-	private CarFactoryModel model;
 	private Pauser pauser;
 
 	private static final String LOGGER_NAME = "ButtonPanel";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public ButtonPanel(CarFactoryModel model) {
-		this.model = model;
+		CarFactoryModel model1 = model;
 		startButton.setActionCommand(START);
 		startButton.addActionListener(e -> {
 			logger.trace("Start button: action command '" + e.getActionCommand() + '\'');

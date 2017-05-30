@@ -17,7 +17,7 @@ public class Storage <T extends CarFactoryObject> {
 		logger.trace("initialize Storage<" + contentType.getSimpleName() + "> with capacity " + capacity);
 		this.contentType = contentType;
 		this.capacity = capacity;
-		this.queue = new BlockingQueue<T>(capacity);
+		this.queue = new BlockingQueue<>(capacity);
 	}
 
 	public void store(T thing) throws InterruptedException {
