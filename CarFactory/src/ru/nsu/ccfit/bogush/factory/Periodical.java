@@ -1,6 +1,6 @@
 package ru.nsu.ccfit.bogush.factory;
 
-public interface Periodical {
+interface Periodical {
 	void setPeriod(long millis);
 	long getPeriod();
 	void waitPeriod() throws InterruptedException;

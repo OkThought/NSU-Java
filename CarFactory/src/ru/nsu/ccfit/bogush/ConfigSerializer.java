@@ -8,7 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class ConfigSerializer {
+class ConfigSerializer {
 	private static final String ENGINE_STORAGE_SIZE_PROP = "EngineStorageSize";
 	private static final String CAR_BODY_STORAGE_SIZE_PROP = "CarBodyStorageSize";
 	private static final String ACCESSORY_STORAGE_SIZE_PROP = "AccessoryStorageSize";

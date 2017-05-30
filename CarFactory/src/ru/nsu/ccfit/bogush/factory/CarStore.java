@@ -30,7 +30,7 @@ public class CarStore {
 		this(storage, amountOfDealers, DEFAULT_PERIOD);
 	}
 
-	public CarStore(CarStorage storage, int amountOfDealers, long period) {
+	private CarStore(CarStorage storage, int amountOfDealers, long period) {
 		this.dealers = new Dealer[amountOfDealers];
 		this.dealerThreads = new Thread[amountOfDealers];
 		for (int i = 0; i < amountOfDealers; ++i) {

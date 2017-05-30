@@ -9,7 +9,7 @@ import ru.nsu.ccfit.bogush.factory.Supplier;
 import javax.swing.*;
 import java.util.Arrays;
 
-public class ButtonPanel extends JComponent {
+class ButtonPanel extends JComponent {
 	private static final String START = "start";
 	private static final String PAUSE = "pause";
 	private static final String RESUME = "resume";

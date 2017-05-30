@@ -1,5 +1,5 @@
 package ru.nsu.ccfit.bogush.factory;
 
-public interface Identifiable {
+interface Identifiable {
 	long getId();
 }

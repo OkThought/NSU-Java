@@ -6,16 +6,16 @@ import ru.nsu.ccfit.bogush.CarFactoryModel;
 
 import javax.swing.*;
 
-public class InformationPanel extends JPanel {
-	public LabeledValue workers;
-	public LabeledValue dealers;
-	public LabeledValue accessoriesSuppliers;
-	public LabeledValue carStorage;
-	public LabeledValue engineStorage;
-	public LabeledValue bodyStorage;
-	public LabeledValue accessoriesStorage;
-	public LabeledValue sold;
-	public LabeledValue taskQueueSize;
+class InformationPanel extends JPanel {
+	private LabeledValue workers;
+	private LabeledValue dealers;
+	private LabeledValue accessoriesSuppliers;
+	private LabeledValue carStorage;
+	private LabeledValue engineStorage;
+	private LabeledValue bodyStorage;
+	private LabeledValue accessoriesStorage;
+	private LabeledValue sold;
+	private LabeledValue taskQueueSize;
 	private JPanel panel;
 
 	private static final String WORKERS_TEXT = "Workers: ";

@@ -125,7 +125,7 @@ public class CarFactoryModel {
 		return loggingSales;
 	}
 
-	public void setLoggingSales(boolean loggingSales) {
+	private void setLoggingSales(boolean loggingSales) {
 		logger.trace("set logging sales to " + loggingSales);
 		this.loggingSales = loggingSales;
 		store.setLoggingSales(loggingSales);

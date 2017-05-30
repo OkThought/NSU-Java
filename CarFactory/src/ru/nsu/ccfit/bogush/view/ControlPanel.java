@@ -5,11 +5,11 @@ import ru.nsu.ccfit.bogush.factory.Supplier;
 
 import javax.swing.*;
 
-public class ControlPanel extends JPanel {
-	public LabeledSliderWithTextField enginePeriod;
-	public LabeledSliderWithTextField bodyPeriod;
-	public LabeledSliderWithTextField accessoriesPeriod;
-	public LabeledSliderWithTextField dealersPeriod;
+class ControlPanel extends JPanel {
+	private LabeledSliderWithTextField enginePeriod;
+	private LabeledSliderWithTextField bodyPeriod;
+	private LabeledSliderWithTextField accessoriesPeriod;
+	private LabeledSliderWithTextField dealersPeriod;
 	private JPanel panel;
 
 	private static final String ENGINE_PERIOD_LABEL_TEXT = "Engine Supplier Period";
