@@ -14,11 +14,11 @@ public class LabeledSliderWithTextField extends JComponent {
 	private JSlider slider;
 	private JTextField textField;
 	private JPanel panel;
-	private int minValue;
-	private int maxValue;
+	private final int minValue;
+	private final int maxValue;
 	private int value;
 	private String valueString;
-	private List<ValueChangeListener> valueChangeListeners = new ArrayList<>();
+	private final List<ValueChangeListener> valueChangeListeners = new ArrayList<>();
 	private boolean parseFailed = false;
 
 	private static final String LOGGER_NAME = "LabeledSliderWithTextField";

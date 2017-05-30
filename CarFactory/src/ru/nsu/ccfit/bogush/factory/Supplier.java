@@ -6,8 +6,8 @@ import org.apache.logging.log4j.Logger;
 public class Supplier<T extends CarFactoryObject> extends SimplePeriodical implements Runnable {
 	private Storage<T> storage;
 	private static final long DEFAULT_PERIOD = 0;
-	private Class<T> contentType;
-	private Thread thread;
+	private final Class<T> contentType;
+	private final Thread thread;
 
 	private static final String LOGGER_NAME = "Supplier";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);

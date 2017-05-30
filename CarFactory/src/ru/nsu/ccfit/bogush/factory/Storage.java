@@ -6,9 +6,9 @@ import ru.nsu.ccfit.bogush.threadpool.BlockingQueue;
 
 
 public class Storage <T extends CarFactoryObject> {
-	private BlockingQueue<T> queue;
+	private final BlockingQueue<T> queue;
 	private final int capacity;
-	private Class<T> contentType;
+	private final Class<T> contentType;
 
 	private static final String LOGGER_NAME = "Storage";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);

@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 public class CarStorageController extends SimplyNamed implements Runnable {
 	private CarStorage carStorage;
 	private CarFactory carFactory;
-	private Thread thread;
+	private final Thread thread;
 	private boolean updateRequested = false;
 
 	private static final Object lock = new Object();

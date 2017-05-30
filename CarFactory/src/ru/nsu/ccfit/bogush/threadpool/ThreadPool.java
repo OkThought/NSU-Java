@@ -4,9 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ThreadPool {
-	private Thread[] pool;
+	private final Thread[] pool;
 
-	private BlockingQueue<Runnable> queue;
+	private final BlockingQueue<Runnable> queue;
 
 	private boolean started = false;
 

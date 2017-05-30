@@ -22,7 +22,7 @@ class ControlPanel extends JPanel {
 	private static final int INITIAL_PERIOD = 0;
 	private static final int INTERVAL = 1;
 
-	private CarFactoryModel model;
+	private final CarFactoryModel model;
 
 	public ControlPanel(CarFactoryModel model) {
 		this.model = model;

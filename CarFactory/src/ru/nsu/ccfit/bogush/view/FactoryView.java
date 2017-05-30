@@ -13,7 +13,7 @@ public class FactoryView extends JPanel {
 	private InformationPanel infoPanel;
 	private ButtonPanel buttonPanel;
 
-	private CarFactoryModel model;
+	private final CarFactoryModel model;
 
 	public FactoryView(CarFactoryModel model) {
 		this.model = model;

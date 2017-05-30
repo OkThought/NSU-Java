@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public class Pauser {
 	private boolean paused = false;
-	private ArrayList<Pausable> pausables = new ArrayList<>();
+	private final ArrayList<Pausable> pausables = new ArrayList<>();
 
 	private static final String LOGGER_NAME = "Pauser";
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);

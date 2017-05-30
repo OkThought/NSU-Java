@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarStore {
-	private Dealer[] dealers;
-	private Thread[] dealerThreads;
-	private List<CarSoldSubscriber> carSoldSubscribers = new ArrayList<>();
+	private final Dealer[] dealers;
+	private final Thread[] dealerThreads;
+	private final List<CarSoldSubscriber> carSoldSubscribers = new ArrayList<>();
 	private int carsSoldCount = 0;
 
 	private static final String LOGGER_NAME = "Store";
@@ -91,7 +91,7 @@ public class CarStore {
 	public static class Dealer extends SimplePeriodical implements Runnable {
 		private CarStorage storage;
 		private CarStore store;
-		private Thread thread;
+		private final Thread thread;
 
 		private static final String LOGGER_NAME = "Dealer";
 		private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
