@@ -12,14 +12,16 @@ public class Car extends CarFactoryObject {
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public Car(Engine engine, Body body, Accessories accessories) {
-		logger.trace("initialize");
+		logger.traceEntry();
 		this.engine = engine;
 		this.body = body;
 		this.accessories = accessories;
+		logger.traceExit();
 	}
 
 	public String getInfo() {
-		return super.toString() + '(' + engine + ", " + body + ", " + accessories + ')';
+		logger.traceEntry();
+		return logger.traceExit(super.toString() + '(' + engine + ", " + body + ", " + accessories + ')');
 	}
 
 	public static class Accessories extends CarFactoryObject {}

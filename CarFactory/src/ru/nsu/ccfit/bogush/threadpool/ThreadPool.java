@@ -16,6 +16,7 @@ public class ThreadPool {
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public ThreadPool(int capacity) {
+		logger.traceEntry();
 		logger.trace("initialize ThreadPool of capacity " + capacity);
 		if (capacity < 1) {
 			logger.warn("Size is either zero or negative");
@@ -25,10 +26,11 @@ public class ThreadPool {
 		for (int i = 0; i < capacity; i++) {
 			pool[i] = new Thread(new TaskRunner(), THREAD_NAME_PREFIX + i);
 		}
+		logger.traceExit();
 	}
 
 	public void start() {
-		logger.trace("start");
+		logger.traceEntry();
 		if (started) {
 			logger.error("start() was already called before");
 			throw new ThreadPoolException("Already started");
@@ -38,10 +40,11 @@ public class ThreadPool {
 			logger.trace("start " + thread.getName());
 			thread.start();
 		}
+		logger.traceExit();
 	}
 
 	public void stop() {
-		logger.trace("stop");
+		logger.traceEntry();
 		if (!started) {
 			logger.trace("not running, do nothing");
 		} else {
@@ -51,6 +54,7 @@ public class ThreadPool {
 				thread.interrupt();
 			}
 		}
+		logger.traceExit();
 	}
 
 	public int getAwaitingNumber() {
@@ -58,12 +62,16 @@ public class ThreadPool {
 	}
 
 	public void addTask(Runnable task) throws InterruptedException {
+		logger.traceEntry();
 		logger.trace("add task " + task + " to the queue");
 		queue.put(task);
+		logger.traceExit();
 	}
 
 	public void addTaskQueueSizeSubscriber(BlockingQueue.SizeSubscriber subscriber) {
+		logger.traceEntry();
 		queue.addSizeSubscriber(subscriber);
+		logger.traceExit();
 	}
 
 	private static final String TASK_RUNNER_LOGGER_NAME = "TaskRunner";
@@ -72,6 +80,7 @@ public class ThreadPool {
 	public class TaskRunner implements Runnable {
 		@Override
 		public void run() {
+			taskRunnerLogger.traceEntry();
 			try {
 				while (!Thread.interrupted()) {
 					taskRunnerLogger.trace("request task");
@@ -84,6 +93,7 @@ public class ThreadPool {
 				taskRunnerLogger.trace("interrupted");
 			} finally {
 				taskRunnerLogger.trace("stopped");
+				taskRunnerLogger.traceExit();
 			}
 		}
 	}

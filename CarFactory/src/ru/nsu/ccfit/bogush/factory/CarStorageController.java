@@ -15,25 +15,31 @@ public class CarStorageController extends SimplyNamed implements Runnable {
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public CarStorageController(CarFactory carFactory) {
-		logger.trace("initialize");
+		logger.traceEntry();
 		this.carFactory = carFactory;
-		thread = new Thread(this, toString());
+		this.thread = new Thread(this, toString());
+		logger.traceExit();
 	}
 
 	public void setCarStorage(CarStorage carStorage) {
+		logger.traceEntry();
 		logger.trace("set car storage to " + carStorage);
 		this.carStorage = carStorage;
+		logger.traceExit();
 	}
 
 	public void update() {
+		logger.traceEntry();
 		logger.trace("update");
 		synchronized (lock) {
 			updateRequested = true;
 			lock.notifyAll();
 		}
+		logger.traceExit();
 	}
 
 	private int carsNeeded() {
+		logger.traceEntry();
 		logger.trace("calculate amount of cars needed");
 		int taskQueueSize = carFactory.getThreadPool().getAwaitingNumber();
 		int carStorageSize = carStorage.size();
@@ -43,19 +49,24 @@ public class CarStorageController extends SimplyNamed implements Runnable {
 		logger.trace("carStorageSize = " + carStorageSize);
 		logger.trace("carStorageCapacity = " + carStorageCapacity);
 		logger.trace("carsNeeded = " + result);
-		return result;
+		return logger.traceExit(result);
 	}
 
 	public void start() {
+		logger.traceEntry();
 		thread.start();
+		logger.traceExit();
 	}
 
 	public void stop() {
+		logger.traceEntry();
 		thread.interrupt();
+		logger.traceExit();
 	}
 
 	@Override
 	public void run() {
+		logger.traceEntry();
 		try {
 			while (!Thread.interrupted()) {
 				carFactory.requestCars(carsNeeded());
@@ -70,6 +81,7 @@ public class CarStorageController extends SimplyNamed implements Runnable {
 			logger.trace("interrupted");
 		} finally {
 			logger.trace("stopped");
+			logger.traceExit();
 		}
 	}
 }

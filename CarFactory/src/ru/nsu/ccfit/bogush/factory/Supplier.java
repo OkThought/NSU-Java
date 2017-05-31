@@ -18,15 +18,18 @@ public class Supplier<T extends CarFactoryObject> extends SimplePeriodical imple
 
 	public Supplier(Storage<T> storage, Class<T> contentType, long period) {
 		super(period);
+		logger.traceEntry();
 		logger.trace("initialize with period " + period);
 		this.storage = storage;
 		this.contentType = contentType;
 		this.thread = new Thread(this);
 		thread.setName(toString());
+		logger.traceExit();
 	}
 
 	@Override
 	public void run() {
+		logger.traceEntry();
 		try {
 			while (!Thread.interrupted()) {
 				storage.store(contentType.newInstance());
@@ -38,6 +41,7 @@ public class Supplier<T extends CarFactoryObject> extends SimplePeriodical imple
 			logger.trace("interrupted");
 		} finally {
 			logger.trace("stopped");
+			logger.traceExit();
 		}
 	}
 
@@ -47,6 +51,7 @@ public class Supplier<T extends CarFactoryObject> extends SimplePeriodical imple
 	}
 
 	public Thread getThread() {
-		return thread;
+		logger.traceEntry();
+		return logger.traceExit(thread);
 	}
 }

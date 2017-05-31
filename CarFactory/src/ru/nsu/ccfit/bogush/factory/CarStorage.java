@@ -11,18 +11,22 @@ public class CarStorage extends Storage<Car> {
 
 	public CarStorage(CarStorageController controller, int maxSize) {
 		super(Car.class, maxSize);
+		logger.traceEntry();
 		this.controller = controller;
+		logger.traceExit();
 	}
 
 	public CarStorageController getController() {
-		return controller;
+		logger.traceEntry();
+		return logger.traceExit(controller);
 	}
 
 	@Override
 	public Car take() throws InterruptedException {
+		logger.traceEntry();
 		Car car = super.take();
 		logger.trace(car + " taken from " + this);
 		controller.update();
-		return car;
+		return logger.traceExit(car);
 	}
 }

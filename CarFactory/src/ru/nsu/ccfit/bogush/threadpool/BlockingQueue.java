@@ -23,19 +23,24 @@ public class BlockingQueue<T> {
 	}
 
 	public BlockingQueue(int capacity) {
+		logger.traceEntry();
 		logger.trace("initialize BlockingQueue of capacity " + capacity);
 		this.capacity = capacity;
+		logger.traceExit();
 	}
 
 	public boolean isFull() {
-		return queue.size() == capacity;
+		logger.traceEntry();
+		return logger.traceExit(queue.size() == capacity);
 	}
 
 	public boolean isEmpty() {
+		logger.traceEntry();
 		return queue.isEmpty();
 	}
 
 	public void put(T t) throws InterruptedException {
+		logger.traceEntry();
 		synchronized (lock) {
 			while (isFull()) {
 				lock.wait();
@@ -45,9 +50,11 @@ public class BlockingQueue<T> {
 			sizeChanged(size());
 			lock.notifyAll();
 		}
+		logger.traceExit();
 	}
 
 	public T take() throws InterruptedException {
+		logger.traceEntry();
 		T result;
 		synchronized (lock) {
 			while (isEmpty()) {
@@ -58,27 +65,33 @@ public class BlockingQueue<T> {
 			sizeChanged(size());
 			lock.notifyAll();
 		}
-		return result;
+		return logger.traceExit(result);
 	}
 
 	public int size() {
-		return queue.size();
+		logger.traceEntry();
+		return logger.traceExit(queue.size());
 	}
 
 	public int getCapacity() {
-		return capacity;
+		logger.traceEntry();
+		return logger.traceExit(capacity);
 	}
 
 	public synchronized void addSizeSubscriber(SizeSubscriber sizeSubscriber) {
+		logger.traceEntry();
 		logger.trace("add SizeSubscriber " + sizeSubscriber.getClass().getSimpleName());
 		sizeSubscribers.add(sizeSubscriber);
+		logger.traceExit();
 	}
 
 	private void sizeChanged(int size) {
+		logger.traceEntry();
 		for (SizeSubscriber sizeSubscriber: sizeSubscribers) {
 			logger.trace("send new size (" + size + ") to subscriber " + sizeSubscriber.getClass().getSimpleName());
 			sizeSubscriber.sizeChanged(size);
 		}
+		logger.traceExit();
 	}
 
 	public interface SizeSubscriber {

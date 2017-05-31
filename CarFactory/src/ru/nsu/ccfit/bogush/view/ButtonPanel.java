@@ -26,6 +26,7 @@ class ButtonPanel extends JPanel {
 
 	public ButtonPanel(CarFactoryModel model, FactoryView mainView) {
 		this.mainView = mainView;
+		logger.traceEntry();
 		startButton.setActionCommand(START);
 		startButton.addActionListener(e -> {
 			logger.trace("Start button: action command '" + e.getActionCommand() + '\'');
@@ -76,5 +77,6 @@ class ButtonPanel extends JPanel {
 		pauser.addPausable(model.getEngineSupplier());
 		pauser.addPausables(Arrays.asList(model.getAccessorySuppliers()));
 		pauser.addPausables(Arrays.asList(model.getStore().getDealers()));
+		logger.traceExit();
 	}
 }

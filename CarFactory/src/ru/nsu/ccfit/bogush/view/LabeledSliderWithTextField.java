@@ -25,6 +25,7 @@ public class LabeledSliderWithTextField extends JComponent {
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public LabeledSliderWithTextField(String text, int minValue, int maxValue, int interval) {
+		logger.traceEntry();
 		label.setText(text);
 		this.minValue = minValue;
 		this.maxValue = maxValue;
@@ -56,18 +57,22 @@ public class LabeledSliderWithTextField extends JComponent {
 				textField.setForeground(isInteger(text) ? Color.BLACK:Color.RED);
 			}
 		});
+		logger.traceExit();
 	}
 
 	public void setValue(int value) {
+		logger.traceEntry();
 		logger.trace(this + ": set value to " + value);
 		this.value = value;
 		this.valueString = String.valueOf(value);
 		slider.setValue(value);
 		textField.setText(valueString);
 		valueChanged(value);
+		logger.traceExit();
 	}
 
 	public void setValue(String valueString) {
+		logger.traceEntry();
 		logger.trace(this + ": set value to " + valueString);
 		valueString = valueString.trim();
 		int prevValue = value;
@@ -79,52 +84,71 @@ public class LabeledSliderWithTextField extends JComponent {
 		} else {
 			value = prevValue;
 		}
+		logger.traceExit();
 	}
 
 	private boolean parseValue(String valueString) {
+		logger.traceEntry();
+		boolean parsingCompleted = true;
 		if (!isInteger(valueString)) {
+			parsingCompleted = false;
 			logger.error(valueString + " is not an Integer");
-			return false;
+		} else {
+			try {
+				value = Integer.parseInt(valueString);
+				value = Integer.max(minValue, value);
+				value = Integer.min(maxValue, value);
+			} catch (NumberFormatException e) {
+				logger.error(e.getMessage() + ": couldn't parse value from '" + valueString + '\'');
+				parsingCompleted = false;
+			}
 		}
-		try {
-			value = Integer.parseInt(valueString);
-		} catch (NumberFormatException e) {
-			logger.error(e.getMessage() + ": couldn't parse value from '" + valueString + '\'');
-			return false;
-		}
-		value = Integer.max(minValue, value);
-		value = Integer.min(maxValue, value);
-		return true;
+		return logger.traceExit(parsingCompleted);
 	}
 
 	private static boolean isInteger(String str) {
-		if (str.isEmpty()) return false;
-		boolean hasSign = str.charAt(0) == '-' || str.charAt(0) == '+';
-		if (hasSign && str.length() == 1) return false;
-		for (int i = hasSign ? 1:0; i < str.length(); i++) {
-			if (!Character.isDigit(str.charAt(i))) return false;
+		logger.traceEntry();
+		boolean result = false;
+		if (!str.isEmpty()) {
+			boolean hasSign = str.charAt(0) == '-' || str.charAt(0) == '+';
+			if (hasSign && str.length() == 1) {
+				result = false;
+			} else {
+				result = true;
+				for (int i = hasSign ? 1 : 0; i < str.length(); i++) {
+					if (!Character.isDigit(str.charAt(i))) {
+						result = false;
+						break;
+					}
+				}
+			}
 		}
-		return true;
+		return logger.traceExit(result);
 	}
 
 	private void valueChanged(int value) {
+		logger.traceEntry();
 		logger.trace(this + ": value changed to " + value);
 		for (ValueChangeListener valueChangeListener : valueChangeListeners) {
 			valueChangeListener.valueChanged(value);
 		}
+		logger.traceExit();
 	}
 
 	public void addValueChangeListener(ValueChangeListener valueChangeListener) {
+		logger.traceEntry();
 		valueChangeListeners.add(valueChangeListener);
+		logger.traceExit();
+	}
+
+	public int getValue() {
+		logger.traceEntry();
+		return logger.traceExit(slider.getValue());
 	}
 
 	@Override
 	public String toString() {
 		return label.getText();
-	}
-
-	public int getValue() {
-		return slider.getValue();
 	}
 
 	public interface ValueChangeListener { void valueChanged(int value); }

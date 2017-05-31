@@ -31,6 +31,7 @@ public class CarStore {
 	}
 
 	private CarStore(CarStorage storage, int amountOfDealers, long period) {
+		logger.traceEntry();
 		this.dealers = new Dealer[amountOfDealers];
 		this.dealerThreads = new Thread[amountOfDealers];
 		for (int i = 0; i < amountOfDealers; ++i) {
@@ -38,42 +39,38 @@ public class CarStore {
 			dealers[i] = dealer;
 			dealerThreads[i] = dealer.thread;
 		}
-	}
-
-	public void setLoggingSales(boolean loggingSales) {
-		this.carSoldMarker = loggingSales ? CAR_SOLD_MARKER: OFF_MARKER;
-	}
-
-	public boolean isLoggingSales() {
-		return carSoldMarker == CAR_SOLD_MARKER;
-	}
-
-	public Dealer[] getDealers() {
-		return dealers;
+		logger.traceExit();
 	}
 
 	public void setPeriod(long period) {
+		logger.traceEntry();
 		logger.trace("set period " + period + " milliseconds");
 		for (Dealer dealer: dealers) {
 			dealer.setPeriod(period);
 		}
+		logger.traceExit();
 	}
 
 	public void start() {
+		logger.traceEntry();
 		for (Thread dealerThread: dealerThreads) {
 			logger.trace("start " + dealerThread.getName());
 			dealerThread.start();
 		}
+		logger.traceExit();
 	}
 
 	public void stop() {
+		logger.traceEntry();
 		for (Thread dealerThread: dealerThreads) {
 			logger.trace("stop " + dealerThread.getName());
 			dealerThread.interrupt();
 		}
+		logger.traceExit();
 	}
 
 	private synchronized void sell(Car car) {
+		logger.traceEntry();
 		carSoldLogger.info(carSoldMarker, "sold " + car.getInfo());
 		carSoldLogger.debug("marker: {}", carSoldMarker);
 
@@ -81,11 +78,30 @@ public class CarStore {
 		for (CarSoldSubscriber subscriber: carSoldSubscribers) {
 			subscriber.carSoldCountChanged(carsSoldCount);
 		}
+		logger.traceExit();
 	}
 
 	public void addCarSoldSubscriber(CarSoldSubscriber subscriber) {
+		logger.traceEntry();
 		logger.trace("add CarSoldSubscriber " + subscriber.getClass().getSimpleName());
 		carSoldSubscribers.add(subscriber);
+		logger.traceExit();
+	}
+
+	public void setLoggingSales(boolean loggingSales) {
+		logger.traceEntry();
+		this.carSoldMarker = loggingSales ? CAR_SOLD_MARKER: OFF_MARKER;
+		logger.traceExit();
+	}
+
+	public boolean isLoggingSales() {
+		logger.traceEntry();
+		return logger.traceExit(carSoldMarker == CAR_SOLD_MARKER);
+	}
+
+	public Dealer[] getDealers() {
+		logger.traceEntry();
+		return logger.traceExit(dealers);
 	}
 
 	public static class Dealer extends SimplePeriodical implements Runnable {
@@ -98,15 +114,18 @@ public class CarStore {
 
 		private Dealer(CarStorage storage, CarStore store, long period) {
 			super(period);
+			logger.traceEntry();
 			logger.trace("initialize with period " + period);
 			this.storage = storage;
 			this.store = store;
 			this.thread = new Thread(this);
 			thread.setName(toString());
+			logger.traceExit();
 		}
 
 		@Override
 		public void run() {
+			logger.traceEntry();
 			try {
 				while(!Thread.interrupted()) {
 					logger.trace("request car from storage");
@@ -119,6 +138,7 @@ public class CarStore {
 				logger.trace("interrupted");
 			} finally {
 				logger.trace("stopped");
+				logger.traceExit();
 			}
 		}
 
@@ -128,7 +148,8 @@ public class CarStore {
 		}
 
 		public Thread getThread() {
-			return thread;
+			logger.traceEntry();
+			return logger.traceExit(thread);
 		}
 	}
 

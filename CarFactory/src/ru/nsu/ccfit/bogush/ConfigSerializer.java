@@ -32,9 +32,13 @@ class ConfigSerializer {
 
 	private Properties properties = new Properties(defaultProperties);
 
-	public ConfigSerializer() {}
+	public ConfigSerializer() {
+		logger.traceEntry();
+		logger.traceExit();
+	}
 
 	public ConfigSerializer(Config config) {
+		logger.traceEntry();
 		properties.setProperty(ENGINE_STORAGE_SIZE_PROP, String.valueOf(config.getEngineStorageSize()));
 		properties.setProperty(CAR_BODY_STORAGE_SIZE_PROP, String.valueOf(config.getCarBodyStorageSize()));
 		properties.setProperty(ACCESSORY_STORAGE_SIZE_PROP, String.valueOf(config.getAccessoryStorageSize()));
@@ -43,9 +47,11 @@ class ConfigSerializer {
 		properties.setProperty(WORKERS_PROP, String.valueOf(config.getWorkers()));
 		properties.setProperty(CAR_DEALERS_PROP, String.valueOf(config.getCarDealers()));
 		properties.setProperty(LOG_SALES_PROP, String.valueOf(config.isLoggingSales()));
+		logger.traceExit();
 	}
 
 	public Config load(String configFilePath) throws IOException {
+		logger.traceEntry();
 		logger.trace("loading config file " + configFilePath);
 		try (FileInputStream inputStream = new FileInputStream(configFilePath)) {
 			properties.load(inputStream);
@@ -62,12 +68,15 @@ class ConfigSerializer {
 		config.setLoggingSales(Boolean.parseBoolean(properties.getProperty(LOG_SALES_PROP)));
 		logger.trace("config object created");
 		logger.trace("config = " + config);
-		return config;
+		return logger.traceExit(config);
 	}
 
 	public void store(String configFilePath) throws IOException {
+		logger.traceEntry();
 		try (FileOutputStream outputStream = new FileOutputStream(configFilePath)) {
 			properties.store(outputStream, null);
+		} finally {
+			logger.traceExit();
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package ru.nsu.ccfit.bogush.view;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.CarFactoryModel;
 import ru.nsu.ccfit.bogush.factory.Supplier;
 
@@ -24,11 +26,17 @@ class ControlPanel extends JPanel {
 
 	private final CarFactoryModel model;
 
+	private static final String LOGGER_NAME = "ControlPanel";
+	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
+
 	public ControlPanel(CarFactoryModel model) {
+		logger.traceEntry();
 		this.model = model;
+		logger.traceExit();
 	}
 
 	private void createUIComponents() {
+		logger.traceEntry();
 		enginePeriod = new LabeledSliderWithTextField(ENGINE_PERIOD_LABEL_TEXT, MIN_PERIOD, MAX_PERIOD, INTERVAL);
 		bodyPeriod = new LabeledSliderWithTextField(BODY_PERIOD_LABEL_TEXT, MIN_PERIOD, MAX_PERIOD, INTERVAL);
 		accessoriesPeriod = new LabeledSliderWithTextField(ACCESSORIES_PERIOD_LABEL_TEXT, MIN_PERIOD, MAX_PERIOD, INTERVAL);
@@ -53,12 +61,15 @@ class ControlPanel extends JPanel {
 		for (Supplier supplier: model.getAccessorySuppliers()) {
 			supplier.setPeriod(enginePeriod.getValue());
 		}
+		logger.traceExit();
 	}
 
 	void reset() {
+		logger.traceEntry();
 		enginePeriod.setValue(INITIAL_PERIOD);
 		bodyPeriod.setValue(INITIAL_PERIOD);
 		accessoriesPeriod.setValue(INITIAL_PERIOD);
 		dealersPeriod.setValue(INITIAL_PERIOD);
+		logger.traceExit();
 	}
 }

@@ -34,6 +34,7 @@ public class SimplePeriodical implements Periodical, Pauser.Pausable {
 
 	@Override
 	public void waitPeriod() throws InterruptedException {
+		logger.traceEntry();
 		long timeToWait = period;
 		logger.trace("begin waiting for " + timeToWait + " millis");
 		synchronized (lock) {
@@ -55,11 +56,12 @@ public class SimplePeriodical implements Periodical, Pauser.Pausable {
 				lock.wait();
 			}
 		}
+		logger.traceExit();
 	}
 
 	@Override
 	public void pause() {
-		logger.trace("pause");
+		logger.traceEntry();
 		if (!paused) {
 			paused = true;
 			synchronized (lock) {
@@ -68,11 +70,12 @@ public class SimplePeriodical implements Periodical, Pauser.Pausable {
 		} else {
 			logger.trace("already paused");
 		}
+		logger.traceExit();
 	}
 
 	@Override
 	public void resume() {
-		logger.trace("resume");
+		logger.traceEntry();
 		if (paused) {
 			paused = false;
 			synchronized (lock) {
@@ -81,15 +84,18 @@ public class SimplePeriodical implements Periodical, Pauser.Pausable {
 		} else {
 			logger.trace("wasn't paused");
 		}
+		logger.traceExit();
 	}
 
 	@Override
 	public boolean isPaused() {
-		return paused;
+		logger.traceEntry();
+		return logger.traceExit(paused);
 	}
 
 	@Override
 	public long getPeriod() {
-		return period;
+		logger.traceEntry();
+		return logger.traceExit(period);
 	}
 }

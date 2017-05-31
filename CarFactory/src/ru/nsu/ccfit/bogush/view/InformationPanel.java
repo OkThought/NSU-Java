@@ -41,6 +41,7 @@ class InformationPanel extends JPanel {
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public InformationPanel(CarFactoryModel model) {
+		logger.traceEntry();
 		int workersCount = model.getWorkersCount();
 		int dealersCount = model.getCarDealersCount();
 		int accessoriesSuppliersCount = model.getAccessorySuppliersCount();
@@ -66,9 +67,11 @@ class InformationPanel extends JPanel {
 		model.getAccessoriesStorage().addSizeSubscriber(size -> accessoriesStorage.setValue(size));
 		model.getCarStorage().addSizeSubscriber(size -> carStorage.setValue(size));
 		model.getCarFactory().getThreadPool().addTaskQueueSizeSubscriber(size -> taskQueueSize.setValue(size));
+		logger.traceExit();
 	}
 
 	private void createUIComponents() {
+		logger.traceEntry();
 		workers = new LabeledValue(WORKERS_TEXT);
 		dealers = new LabeledValue(DEALERS_TEXT);
 		accessoriesSuppliers = new LabeledValue(ACCESSORIES_SUPPLIERS_TEXT);
@@ -78,5 +81,6 @@ class InformationPanel extends JPanel {
 		accessoriesStorage = new LabeledValue(ACCESSORIES_STORAGE_TEXT);
 		sold = new LabeledValue(SOLD_TEXT);
 		taskQueueSize = new LabeledValue(TASK_QUEUE_SIZE_TEXT);
+		logger.traceExit();
 	}
 }

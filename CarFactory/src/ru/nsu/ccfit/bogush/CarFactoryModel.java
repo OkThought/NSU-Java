@@ -36,7 +36,7 @@ public class CarFactoryModel {
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public CarFactoryModel(Config config) {
-		logger.trace("initialize");
+		logger.traceEntry();
 		carDealersCount = config.getCarDealers();
 		workersCount = config.getWorkers();
 		accessorySuppliersCount = config.getAccessorySuppliers();
@@ -67,72 +67,90 @@ public class CarFactoryModel {
 
 		loggingSales = config.isLoggingSales();
 		store.setLoggingSales(loggingSales);
+		logger.traceExit();
 	}
 
 	public CarFactory getCarFactory() {
-		return carFactory;
+		logger.traceEntry();
+		return logger.traceExit(carFactory);
 	}
 
 	public Storage<Car.Body> getBodyStorage() {
-		return bodyStorage;
+		logger.traceEntry();
+		return logger.traceExit(bodyStorage);
 	}
 
 	public Storage<Car.Engine> getEngineStorage() {
-		return engineStorage;
+		logger.traceEntry();
+		return logger.traceExit(engineStorage);
 	}
 
 	public Storage<Car.Accessories> getAccessoriesStorage() {
-		return accessoriesStorage;
+		logger.traceEntry();
+		return logger.traceExit(accessoriesStorage);
 	}
 
 	public CarStorageController getCarStorageController() {
-		return carStorageController;
+		logger.traceEntry();
+		return logger.traceExit(carStorageController);
 	}
 
 	public CarStorage getCarStorage() {
-		return carStorage;
+		logger.traceEntry();
+		return logger.traceExit(carStorage);
 	}
 
 	public CarStore getStore() {
-		return store;
+		logger.traceEntry();
+		return logger.traceExit(store);
 	}
 
 	public Supplier[] getAccessorySuppliers() {
-		return accessorySuppliers;
+		logger.traceEntry();
+		return logger.traceExit(accessorySuppliers);
 	}
 
 	public Supplier<Car.Engine> getEngineSupplier() {
-		return engineSupplier;
+		logger.traceEntry();
+		return logger.traceExit(engineSupplier);
 	}
 
 	public Supplier<Car.Body> getBodySupplier() {
-		return bodySupplier;
+		logger.traceEntry();
+		return logger.traceExit(bodySupplier);
 	}
 
 	public int getCarDealersCount() {
-		return carDealersCount;
+		logger.traceEntry();
+		return logger.traceExit(carDealersCount);
 	}
 
 	public int getWorkersCount() {
-		return workersCount;
+		logger.traceEntry();
+		return logger.traceExit(workersCount);
 	}
 
 	public int getAccessorySuppliersCount() {
-		return accessorySuppliersCount;
+		logger.traceEntry();
+		return logger.traceExit(accessorySuppliersCount);
 	}
 
 	public boolean isLoggingSales() {
-		return loggingSales;
+		logger.traceEntry();
+		return logger.traceExit(loggingSales);
 	}
 
 	private void setLoggingSales(boolean loggingSales) {
+		logger.traceEntry();
 		logger.trace("set logging sales to " + loggingSales);
 		this.loggingSales = loggingSales;
 		store.setLoggingSales(loggingSales);
+		logger.traceExit();
 	}
 
 	public void toggleLoggingSales() {
-		logger.trace("toggle logging sales");
+		logger.traceEntry();
 		setLoggingSales(!loggingSales);
+		logger.traceExit();
 	}
 }

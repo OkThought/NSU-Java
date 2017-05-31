@@ -14,41 +14,54 @@ public class Storage <T extends CarFactoryObject> {
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public Storage(Class<T> contentType, int capacity) {
+		logger.traceEntry();
 		logger.trace("initialize Storage<" + contentType.getSimpleName() + "> with capacity " + capacity);
 		this.contentType = contentType;
 		this.capacity = capacity;
 		this.queue = new BlockingQueue<>(capacity);
+		logger.traceExit();
 	}
 
 	public void store(T thing) throws InterruptedException {
+		logger.traceEntry();
 		logger.trace("store " + thing);
 		queue.put(thing);
 		logger.trace(thing + " stored in " + this);
+		logger.traceExit();
 	}
 
 	public T take() throws InterruptedException {
+		logger.traceEntry();
 		logger.trace("take " + contentType.getSimpleName());
 		T result = queue.take();
 		logger.trace(result + " taken from " + this);
-		return result;
+		return logger.traceExit(result);
 	}
 
 	public synchronized void addSizeSubscriber(BlockingQueue.SizeSubscriber sizeSubscriber) {
+		logger.traceEntry();
 		queue.addSizeSubscriber(sizeSubscriber);
+		logger.traceExit();
 	}
 
 	public int size() {
-		return queue.size();
+		logger.traceEntry();
+		return logger.traceExit(queue.size());
 	}
 
-	public int capacity() { return capacity; }
+	public int capacity() {
+		logger.traceEntry();
+		return logger.traceExit(capacity);
+	}
 
 	public boolean isEmpty() {
-		return queue.isEmpty();
+		logger.traceEntry();
+		return logger.traceExit(queue.isEmpty());
 	}
 
 	public boolean isFull() {
-		return queue.isFull();
+		logger.traceEntry();
+		return logger.traceExit(queue.isFull());
 	}
 
 	@Override
