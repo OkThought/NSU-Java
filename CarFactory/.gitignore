@@ -3,3 +3,8 @@ out/
 *.iml
 .idea/
 config.properties
+
+# ignore apache log4j2 lib excluding used jars
+/lib/log4j2/
+!/lib/log4j2/log4j-core-2.8.2.jar
+!/lib/log4j2/log4j-api-2.8.2.jar
