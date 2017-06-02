@@ -20,8 +20,8 @@ public class FactoryView extends JPanel {
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public FactoryView(CarFactoryModel model) {
-		logger.traceEntry();
 		this.model = model;
+		logger.traceEntry();
 		JFrame frame = new JFrame("Car Factory");
 		frame.setContentPane(mainPanel);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

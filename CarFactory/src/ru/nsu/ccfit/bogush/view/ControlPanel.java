@@ -30,8 +30,8 @@ class ControlPanel extends JPanel {
 	private static final Logger logger = LogManager.getLogger(LOGGER_NAME);
 
 	public ControlPanel(CarFactoryModel model) {
-		logger.traceEntry();
 		this.model = model;
+		logger.traceEntry();
 		logger.traceExit();
 	}
 
@@ -49,7 +49,7 @@ class ControlPanel extends JPanel {
 		bodyPeriod.addValueChangeListener(value -> model.getBodySupplier().setPeriod(value));
 
 		accessoriesPeriod.addValueChangeListener(value -> {
-			for (Supplier supplier: model.getAccessorySuppliers())
+			for (Supplier supplier : model.getAccessorySuppliers())
 				supplier.setPeriod(value);
 		});
 
@@ -58,7 +58,7 @@ class ControlPanel extends JPanel {
 		model.getStore().setPeriod(dealersPeriod.getValue());
 		model.getBodySupplier().setPeriod(bodyPeriod.getValue());
 		model.getEngineSupplier().setPeriod(enginePeriod.getValue());
-		for (Supplier supplier: model.getAccessorySuppliers()) {
+		for (Supplier supplier : model.getAccessorySuppliers()) {
 			supplier.setPeriod(enginePeriod.getValue());
 		}
 		logger.traceExit();

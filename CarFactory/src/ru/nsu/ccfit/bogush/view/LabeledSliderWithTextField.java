@@ -54,7 +54,7 @@ public class LabeledSliderWithTextField extends JComponent {
 			public void keyTyped(KeyEvent e) {
 				String text = (textField.getText() + e.getKeyChar()).trim();
 				logger.trace("key typed, current string: " + text);
-				textField.setForeground(isInteger(text) ? Color.BLACK:Color.RED);
+				textField.setForeground(isInteger(text) ? Color.BLACK : Color.RED);
 			}
 		});
 		logger.traceExit();

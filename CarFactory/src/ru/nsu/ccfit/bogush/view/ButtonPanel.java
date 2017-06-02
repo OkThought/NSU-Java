@@ -41,7 +41,7 @@ class ButtonPanel extends JPanel {
 				thread = model.getBodySupplier().getThread();
 				logger.trace("start " + thread.getName());
 				thread.start();
-				for (Supplier supplier: model.getAccessorySuppliers()) {
+				for (Supplier supplier : model.getAccessorySuppliers()) {
 					thread = supplier.getThread();
 					logger.trace("start " + thread.getName());
 					thread.start();
