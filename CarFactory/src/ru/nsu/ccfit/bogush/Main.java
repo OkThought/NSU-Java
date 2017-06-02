@@ -5,9 +5,9 @@ import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.view.FactoryView;
 
 public class Main {
-	private static final String CONFIG_FILE = "config.properties";
+	private static final String CONFIG_FILE     = "config.properties";
 	private static final String LOG_CONFIG_FILE = "log4j2.xml";
-	private static final String LOGGER_NAME = "Main";
+	private static final String LOGGER_NAME     = "Main";
 	private static final Logger logger;
 
 	static {
@@ -24,7 +24,9 @@ public class Main {
 		} catch (Exception e) {
 			logger.fatal(e);
 			e.printStackTrace();
+			System.exit(1);
+		} finally {
+			logger.trace("Exiting");
 		}
-		logger.trace("Exiting");
 	}
 }
