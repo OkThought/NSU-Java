@@ -1,14 +1,18 @@
 package ru.nsu.ccfit.bogush.msg;
 
 public class ErrorMessage implements Message {
-	String content;
+	String errorMessage;
 
-	public ErrorMessage(String content) {
-		this.content = content;
+	public ErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 
 	@Override
-	public String getContent() {
-		return content;
+	public void handleBy(MessageHandler handler) {
+		handler.handle(this);
 	}
 }

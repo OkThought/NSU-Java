@@ -1,14 +1,18 @@
 package ru.nsu.ccfit.bogush.msg;
 
 public class SuccessMessage implements Message {
-	String content;
+	String successMessage;
 
-	public SuccessMessage(String content) {
-		this.content = content;
+	public SuccessMessage(String successMessage) {
+		this.successMessage = successMessage;
+	}
+
+	public String getSuccessMessage() {
+		return successMessage;
 	}
 
 	@Override
-	public String getContent() {
-		return content;
+	public void handleBy(MessageHandler handler) {
+		handler.handle(this);
 	}
 }

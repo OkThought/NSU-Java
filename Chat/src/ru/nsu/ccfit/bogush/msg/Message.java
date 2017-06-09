@@ -1,5 +1,5 @@
 package ru.nsu.ccfit.bogush.msg;
 
 public interface Message {
-	String getContent();
+	void handleBy(MessageHandler handler);
 }
