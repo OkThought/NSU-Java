@@ -26,3 +26,6 @@ LoC/tests/input/
 # Output files
 LoC/out/
 out/
+
+# Server properties files
+/server.properties
