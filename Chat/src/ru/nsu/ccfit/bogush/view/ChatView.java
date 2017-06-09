@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.bogush;
+package ru.nsu.ccfit.bogush.view;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +25,6 @@ public class ChatView extends JFrame {
 		super(TITLE);
 		createComponents();
 		this.setContentPane(root);
-		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setMinimumSize(new Dimension(400, 200));
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
