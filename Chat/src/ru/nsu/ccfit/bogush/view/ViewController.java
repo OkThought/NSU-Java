@@ -2,6 +2,7 @@ package ru.nsu.ccfit.bogush.view;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.nsu.ccfit.bogush.LoginPayload;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -15,15 +16,17 @@ public class ViewController {
 	private ChatView chatView;
 
 	private ArrayList<LoginHandler> loginHandlers = new ArrayList<>();
+	private ArrayList<LogoutHandler> logoutHandlers = new ArrayList<>();
+	private ArrayList<ConnectHandler> connectHandlers = new ArrayList<>();
+	private ArrayList<SendTextMessageHandler> sendTextMessageHandlers = new ArrayList<>();
 
 	public ViewController() {
-		createConnectView();
-		connectView.pack();
+		showConnectView();
 	}
 
 	private void createConnectView() {
-		logger.trace("creating connect window");
-		connectView = new ConnectView();
+		logger.trace("create connect window");
+		connectView = new ConnectView(this);
 		connectView.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
@@ -33,41 +36,117 @@ public class ViewController {
 	}
 
 	private void createLoginView() {
-		logger.trace("creating login window");
-		loginView = new LoginView();
-		loginView.setVisible(true);
-		addLoginHandler(message -> {
-			loginView.dispose();
-			if (chatView == null) {
-				createChatView();
-			}
-			chatView.pack();
-		});
-
-		loginView.setLoginHandlers(loginHandlers);
+		logger.trace("create login window");
+		loginView = new LoginView(this);
 
 		loginView.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				logger.trace("login window closed");
-				connectView.pack();
+				showConnectView();
 			}
 		});
 	}
 
 	private void createChatView() {
-		logger.trace("creating chat window");
-		chatView = new ChatView();
+		logger.trace("create chat window");
+		chatView = new ChatView(this);
 		chatView.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				logger.trace("chat window closed");
-				loginView.pack();
+				logout();
+				showLoginView();
 			}
 		});
 	}
 
-	public void addLoginHandler(LoginHandler loginHandler) {
-		loginHandlers.add(loginHandler);
+	private void showConnectView() {
+		logger.trace("Show connect window");
+		if (connectView == null) createConnectView();
+		connectView.pack();
+		connectView.setVisible(true);
+	}
+
+	private void hideConnectView() {
+		logger.trace("Hide connect window");
+		connectView.dispose();
+	}
+
+	private void showLoginView() {
+		logger.trace("Show login window");
+		if (loginView == null) createLoginView();
+		loginView.pack();
+		loginView.setVisible(true);
+	}
+
+	private void hideLoginView() {
+		logger.trace("Hide login window");
+//		loginView.dispose();
+		loginView.setVisible(false);
+	}
+
+	private void showChatView() {
+		logger.trace("Show chat window");
+		if (chatView == null) createChatView();
+		chatView.pack();
+		chatView.setVisible(true);
+	}
+
+	private void hideChatView() {
+		logger.trace("Hide chat window");
+		chatView.dispose();
+	}
+
+	void connect(String host, int port) {
+		logger.info("Connecting to {}:{}", host, port);
+		for (ConnectHandler handler : connectHandlers) {
+			if (!handler.connect(host, port)) {
+				new AlertDialog(connectView, "Connect", "Couldn't connect to server");
+				return;
+			}
+		}
+		hideConnectView();
+		showLoginView();
+	}
+
+	void login(LoginPayload loginPayload) {
+		hideLoginView();
+		showChatView();
+		for (LoginHandler loginHandler : loginHandlers) {
+			loginHandler.login(loginPayload);
+		}
+	}
+
+	void logout() {
+		logger.trace("Logging out");
+		hideChatView();
+		showLoginView();
+		for (LogoutHandler logoutHandler : logoutHandlers) {
+			logoutHandler.logout();
+		}
+	}
+
+	void sendTextMessage(String text) {
+		logger.trace("Sending text message \"{}\"", text);
+		for (SendTextMessageHandler handler : sendTextMessageHandlers) {
+			handler.sendTextMessage(text);
+		}
+	}
+
+	public void addLoginHandler(LoginHandler handler) {
+		loginHandlers.add(handler);
+	}
+
+	public void addLogoutHandler(LogoutHandler handler) {
+		logoutHandlers.add(handler);
+	}
+
+	public void addConnectHandler(ConnectHandler handler) {
+		connectHandlers.add(handler);
+	}
+
+	public void addSendTextMessageHandler(SendTextMessageHandler handler) {
+		sendTextMessageHandlers.add(handler);
 	}
 }

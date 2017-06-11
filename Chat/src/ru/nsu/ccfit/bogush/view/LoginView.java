@@ -3,7 +3,6 @@ package ru.nsu.ccfit.bogush.view;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.LoginPayload;
-import ru.nsu.ccfit.bogush.User;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -11,13 +10,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Collection;
 
 public class LoginView extends JFrame {
 	private static final Logger logger = LogManager.getLogger();
 
-	private static final String TITLE = "Chat";
-	private static final String LOGIN_BUTTON_TEXT = "User";
+	private static final String TITLE = "Login";
+	private static final String LOGIN_BUTTON_TEXT = "Login";
 	private static final String NICK_LABEL_NAME = "Enter your nickname: ";
 
 	private static final Dimension NICK_TEXT_FIELD_MIN_SIZE = new Dimension(50, 30);
@@ -26,16 +24,16 @@ public class LoginView extends JFrame {
 
 	private static final Border ROOT_BORDER = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 
-	private LoginHandler[] loginHandlers;
+	private ViewController viewController;
 
 	private JPanel rootPanel;
 	private JTextField nickTextField;
 
-	public LoginView() throws HeadlessException {
+	public LoginView(ViewController viewController) throws HeadlessException {
 		super(TITLE);
+		this.viewController = viewController;
 		createComponents();
 		this.setContentPane(rootPanel);
-		this.setLayout(new BoxLayout(rootPanel, BoxLayout.Y_AXIS));
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
 		this.setLocationRelativeTo(null);
@@ -44,6 +42,7 @@ public class LoginView extends JFrame {
 
 	private void createComponents() {
 		rootPanel = new JPanel();
+		rootPanel.setLayout(new BoxLayout(rootPanel, BoxLayout.Y_AXIS));
 		rootPanel.setBorder(ROOT_BORDER);
 		rootPanel.setOpaque(true);
 
@@ -66,7 +65,7 @@ public class LoginView extends JFrame {
 		JButton loginButton = new JButton(new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				logger.trace("User button clicked");
+				logger.trace("Login button clicked");
 				login();
 			}
 		});
@@ -81,15 +80,6 @@ public class LoginView extends JFrame {
 		rootPanel.add(loginButton);
 	}
 
-//	public void addLoginHandler(LoginHandler handler) {
-//		loginHandlers.add(handler);
-//	}
-
-
-	public void setLoginHandlers(Collection<LoginHandler> loginHandlers) {
-		this.loginHandlers = loginHandlers.toArray(new LoginHandler[loginHandlers.size()]);
-	}
-
 	private void alert(String title, String description) {
 		new AlertDialog(this, title, description);
 	}
@@ -100,9 +90,7 @@ public class LoginView extends JFrame {
 			logger.trace("nickname is empty");
 			alert("Login", "Nickname is empty!");
 		} else {
-			for (LoginHandler handler : loginHandlers) {
-				handler.login(new LoginPayload(nickname));
-			}
+			viewController.login(new LoginPayload(nickname));
 		}
 	}
 }
