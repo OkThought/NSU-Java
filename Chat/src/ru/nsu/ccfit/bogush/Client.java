@@ -15,13 +15,14 @@ public class Client {
 	private static final Logger logger = LogManager.getLogger();
 
 	private String host;
-
 	private int port;
+
 	private Socket socket;
 
 	private LoginPayload loginPayload;
-	private User user;
 	private SocketMessageStream socketMessageStream;
+	private SocketWriter socketWriter;
+	private SocketReader socketReader;
 
 	public static void main(String[] args) {
 		logger.trace("Start client");
@@ -29,46 +30,51 @@ public class Client {
 
 		SwingUtilities.invokeLater(() -> {
 			ViewController viewController = new ViewController();
-			viewController.addLoginHandler((LoginPayload loginPayload) -> {
 
-				client.setUser(new User(loginPayload.getNickname()));
-				client.connectToServer();
+			viewController.addConnectHandler((host, port) -> {
+				client.host = host;
+				client.port = port;
+				return client.connectToServer();
 			});
+
+			viewController.addLoginHandler((LoginPayload loginPayload) -> {
+				client.setLoginPayload(loginPayload);
+				client.login();
+			});
+
 		});
 		logger.trace("Client started");
 	}
 
 	private Client() {}
 
-	public void setLoginPayload(LoginPayload loginPayload) {
-		this.loginPayload = loginPayload;
-	}
-
-	private void setUser(User user) {
-		this.user = user;
-	}
-
-	private void connectToServer() {
+	private boolean connectToServer() {
 		logger.info("Connecting to server");
 		try {
 			logger.trace("Opening socket");
 			socket = new Socket(host, port);
+			logger.trace("Opened socket on {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
 			socketMessageStream = new SocketMessageStream(socket);
+			logger.trace("Created {}", socketMessageStream.getClass().getSimpleName());
 		} catch (IOException e) {
-			logger.fatal("Couldn't open socket");
-			closeSocket();
-			System.exit(1);
+			logger.error("Couldn't open socket");
+			return false;
 		}
+		logger.info("Connected to {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
+		return true;
+	}
 
-		logger.trace("Opened socket on {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
+	public void setLoginPayload(LoginPayload loginPayload) {
+		this.loginPayload = loginPayload;
+	}
 
+	private void login() {
+		logger.info("Logging in with nickname \"{}\"", loginPayload.getNickname());
 		try {
 			socketMessageStream.sendMessage(new LoginMessage(loginPayload));
 		} catch (IOException e) {
-			logger.error("Couldn't send message");
+			logger.error("Couldn't send login message");
 		}
-
-		logger.info("Connected to {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
 	}
 
 	public void disconnectFromServer() {
@@ -77,7 +83,7 @@ public class Client {
 			socketMessageStream.sendMessage(new LogoutMessage(loginPayload));
 			logger.info("Disconnected");
 		} catch (IOException e) {
-			logger.error("Couldn't send LogoutMessage");
+			logger.error("Couldn't send logout message");
 		}
 		closeSocket();
 	}
