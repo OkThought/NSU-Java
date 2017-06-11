@@ -12,12 +12,13 @@ public class SocketMessageStream implements MessageSender, MessageReceiver {
 	private ObjectOutputStream out;
 
 	public SocketMessageStream(Socket socket) throws IOException {
-		in = new ObjectInputStream(socket.getInputStream());
 		out = new ObjectOutputStream(socket.getOutputStream());
+		in = new ObjectInputStream(socket.getInputStream());
 	}
 
 	public void sendMessage(Message message) throws IOException {
 		out.writeObject(message);
+		out.flush();
 	}
 
 	public Message receiveMessage() throws IOException, ClassNotFoundException {
