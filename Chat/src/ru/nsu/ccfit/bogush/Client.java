@@ -8,8 +8,12 @@ import ru.nsu.ccfit.bogush.view.ViewController;
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Client {
+	private static final int READER_QUEUE_CAPACITY = 50;
+	private static final int WRITER_QUEUE_CAPACITY = 50;
+
 	static { LoggingConfiguration.addConfigFile(LoggingConfiguration.DEFAULT_LOGGER_CONFIG_FILE); }
 
 	private static final Logger logger = LogManager.getLogger();
@@ -19,17 +23,22 @@ public class Client {
 
 	private Socket socket;
 
+	private Thread thread;
+
+	private User user;
 	private LoginPayload loginPayload;
 	private SocketMessageStream socketMessageStream;
 	private SocketWriter socketWriter;
 	private SocketReader socketReader;
 
+	private ArrayList<UserListChangeListener> userListChangeListeners = new ArrayList<>();
+
 	public static void main(String[] args) {
-		logger.trace("Start client");
+		logger.trace("Launch client");
 		Client client = new Client();
 
 		SwingUtilities.invokeLater(() -> {
-			ViewController viewController = new ViewController();
+			ViewController viewController = new ViewController(client);
 
 			viewController.addConnectHandler((host, port) -> {
 				client.host = host;
@@ -43,10 +52,21 @@ public class Client {
 			});
 
 		});
-		logger.trace("Client started");
 	}
 
-	private Client() {}
+	private Client() {
+		thread = new Thread(() -> {
+			ClientMessageHandler clientMessageHandler = new ClientMessageHandler(this);
+			while (!Thread.interrupted()) {
+				try {
+					socketReader.read().handleBy(clientMessageHandler);
+				} catch (InterruptedException e) {
+					logger.error("Socket reader interrupted");
+					break;
+				}
+			}
+		});
+	}
 
 	private boolean connectToServer() {
 		logger.info("Connecting to server");
@@ -55,6 +75,9 @@ public class Client {
 			socket = new Socket(host, port);
 			logger.trace("Opened socket on {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
 			socketMessageStream = new SocketMessageStream(socket);
+			socketReader = new SocketReader(socketMessageStream, READER_QUEUE_CAPACITY);
+			socketWriter = new SocketWriter(socketMessageStream, WRITER_QUEUE_CAPACITY);
+			start();
 			logger.trace("Created {}", socketMessageStream.getClass().getSimpleName());
 		} catch (IOException e) {
 			logger.error("Couldn't open socket");
@@ -64,8 +87,13 @@ public class Client {
 		return true;
 	}
 
-	public void setLoginPayload(LoginPayload loginPayload) {
+	private void setLoginPayload(LoginPayload loginPayload) {
 		this.loginPayload = loginPayload;
+		user = new User(loginPayload);
+	}
+
+	public User getUser() {
+		return user;
 	}
 
 	private void login() {
@@ -88,6 +116,20 @@ public class Client {
 		closeSocket();
 	}
 
+	public void start() {
+		logger.trace("Start client");
+		thread.start();
+		socketReader.start();
+		socketWriter.start();
+	}
+
+	public void stop() {
+		logger.trace("Stop client");
+		thread.interrupt();
+		socketReader.stop();
+		socketWriter.stop();
+	}
+
 	private void closeSocket() {
 		try {
 			logger.trace("Closing socket");
@@ -96,5 +138,13 @@ public class Client {
 			logger.fatal("Couldn't close socket");
 			System.exit(1);
 		}
+	}
+
+	public void addUserListChangeListener(UserListChangeListener listener) {
+		userListChangeListeners.add(listener);
+	}
+
+	public ArrayList<UserListChangeListener> getUserListChangeListeners() {
+		return userListChangeListeners;
 	}
 }
