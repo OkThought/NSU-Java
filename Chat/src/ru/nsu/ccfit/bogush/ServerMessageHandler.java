@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.msg.*;
 
-public class ServerMessageHandler implements MessageHandler {
+public class ServerMessageHandler extends SimpleMessageHandler {
 	private static final Logger logger = LogManager.getLogger();
 
 	private Server server;
@@ -21,6 +21,7 @@ public class ServerMessageHandler implements MessageHandler {
 		logger.trace("Handle {}", message);
 		connectedUser.setLoginPayload(message.getLoginPayload());
 		nickname = connectedUser.getNickname();
+
 		try {
 			connectedUser.sendMessage(new SuccessMessage("Logged in successfully"));
 		} catch (InterruptedException e) {
@@ -30,6 +31,7 @@ public class ServerMessageHandler implements MessageHandler {
 
 	@Override
 	public void handle(LogoutMessage message) {
+		logger.trace("Handle {}", message);
 		String requested = message.getLoginPayload().getNickname();
 		logger.info("Received logout message from {}", requested);
 
@@ -49,24 +51,15 @@ public class ServerMessageHandler implements MessageHandler {
 			} catch (InterruptedException e) {
 				logger.error("Couldn't send success message");
 			}
+			Message userLeft = new UserLeftMessage(new User(nickname));
 			for (ConnectedUser user : server.getConnectedUsers()) {
 				try {
-					user.sendMessage(message);
+					user.sendMessage(userLeft);
 				} catch (InterruptedException e) {
 					logger.error("Couldn't send logout message to {}", user.getNickname());
 				}
 			}
 		}
-	}
-
-	@Override
-	public void handle(SuccessMessage message) {
-		logger.info("Success [{}]", message.getSuccessMessage());
-	}
-
-	@Override
-	public void handle(ErrorMessage message) {
-		logger.info("Error [{}]", message.getErrorMessage());
 	}
 
 	@Override
@@ -103,10 +96,5 @@ public class ServerMessageHandler implements MessageHandler {
 			return;
 		}
 		logger.info("Sent user-list {} to {}", userListMessage.toString(), nickname);
-	}
-
-	@Override
-	public void handle(Message message) {
-
 	}
 }
