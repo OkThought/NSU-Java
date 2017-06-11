@@ -2,6 +2,7 @@ package ru.nsu.ccfit.bogush.view;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.nsu.ccfit.bogush.Client;
 import ru.nsu.ccfit.bogush.LoginPayload;
 
 import java.awt.event.WindowAdapter;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 
 public class ViewController {
 	private static final Logger logger = LogManager.getLogger();
+
+	private Client client;
 
 	private ConnectView connectView;
 	private LoginView loginView;
@@ -20,7 +23,8 @@ public class ViewController {
 	private ArrayList<ConnectHandler> connectHandlers = new ArrayList<>();
 	private ArrayList<SendTextMessageHandler> sendTextMessageHandlers = new ArrayList<>();
 
-	public ViewController() {
+	public ViewController(Client client) {
+		this.client = client;
 		showConnectView();
 	}
 
@@ -51,6 +55,7 @@ public class ViewController {
 	private void createChatView() {
 		logger.trace("create chat window");
 		chatView = new ChatView(this);
+		chatView.addUser(client.getUser());
 		chatView.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
@@ -59,6 +64,8 @@ public class ViewController {
 				showLoginView();
 			}
 		});
+
+		client.addUserListChangeListener(chatView);
 	}
 
 	private void showConnectView() {

@@ -2,6 +2,8 @@ package ru.nsu.ccfit.bogush.view;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.nsu.ccfit.bogush.User;
+import ru.nsu.ccfit.bogush.UserListChangeListener;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -9,8 +11,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
 
-public class ChatView extends JFrame {
+public class ChatView extends JFrame implements UserListChangeListener {
 	private static final Logger logger = LogManager.getLogger();
 	private static final String TITLE = "Chat";
 	private static final Color MESSAGE_BACKGROUND_COLOR = new Color(150, 150, 250, 100);
@@ -20,8 +23,11 @@ public class ChatView extends JFrame {
 
 	private ViewController viewController;
 
+	private HashMap<User, JComponent> userComponentMap = new HashMap<>();
+
 	private JSplitPane root;
 	private JPanel messagesPanel;
+	private JPanel userListPanel;
 
 	public ChatView(ViewController viewController) throws HeadlessException {
 		super(TITLE);
@@ -33,8 +39,50 @@ public class ChatView extends JFrame {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	}
 
+	void addUser(User user) {
+		logger.trace("Add {}", user);
+		if (userComponentMap.containsKey(user)) {
+			logger.warn("User already in the component map");
+		} else {
+			JComponent userComponent = createUserComponent(user);
+			userComponentMap.put(user, userComponent);
+			userListPanel.add(userComponent);
+		}
+	}
+
+	void removeUser(User user) {
+		logger.trace("Remove {}", user);
+		if (userComponentMap.containsKey(user)) {
+			userListPanel.remove(userComponentMap.get(user));
+			userComponentMap.remove(user);
+		} else {
+			logger.error("User is absent in the component map");
+		}
+	}
+
+	@Override
+	public void userEntered(User user) {
+		addUser(user);
+	}
+
+	@Override
+	public void userLeft(User user) {
+		removeUser(user);
+	}
+
+	@Override
+	public void userListReceived(User[] users) {
+		userComponentMap.clear();
+		userListPanel.removeAll();
+		for (User user : users) {
+			JComponent c = createUserComponent(user);
+			userComponentMap.put(user, c);
+			userListPanel.add(c);
+		}
+	}
+
 	private void createComponents() {
-		JPanel userListPanel = createUserListPanel();
+		userListPanel = createUserListPanel();
 		JSplitPane chatPanel = createChatPane();
 
 		root = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, userListPanel, chatPanel);
@@ -50,6 +98,12 @@ public class ChatView extends JFrame {
 		userListPanel.setBorder(BorderFactory.createCompoundBorder(line, margin));
 		userListPanel.setMinimumSize(new Dimension(100, -1));
 		return userListPanel;
+	}
+
+	private JComponent createUserComponent(User user) {
+		JLabel label = new JLabel(user.getNickname());
+		label.setHorizontalAlignment(SwingConstants.LEFT);
+		return label;
 	}
 
 	private JSplitPane createChatPane() {
