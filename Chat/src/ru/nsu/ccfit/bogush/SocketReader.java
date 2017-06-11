@@ -19,7 +19,7 @@ class SocketReader {
 				try {
 					Message msg = messageReceiver.receiveMessage();
 					messageQueue.put(msg);
-					logger.info("Received {}", msg.getClass().getSimpleName());
+					logger.info("Received {}", msg);
 				} catch (InterruptedException e) {
 					logger.trace("Interrupted");
 					break;

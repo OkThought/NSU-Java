@@ -20,6 +20,6 @@ public class LoginMessage implements Message {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + "(" + loginPayload.getNickname() + ")";
+		return this.getClass().getSimpleName() + "(\"" + loginPayload.getNickname() + "\")";
 	}
 }

@@ -18,6 +18,6 @@ public class ErrorMessage implements Message {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + "(" + errorMessage + ")";
+		return this.getClass().getSimpleName() + "(\"" + errorMessage + "\")";
 	}
 }

@@ -18,6 +18,6 @@ public class SuccessMessage implements Message {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + "(" + successMessage + ")";
+		return this.getClass().getSimpleName() + "(\"" + successMessage + "\")";
 	}
 }
