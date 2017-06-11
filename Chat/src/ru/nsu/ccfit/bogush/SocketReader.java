@@ -6,39 +6,44 @@ import ru.nsu.ccfit.bogush.msg.Message;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class SocketReader {
+class SocketReader {
 	private static final Logger logger = LogManager.getLogger();
 
 	private Thread thread;
 	private LinkedBlockingQueue<Message> messageQueue;
 
-	public SocketReader(MessageReceiver messageReceiver, int queueCapacity) {
+	SocketReader(MessageReceiver messageReceiver, int queueCapacity) {
 		messageQueue = new LinkedBlockingQueue<>(queueCapacity);
 		thread = new Thread(() -> {
 			while (!Thread.interrupted()) {
 				try {
-					messageQueue.put(messageReceiver.receiveMessage());
+					Message msg = messageReceiver.receiveMessage();
+					messageQueue.put(msg);
+					logger.info("Received {}", msg.getClass().getSimpleName());
 				} catch (InterruptedException e) {
 					logger.trace("Interrupted");
 					break;
 				} catch (Exception e) {
+					e.printStackTrace();
 					logger.error("Couldn't receive message");
+					break;
 				}
 			}
 		});
 	}
 
-	public void start() {
-		logger.trace("Start");
+	void start() {
+		logger.trace("Start {}", SocketReader.class.getSimpleName());
 		thread.start();
 	}
 
-	public void stop() {
-		logger.trace("Stop");
+	void stop() {
+		logger.trace("Stop {}", SocketReader.class.getSimpleName());
 		thread.interrupt();
 	}
 
-	public Message read() throws InterruptedException {
+	Message read() throws InterruptedException {
+		logger.trace("Read message");
 		return messageQueue.take();
 	}
 }

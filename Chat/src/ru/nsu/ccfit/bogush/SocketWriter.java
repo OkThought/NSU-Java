@@ -7,18 +7,20 @@ import ru.nsu.ccfit.bogush.msg.Message;
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class SocketWriter {
+class SocketWriter {
 	private static final Logger logger = LogManager.getLogger();
 
 	private Thread thread;
 	private LinkedBlockingQueue<Message> messageQueue;
 
-	public SocketWriter(MessageSender messageSender, int queueCapacity) {
+	SocketWriter(MessageSender messageSender, int queueCapacity) {
 		this.messageQueue = new LinkedBlockingQueue<>(queueCapacity);
 		thread = new Thread(() -> {
 			while (!Thread.interrupted()) {
 				try {
-					messageSender.sendMessage(messageQueue.take());
+					Message msg = messageQueue.take();
+					messageSender.sendMessage(msg);
+					logger.info("Send {}", msg.getClass().getSimpleName());
 				} catch (IOException e) {
 					logger.error("Couldn't send message");
 				} catch (InterruptedException e) {
@@ -29,17 +31,18 @@ public class SocketWriter {
 		});
 	}
 
-	public void start() {
-		logger.trace("Start");
+	void start() {
+		logger.trace("Start {}", SocketWriter.class.getSimpleName());
 		thread.start();
 	}
 
-	public void stop() {
-		logger.trace("Stop");
+	void stop() {
+		logger.trace("Stop {}", SocketWriter.class.getSimpleName());
 		thread.interrupt();
 	}
 
-	public void write(Message message) throws InterruptedException {
+	void write(Message message) throws InterruptedException {
+		logger.trace("Write {}", message.getClass().getSimpleName());
 		messageQueue.put(message);
 	}
 }
