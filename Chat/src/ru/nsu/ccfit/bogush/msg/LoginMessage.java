@@ -17,4 +17,9 @@ public class LoginMessage implements Message {
 	public void handleBy(MessageHandler handler) {
 		handler.handle(this);
 	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(" + loginPayload.getNickname() + ")";
+	}
 }

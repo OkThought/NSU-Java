@@ -15,4 +15,9 @@ public class SuccessMessage implements Message {
 	public void handleBy(MessageHandler handler) {
 		handler.handle(this);
 	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(" + successMessage + ")";
+	}
 }
