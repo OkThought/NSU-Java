@@ -18,11 +18,14 @@ public class ChatView extends JFrame {
 	private static final Dimension MESSAGES_PANEL_SIZE = new Dimension(-1, 250);
 	private static final Dimension COMPOSE_PANEL_SIZE = new Dimension(-1, 30);
 
+	private ViewController viewController;
+
 	private JSplitPane root;
 	private JPanel messagesPanel;
 
-	public ChatView() throws HeadlessException {
+	public ChatView(ViewController viewController) throws HeadlessException {
 		super(TITLE);
+		this.viewController = viewController;
 		createComponents();
 		this.setContentPane(root);
 		this.setLocationRelativeTo(null);
@@ -104,11 +107,12 @@ public class ChatView extends JFrame {
 	}
 
 	private void sendMessage(String msg) {
-		messagesPanel.add(createMessage(msg));
+		messagesPanel.add(createMessageComponent(msg));
 		messagesPanel.updateUI();
+		viewController.sendTextMessage(msg);
 	}
 
-	private JComponent createMessage(String msg) {
+	private JComponent createMessageComponent(String msg) {
 		JLabel messageLabel = new JLabel(msg);
 		messageLabel.setOpaque(true);
 		messageLabel.setBackground(MESSAGE_BACKGROUND_COLOR);
