@@ -48,6 +48,7 @@ public class ConnectedUser {
 				}
 			}
 		});
+		logger.trace("{} created", ConnectedUser.class.getSimpleName());
 	}
 
 	public void setLoginPayload(LoginPayload loginPayload) {
@@ -59,13 +60,15 @@ public class ConnectedUser {
 	}
 
 	public void start() {
-		logger.trace("Start");
+		logger.trace("Start {}", ConnectedUser.class.getSimpleName());
+		thread.start();
 		socketReader.start();
 		socketWriter.start();
 	}
 
 	public void stop() {
-		logger.trace("Stop");
+		logger.trace("Stop {}", ConnectedUser.class.getSimpleName());
+		thread.interrupt();
 		socketReader.stop();
 		socketWriter.stop();
 	}
@@ -81,7 +84,7 @@ public class ConnectedUser {
 
 	@Override
 	public int hashCode() {
-		return loginPayload.getNickname().hashCode();
+		return super.hashCode();
 	}
 
 	@Override
