@@ -20,7 +20,7 @@ class SocketWriter {
 				try {
 					Message msg = messageQueue.take();
 					messageSender.sendMessage(msg);
-					logger.info("Send {}", msg.getClass().getSimpleName());
+					logger.info("Send {}", msg);
 				} catch (IOException e) {
 					logger.error("Couldn't send message");
 				} catch (InterruptedException e) {
@@ -42,7 +42,7 @@ class SocketWriter {
 	}
 
 	void write(Message message) throws InterruptedException {
-		logger.trace("Put {} to message queue", message.getClass().getSimpleName());
+		logger.trace("Put {} to message queue", message);
 		messageQueue.put(message);
 	}
 }

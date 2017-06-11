@@ -44,7 +44,7 @@ class SocketReader {
 
 	Message read() throws InterruptedException {
 		Message msg = messageQueue.take();
-		logger.trace("Took {} from message queue", msg.getClass().getSimpleName());
+		logger.trace("Took {} from message queue", msg);
 		return msg;
 	}
 }

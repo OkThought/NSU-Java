@@ -18,6 +18,7 @@ public class ServerMessageHandler implements MessageHandler {
 
 	@Override
 	public void handle(LoginMessage message) {
+		logger.trace("Handle {}", message);
 		connectedUser.setLoginPayload(message.getLoginPayload());
 		nickname = connectedUser.getNickname();
 		try {
