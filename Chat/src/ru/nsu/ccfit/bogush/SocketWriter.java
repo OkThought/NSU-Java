@@ -42,7 +42,7 @@ class SocketWriter {
 	}
 
 	void write(Message message) throws InterruptedException {
-		logger.trace("Write {}", message.getClass().getSimpleName());
+		logger.trace("Put {} to message queue", message.getClass().getSimpleName());
 		messageQueue.put(message);
 	}
 }
