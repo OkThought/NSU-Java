@@ -128,7 +128,7 @@ public class ViewController {
 	}
 
 	void sendTextMessage(String text) {
-		logger.trace("Sending text message \"{}\"", text);
+		logger.trace("Sending text message \"{}\"", text.replaceAll("\\p{C}", "[]"));
 		for (SendTextMessageHandler handler : sendTextMessageHandlers) {
 			handler.sendTextMessage(text);
 		}
