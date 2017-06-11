@@ -1,6 +1,8 @@
 package ru.nsu.ccfit.bogush;
 
-public class LoginPayload {
+import java.io.Serializable;
+
+public class LoginPayload implements Serializable {
 	private String nickname;
 
 	public LoginPayload(String nickname) {
