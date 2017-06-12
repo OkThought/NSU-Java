@@ -3,6 +3,8 @@ package ru.nsu.ccfit.bogush;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.msg.*;
+import ru.nsu.ccfit.bogush.view.LoginHandler;
+import ru.nsu.ccfit.bogush.view.LogoutHandler;
 import ru.nsu.ccfit.bogush.view.ViewController;
 
 import javax.swing.*;
@@ -10,7 +12,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Client {
+public class Client implements LoginHandler, LogoutHandler {
 	private static final int READER_QUEUE_CAPACITY = 50;
 	private static final int WRITER_QUEUE_CAPACITY = 50;
 
@@ -46,11 +48,8 @@ public class Client {
 				return client.connectToServer();
 			});
 
-			viewController.addLoginHandler((LoginPayload loginPayload) -> {
-				client.setLoginPayload(loginPayload);
-				client.login();
-			});
-
+			viewController.addLoginHandler(client);
+			viewController.addLogoutHandler(client);
 		});
 	}
 
@@ -87,17 +86,10 @@ public class Client {
 		return true;
 	}
 
-	private void setLoginPayload(LoginPayload loginPayload) {
-		this.loginPayload = loginPayload;
-		user = new User(loginPayload);
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	private void login() {
+	@Override
+	public void login(LoginPayload loginPayload) {
 		logger.info("Logging in with nickname \"{}\"", loginPayload.getNickname());
+		setLoginPayload(loginPayload);
 		try {
 			socketMessageStream.sendMessage(new LoginMessage(loginPayload));
 		} catch (IOException e) {
@@ -105,7 +97,8 @@ public class Client {
 		}
 	}
 
-	public void disconnectFromServer() {
+	@Override
+	public void logout() {
 		logger.info("Disconnecting from {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
 		try {
 			socketMessageStream.sendMessage(new LogoutMessage(loginPayload));
@@ -114,6 +107,21 @@ public class Client {
 			logger.error("Couldn't send logout message");
 		}
 		closeSocket();
+	}
+
+	private void setLoginPayload(LoginPayload loginPayload) {
+		logger.trace("Set login payload");
+		this.loginPayload = loginPayload;
+
+	}
+
+	public void setUser(User user) {
+		logger.trace("Set user to {}", user);
+		this.user = user;
+	}
+
+	public User getUser() {
+		return user;
 	}
 
 	public void start() {
