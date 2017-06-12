@@ -12,4 +12,9 @@ public class LoginPayload implements Serializable {
 	public String getNickname() {
 		return nickname;
 	}
+
+	@Override
+	public String toString() {
+		return getNickname();
+	}
 }
