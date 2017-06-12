@@ -89,7 +89,6 @@ public class ViewController {
 
 	private void hideLoginView() {
 		logger.trace("Hide login window");
-//		loginView.dispose();
 		loginView.setVisible(false);
 	}
 
@@ -118,20 +117,21 @@ public class ViewController {
 	}
 
 	void login(LoginPayload loginPayload) {
-		hideLoginView();
-		showChatView();
+		logger.trace("Login user \"{}\"", loginPayload);
 		for (LoginHandler loginHandler : loginHandlers) {
 			loginHandler.login(loginPayload);
 		}
+		hideLoginView();
+		showChatView();
 	}
 
 	void logout() {
 		logger.trace("Logging out");
-		hideChatView();
-		showLoginView();
 		for (LogoutHandler logoutHandler : logoutHandlers) {
 			logoutHandler.logout();
 		}
+		hideChatView();
+		showLoginView();
 	}
 
 	void sendTextMessage(String text) {
