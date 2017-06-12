@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,7 +19,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 
-public class Server {
+public class Server implements Runnable {
 	static { LoggingConfiguration.addConfigFile(LoggingConfiguration.DEFAULT_LOGGER_CONFIG_FILE); }
 	private static final Logger logger = LogManager.getLogger();
 
@@ -41,6 +42,8 @@ public class Server {
 	private static final int HISTORY_CAPACITY = 50;
 	private static final String STOP_COMMAND = "stop";
 
+	private ServerSocket serverSocket;
+
 	private Properties properties = new Properties(DEFAULT_PROPERTIES);
 
 	private HashSet<ConnectedUser> connectedUsers = new HashSet<>();
@@ -57,20 +60,24 @@ public class Server {
 
 	public static void main(String[] args) {
 		Server server = new Server();
-		server.start();
-		try {
-			server.getThread().join();
-		} catch (InterruptedException e) {
-			logger.trace("Server interrupted");
-			e.printStackTrace();
-		}
+	}
 
+	private Server() {
+		configure();
+		thread = new Thread(this);
+		start();
+		enterConsoleMode();
+	}
+
+	private void enterConsoleMode() {
+		logger.info("Entering console mode...\n\n");
+		help();
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-			help();
 			String command;
 			while ((command = reader.readLine()) != null) {
 				if (command.trim().toLowerCase().equals(STOP_COMMAND)) {
-					server.stop();
+					logger.trace("Command '{}' received", STOP_COMMAND);
+					stop();
 					return;
 				} else {
 					System.out.println("Unknown command");
@@ -79,15 +86,16 @@ public class Server {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			logger.error("eof found");
+			System.exit(1);
 		}
-		logger.error("eof found");
-		System.exit(1);
 	}
 
-	private Server() {
-		configure();
-		thread = new Thread(() -> {
-			try (ServerSocket serverSocket = new ServerSocket(port)){
+	@Override
+	public void run() {
+		try {
+			serverSocket = new ServerSocket(port);
+			try {
 				if (port == 0) {
 					port = serverSocket.getLocalPort();
 					logger.info("Port set automatically to {}", port);
@@ -105,12 +113,16 @@ public class Server {
 						connectedUser.start();
 					}
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			} finally {
-				logger.info("Stop server");
+				serverSocket.close();
 			}
-		});
+		} catch (SocketException e) {
+			logger.info(e.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			logger.info("Stop server");
+		}
 	}
 
 	private Thread getThread() {
@@ -124,10 +136,18 @@ public class Server {
 	}
 
 	private void stop() {
+		logger.info("Stopping the server");
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			logger.error("Couldn't close server socket: {}", e.getMessage());
+		}
+
 		for (ConnectedUser user : connectedUsers) {
 			user.stop();
 		}
 		thread.interrupt();
+		logger.info("Server stopped. Exiting...");
 	}
 
 	void logout(ConnectedUser connectedUser) {
@@ -161,7 +181,7 @@ public class Server {
 	}
 
 	private void configure() {
-		logger.traceEntry("configure");
+		logger.trace("=== Configuration ===");
 		loadProperties();
 
 		boolean doLogging = Boolean.parseBoolean(properties.getProperty(DO_LOGGING_KEY));
@@ -171,38 +191,42 @@ public class Server {
 		port = Integer.parseInt(properties.getProperty(SERVER_PORT_KEY));
 
 		storeProperties();
-		logger.traceExit("configure", null);
+		logger.trace("Exit configuration");
+		logger.trace("");
 	}
 
 	private void loadProperties() {
-		logger.traceEntry("loadProperties");
+		logger.trace("Looking for properties file \"{}\"...", PROPERTIES_FILE);
 		Path path = Paths.get(PROPERTIES_FILE);
 		if (Files.exists(path)) {
+			logger.trace("\"{}\" file found", PROPERTIES_FILE);
 			try (InputStream is = new FileInputStream(PROPERTIES_FILE)) {
+				logger.trace("Loading \"{}\"...", PROPERTIES_FILE);
 				properties.load(is);
 			} catch (FileNotFoundException e) {
-				logger.error("File \"{}\" exists but not found! (Shouldn't get here normally)", PROPERTIES_FILE);
+				logger.error("File \"{}\" disappeared! (Shouldn't get here normally)", PROPERTIES_FILE);
+				return;
 			} catch (IOException e) {
 				logger.error("Problems with loading properties file \"{}\"", PROPERTIES_FILE);
+				return;
 			}
+			logger.trace("Properties file loaded successfully");
 		} else {
-			logger.warn("Properties file \"{}\" doesn't exist", PROPERTIES_FILE);
+			logger.warn("Properties file \"{}\" not found", PROPERTIES_FILE);
+			logger.info("Properties file \"{}\" will be created and filled with default values");
 		}
-		logger.traceExit("loadProperties", null);
 	}
 
 	private void storeProperties() {
-		logger.traceEntry("storeProperties");
 		// force store each key-value pair
 		for (String key : properties.stringPropertyNames()) {
 			properties.setProperty(key, properties.getProperty(key));
 		}
+
 		try (OutputStream os = new FileOutputStream(PROPERTIES_FILE)) {
 			properties.store(os, PROPERTIES_COMMENT);
 		} catch (IOException e) {
 			logger.error("Problems with storing properties file \"{}\"", PROPERTIES_FILE);
-		} finally {
-			logger.traceExit("storeProperties", null);
 		}
 	}
 }
