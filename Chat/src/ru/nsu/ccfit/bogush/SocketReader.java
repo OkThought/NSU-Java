@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.Message;
 
 import java.io.EOFException;
+import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 class SocketReader implements Runnable {
@@ -13,11 +14,21 @@ class SocketReader implements Runnable {
 	private Thread thread;
 	private final MessageReceiver messageReceiver;
 	private LinkedBlockingQueue<Message> messageQueue;
+	private ArrayList<LostConnectionListener> lostConnectionListeners = new ArrayList<>();
+
+	SocketReader(MessageReceiver messageReceiver, LostConnectionListener lostConnectionListener, int queueCapacity) {
+		this(messageReceiver, queueCapacity);
+		addLostConnectionListener(lostConnectionListener);
+	}
 
 	SocketReader(MessageReceiver messageReceiver, int queueCapacity) {
 		this.messageReceiver = messageReceiver;
 		messageQueue = new LinkedBlockingQueue<>(queueCapacity);
 		thread = new Thread(this, this.getClass().getSimpleName());
+	}
+
+	public void addLostConnectionListener(LostConnectionListener listener) {
+		lostConnectionListeners.add(listener);
 	}
 
 	@Override
@@ -31,7 +42,10 @@ class SocketReader implements Runnable {
 				logger.trace("Interrupted");
 				break;
 			} catch (EOFException e) {
-				logger.info("Connection broken");
+				logger.info("Lost connection");
+				for (LostConnectionListener listener : lostConnectionListeners) {
+					listener.lostConnection();
+				}
 				break;
 			} catch (Exception e) {
 				e.printStackTrace();

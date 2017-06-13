@@ -8,7 +8,7 @@ import ru.nsu.ccfit.bogush.message.MessageHandler;
 import java.io.IOException;
 import java.net.Socket;
 
-public class ConnectedUser implements Runnable {
+public class ConnectedUser implements Runnable, LostConnectionListener {
 	private static final Logger logger = LogManager.getLogger(ConnectedUser.class.getSimpleName());
 
 	private static final int DEFAULT_IN_QUEUE_CAPACITY = 50;
@@ -34,7 +34,7 @@ public class ConnectedUser implements Runnable {
 		this.server = server;
 		this.socket = socket;
 		SocketMessageStream socketMessageStream = new SocketMessageStream(socket);
-		socketReader = new SocketReader(socketMessageStream, inQueueCapacity);
+		socketReader = new SocketReader(socketMessageStream, this, inQueueCapacity);
 		socketWriter = new SocketWriter(socketMessageStream, outQueueCapacity);
 
 		thread = new Thread(this, this.getClass().getSimpleName());
@@ -52,6 +52,12 @@ public class ConnectedUser implements Runnable {
 				break;
 			}
 		}
+	}
+
+	@Override
+	public void lostConnection() {
+		server.logout(this);
+		stop();
 	}
 
 	public void setLoginPayload(LoginPayload loginPayload) {
