@@ -1,0 +1,15 @@
+package ru.nsu.ccfit.bogush.message;
+
+import ru.nsu.ccfit.bogush.message.types.*;
+
+public interface MessageHandler {
+	void handle(Login message);
+	void handle(Logout message);
+	void handle(LoginSuccess message);
+	void handle(LoginError message);
+	void handle(Text message);
+	void handle(UserList message);
+	void handle(UserEntered message);
+	void handle(UserLeft message);
+	void handle(Message message);
+}

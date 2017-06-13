@@ -1,11 +1,13 @@
-package ru.nsu.ccfit.bogush.msg;
+package ru.nsu.ccfit.bogush.message.types;
 
 import ru.nsu.ccfit.bogush.User;
+import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageHandler;
 
-public class UserEnteredMessage implements Message {
+public class UserLeft implements Message {
 	private User user;
 
-	public UserEnteredMessage(User user) {
+	public UserLeft(User user) {
 		this.user = user;
 	}
 

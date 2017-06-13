@@ -2,10 +2,11 @@ package ru.nsu.ccfit.bogush;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.msg.*;
+import ru.nsu.ccfit.bogush.message.*;
+import ru.nsu.ccfit.bogush.message.types.*;
 
 public class ServerMessageHandler extends SimpleMessageHandler {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(ServerMessageHandler.class.getSimpleName());
 
 	private Server server;
 	private ConnectedUser connectedUser;
@@ -17,20 +18,20 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 	}
 
 	@Override
-	public void handle(LoginMessage message) {
+	public void handle(Login message) {
 		logger.trace("Handle {}", message);
 		connectedUser.setLoginPayload(message.getLoginPayload());
 		nickname = connectedUser.getNickname();
 
 		try {
-			connectedUser.sendMessage(new SuccessMessage("Logged in successfully"));
+			connectedUser.sendMessage(new LoginSuccess("Logged in successfully"));
 		} catch (InterruptedException e) {
 			logger.error("Couldn't write success message");
 		}
 	}
 
 	@Override
-	public void handle(LogoutMessage message) {
+	public void handle(Logout message) {
 		logger.trace("Handle {}", message);
 		String requested = message.getLoginPayload().getNickname();
 		logger.info("Received logout message from {}", requested);
@@ -40,18 +41,18 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 			logger.error("is not the same as the actual nickname: '{}'", nickname);
 			logger.warn("Probably '{}' wants to play hacker", nickname);
 			try {
-				connectedUser.sendMessage(new ErrorMessage("Wrong nickname"));
+				connectedUser.sendMessage(new LoginError("Wrong nickname"));
 			} catch (InterruptedException e) {
 				logger.error("Couldn't send error message");
 			}
 		} else {
 			server.logout(connectedUser);
 			try {
-				connectedUser.sendMessage(new SuccessMessage("Successfully logged out"));
+				connectedUser.sendMessage(new LoginSuccess("Successfully logged out"));
 			} catch (InterruptedException e) {
 				logger.error("Couldn't send success message");
 			}
-			Message userLeft = new UserLeftMessage(new User(nickname));
+			Message userLeft = new UserLeft(new User(nickname));
 			for (ConnectedUser user : server.getConnectedUsers()) {
 				try {
 					user.sendMessage(userLeft);
@@ -63,7 +64,7 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 	}
 
 	@Override
-	public void handle(TextMessage message) {
+	public void handle(Text message) {
 		logger.info("[{}: {}]", message.getAuthor(), message.getText());
 		for (ConnectedUser user : server.getConnectedUsers()) {
 			if (!user.getNickname().equals(message.getAuthor().getNickname())) {
@@ -74,7 +75,7 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 				}
 			} else {
 				try {
-					user.sendMessage(new SuccessMessage("Message received"));
+					user.sendMessage(new LoginSuccess("Message received"));
 				} catch (InterruptedException e) {
 					logger.error("Couldn't send success message to {}", user.toString());
 				}
@@ -85,10 +86,10 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 	}
 
 	@Override
-	public void handle(UserListMessage message) {
+	public void handle(UserList message) {
 		logger.info("Received user-list request from {}", nickname);
 
-		UserListMessage userListMessage = new UserListMessage(server.getUserList());
+		UserList userListMessage = new UserList(server.getUserList());
 		try {
 			connectedUser.sendMessage(userListMessage);
 		} catch (InterruptedException e) {

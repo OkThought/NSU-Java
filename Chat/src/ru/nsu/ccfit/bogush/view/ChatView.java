@@ -14,7 +14,7 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 public class ChatView extends JFrame implements UserListChangeListener {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(ChatView.class.getSimpleName());
 	private static final String TITLE = "Chat";
 	private static final Color MESSAGE_BACKGROUND_COLOR = new Color(150, 150, 250, 100);
 	private static final int MARGIN = 4;

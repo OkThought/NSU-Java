@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.bogush.msg;
+package ru.nsu.ccfit.bogush.message;
 
 import java.io.Serializable;
 

@@ -2,10 +2,13 @@ package ru.nsu.ccfit.bogush;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.msg.*;
+import ru.nsu.ccfit.bogush.message.types.Text;
+import ru.nsu.ccfit.bogush.message.types.UserEntered;
+import ru.nsu.ccfit.bogush.message.types.UserLeft;
+import ru.nsu.ccfit.bogush.message.types.UserList;
 
 public class ClientMessageHandler extends SimpleMessageHandler {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(ClientMessageHandler.class.getSimpleName());
 
 	private Client client;
 
@@ -14,12 +17,12 @@ public class ClientMessageHandler extends SimpleMessageHandler {
 	}
 
 	@Override
-	public void handle(TextMessage message) {
+	public void handle(Text message) {
 		logger.info("[{}: {}]", message.getAuthor(), message.getText());
 	}
 
 	@Override
-	public void handle(UserListMessage message) {
+	public void handle(UserList message) {
 		logger.trace("Handle {}", message);
 		User[] users = message.getUsers();
 		for (UserListChangeListener listener : client.getUserListChangeListeners()) {
@@ -28,7 +31,7 @@ public class ClientMessageHandler extends SimpleMessageHandler {
 	}
 
 	@Override
-	public void handle(UserEnteredMessage message) {
+	public void handle(UserEntered message) {
 		logger.trace("Handle {}", message);
 		User user = message.getUser();
 		for (UserListChangeListener listener : client.getUserListChangeListeners()) {
@@ -37,7 +40,7 @@ public class ClientMessageHandler extends SimpleMessageHandler {
 	}
 
 	@Override
-	public void handle(UserLeftMessage message) {
+	public void handle(UserLeft message) {
 		logger.trace("Handle {}", message);
 		User user = message.getUser();
 		for (UserListChangeListener listener : client.getUserListChangeListeners()) {

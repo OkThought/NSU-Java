@@ -2,7 +2,9 @@ package ru.nsu.ccfit.bogush;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.msg.*;
+import ru.nsu.ccfit.bogush.message.types.Login;
+import ru.nsu.ccfit.bogush.message.types.Logout;
+import ru.nsu.ccfit.bogush.message.types.UserList;
 import ru.nsu.ccfit.bogush.view.LoginHandler;
 import ru.nsu.ccfit.bogush.view.LogoutHandler;
 import ru.nsu.ccfit.bogush.view.ViewController;
@@ -12,13 +14,13 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Client implements LoginHandler, LogoutHandler {
+public class Client implements LoginHandler, LogoutHandler, Runnable {
 	private static final int READER_QUEUE_CAPACITY = 50;
 	private static final int WRITER_QUEUE_CAPACITY = 50;
 
 	static { LoggingConfiguration.addConfigFile(LoggingConfiguration.DEFAULT_LOGGER_CONFIG_FILE); }
 
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(Client.class.getSimpleName());
 
 	private String host;
 	private int port;
@@ -54,17 +56,20 @@ public class Client implements LoginHandler, LogoutHandler {
 	}
 
 	private Client() {
-		thread = new Thread(() -> {
-			ClientMessageHandler clientMessageHandler = new ClientMessageHandler(this);
-			while (!Thread.interrupted()) {
-				try {
-					socketReader.read().handleBy(clientMessageHandler);
-				} catch (InterruptedException e) {
-					logger.error("Socket reader interrupted");
-					break;
-				}
+		thread = new Thread(this, this.getClass().getSimpleName());
+	}
+
+	@Override
+	public void run() {
+		ClientMessageHandler clientMessageHandler = new ClientMessageHandler(this);
+		while (!Thread.interrupted()) {
+			try {
+				socketReader.read().handleBy(clientMessageHandler);
+			} catch (InterruptedException e) {
+				logger.error("Socket reader interrupted");
+				break;
 			}
-		});
+		}
 	}
 
 	private boolean connectToServer() {
@@ -90,10 +95,17 @@ public class Client implements LoginHandler, LogoutHandler {
 	public void login(LoginPayload loginPayload) {
 		logger.info("Logging in with nickname \"{}\"", loginPayload.getNickname());
 		setLoginPayload(loginPayload);
+		setUser(new User(loginPayload));
 		try {
-			socketMessageStream.sendMessage(new LoginMessage(loginPayload));
+			socketMessageStream.sendMessage(new Login(loginPayload));
 		} catch (IOException e) {
 			logger.error("Couldn't send login message");
+		}
+
+		try {
+			socketMessageStream.sendMessage(new UserList());
+		} catch (IOException e) {
+			logger.error("Couldn't send user list request message");
 		}
 	}
 
@@ -101,7 +113,7 @@ public class Client implements LoginHandler, LogoutHandler {
 	public void logout() {
 		logger.info("Disconnecting from {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
 		try {
-			socketMessageStream.sendMessage(new LogoutMessage(loginPayload));
+			socketMessageStream.sendMessage(new Logout(loginPayload));
 			logger.info("Disconnected");
 		} catch (IOException e) {
 			logger.error("Couldn't send logout message");

@@ -1,9 +1,12 @@
-package ru.nsu.ccfit.bogush.msg;
+package ru.nsu.ccfit.bogush.message.types;
 
-public class SuccessMessage implements Message {
+import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageHandler;
+
+public class LoginSuccess implements Message {
 	String successMessage;
 
-	public SuccessMessage(String successMessage) {
+	public LoginSuccess(String successMessage) {
 		this.successMessage = successMessage;
 	}
 

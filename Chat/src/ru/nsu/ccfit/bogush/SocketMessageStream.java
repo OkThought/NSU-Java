@@ -1,6 +1,6 @@
 package ru.nsu.ccfit.bogush;
 
-import ru.nsu.ccfit.bogush.msg.Message;
+import ru.nsu.ccfit.bogush.message.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

@@ -1,9 +1,12 @@
-package ru.nsu.ccfit.bogush.msg;
+package ru.nsu.ccfit.bogush.message.types;
 
-public class ErrorMessage implements Message {
+import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageHandler;
+
+public class LoginError implements Message {
 	private String errorMessage;
 
-	public ErrorMessage(String errorMessage) {
+	public LoginError(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 

@@ -10,7 +10,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 public class ViewController {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(ViewController.class.getSimpleName());
 
 	private Client client;
 

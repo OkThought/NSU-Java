@@ -12,7 +12,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class LoginView extends JFrame {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(LoginView.class.getSimpleName());
 
 	private static final String TITLE = "Login";
 	private static final String LOGIN_BUTTON_TEXT = "Login";

@@ -6,9 +6,11 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class ConnectView extends JFrame {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(ConnectView.class.getSimpleName());
 
 	private static final String TITLE = "Connect to Server";
 	private static final String SERVER_IP_LABEL_TEXT = "Server ip:";
@@ -24,6 +26,8 @@ public class ConnectView extends JFrame {
 
 	private ViewController viewController;
 
+	private JTextField serverPortTextField;
+	private JTextField serverIpTextField;
 	private JPanel rootPanel;
 	private SpringLayout layout;
 
@@ -72,12 +76,20 @@ public class ConnectView extends JFrame {
 		northMarginConstraint(serverIpLabel);
 		rootPanel.add(serverIpLabel);
 
-		JTextField serverIpTextField = new JTextField();
+		serverIpTextField = new JTextField();
 		serverIpLabel.setLabelFor(serverIpTextField);
 		serverIpTextField.setMaximumSize(TEXT_FIELD_MAX_SIZE);
 		serverIpTextField.setPreferredSize(TEXT_FIELD_SIZE);
 		northMarginConstraint(serverIpTextField);
 		eastMarginConstraint(serverIpTextField);
+		serverIpTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					serverIpTextField.transferFocus();
+				}
+			}
+		});
 		rootPanel.add(serverIpTextField);
 
 		JLabel serverPortLabel = new JLabel(SERVER_PORT_LABEL_TEXT);
@@ -85,18 +97,27 @@ public class ConnectView extends JFrame {
 		westMarginConstraint(serverPortLabel);
 		rootPanel.add(serverPortLabel);
 
-		JTextField serverPortTextField = new JTextField();
+		serverPortTextField = new JTextField();
 		verticalConstraintBetween(serverIpTextField, serverPortTextField);
 		serverPortTextField.setMaximumSize(TEXT_FIELD_MAX_SIZE);
 		serverPortTextField.setPreferredSize(TEXT_FIELD_SIZE);
 		eastMarginConstraint(serverPortTextField);
 		rootPanel.add(serverPortTextField);
+		serverPortTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					logger.trace("Enter was pressed. Try to connect to server");
+					connect();
+				}
+			}
+		});
 
 		JButton connectButton = new JButton(new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				logger.trace("Connect button clicked");
-				connect(serverIpTextField.getText().trim(), serverPortTextField.getText().trim());
+				connect();
 			}
 		});
 
@@ -106,7 +127,9 @@ public class ConnectView extends JFrame {
 		rootPanel.add(connectButton);
 	}
 
-	private void connect(String host, String port) {
+	private void connect() {
+		String host = serverIpTextField.getText().trim();
+		String port = serverPortTextField.getText().trim();
 		if (host.isEmpty()) {
 			logger.trace("Host text field is empty");
 			new AlertDialog(this, "Connect", "Host text field is empty");

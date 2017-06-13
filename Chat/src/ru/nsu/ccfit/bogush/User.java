@@ -1,6 +1,8 @@
 package ru.nsu.ccfit.bogush;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 	private String nickname;
 
 	public User(String nickname) {

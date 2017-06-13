@@ -1,11 +1,13 @@
-package ru.nsu.ccfit.bogush.msg;
+package ru.nsu.ccfit.bogush.message.types;
 
 import ru.nsu.ccfit.bogush.LoginPayload;
+import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageHandler;
 
-public class LoginMessage implements Message {
+public class Logout implements Message {
 	private LoginPayload loginPayload;
 
-	public LoginMessage(LoginPayload loginPayload) {
+	public Logout(LoginPayload loginPayload) {
 		this.loginPayload = loginPayload;
 	}
 

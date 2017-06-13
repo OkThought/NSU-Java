@@ -2,53 +2,54 @@ package ru.nsu.ccfit.bogush;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.msg.*;
+import ru.nsu.ccfit.bogush.message.*;
+import ru.nsu.ccfit.bogush.message.types.*;
 
 public class SimpleMessageHandler implements MessageHandler {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(SimpleMessageHandler.class.getSimpleName());
 
 	@Override
-	public void handle(SuccessMessage message) {
+	public void handle(LoginSuccess message) {
 		logger.info("Success [{}]", message.getSuccessMessage());
 	}
 
 	@Override
-	public void handle(ErrorMessage message) {
+	public void handle(LoginError message) {
 		logger.error("Error [{}]", message.getErrorMessage());
 	}
 
 	@Override
-	public void handle(TextMessage message) {
+	public void handle(Text message) {
 		logger.trace("Handle {}", message);
 		notSupported(message);
 	}
 
 	@Override
-	public void handle(UserListMessage message) {
+	public void handle(UserList message) {
 		logger.trace("Handle {}", message);
 		notSupported(message);
 	}
 
 	@Override
-	public void handle(UserEnteredMessage message) {
+	public void handle(UserEntered message) {
 		logger.trace("Handle {}", message);
 		notSupported(message);
 	}
 
 	@Override
-	public void handle(UserLeftMessage message) {
+	public void handle(UserLeft message) {
 		logger.trace("Handle {}", message);
 		notSupported(message);
 	}
 
 	@Override
-	public void handle(LoginMessage message) {
+	public void handle(Login message) {
 		logger.trace("Handle {}", message);
 		notSupported(message);
 	}
 
 	@Override
-	public void handle(LogoutMessage message) {
+	public void handle(Logout message) {
 		logger.trace("Handle {}", message);
 		notSupported(message);
 	}

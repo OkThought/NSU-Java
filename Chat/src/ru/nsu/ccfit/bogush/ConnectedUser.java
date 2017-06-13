@@ -2,14 +2,14 @@ package ru.nsu.ccfit.bogush;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.msg.Message;
-import ru.nsu.ccfit.bogush.msg.MessageHandler;
+import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageHandler;
 
 import java.io.IOException;
 import java.net.Socket;
 
-public class ConnectedUser {
-	private static final Logger logger = LogManager.getLogger();
+public class ConnectedUser implements Runnable {
+	private static final Logger logger = LogManager.getLogger(ConnectedUser.class.getSimpleName());
 
 	private static final int DEFAULT_IN_QUEUE_CAPACITY = 50;
 	private static final int DEFAULT_OUT_QUEUE_CAPACITY = 50;
@@ -37,18 +37,21 @@ public class ConnectedUser {
 		socketReader = new SocketReader(socketMessageStream, inQueueCapacity);
 		socketWriter = new SocketWriter(socketMessageStream, outQueueCapacity);
 
-		thread = new Thread(() -> {
-			ServerMessageHandler serverMessageHandler = new ServerMessageHandler(server, this);
-			while (!Thread.interrupted()) {
-				try {
-					socketReader.read().handleBy(serverMessageHandler);
-				} catch (InterruptedException e) {
-					logger.error("Socket reader interrupted");
-					break;
-				}
-			}
-		});
+		thread = new Thread(this, this.getClass().getSimpleName());
 		logger.trace("{} created", ConnectedUser.class.getSimpleName());
+	}
+
+	@Override
+	public void run() {
+		ServerMessageHandler serverMessageHandler = new ServerMessageHandler(server, this);
+		while (!Thread.interrupted()) {
+			try {
+				socketReader.read().handleBy(serverMessageHandler);
+			} catch (InterruptedException e) {
+				logger.error("Socket reader interrupted");
+				break;
+			}
+		}
 	}
 
 	public void setLoginPayload(LoginPayload loginPayload) {

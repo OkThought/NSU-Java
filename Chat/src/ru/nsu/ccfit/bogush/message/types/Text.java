@@ -1,12 +1,14 @@
-package ru.nsu.ccfit.bogush.msg;
+package ru.nsu.ccfit.bogush.message.types;
 
 import ru.nsu.ccfit.bogush.User;
+import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageHandler;
 
-public class TextMessage implements Message {
+public class Text implements Message {
 	private User author;
 	private String text;
 
-	public TextMessage(User author, String text) {
+	public Text(User author, String text) {
 		this.author = author;
 		this.text = text;
 	}

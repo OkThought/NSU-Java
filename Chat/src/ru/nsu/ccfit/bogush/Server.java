@@ -4,7 +4,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-import ru.nsu.ccfit.bogush.msg.TextMessage;
+import ru.nsu.ccfit.bogush.message.types.Text;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -21,7 +21,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 public class Server implements Runnable {
 	static { LoggingConfiguration.addConfigFile(LoggingConfiguration.DEFAULT_LOGGER_CONFIG_FILE); }
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(Server.class.getSimpleName());
 
 	private static final String DO_LOGGING_KEY = "log";
 	private static final String SERVER_PORT_KEY = "server-port";
@@ -48,7 +48,7 @@ public class Server implements Runnable {
 
 	private HashSet<ConnectedUser> connectedUsers = new HashSet<>();
 
-	private ArrayBlockingQueue<TextMessage> history = new ArrayBlockingQueue<>(HISTORY_CAPACITY);
+	private ArrayBlockingQueue<Text> history = new ArrayBlockingQueue<>(HISTORY_CAPACITY);
 
 	private int port;
 
@@ -64,7 +64,7 @@ public class Server implements Runnable {
 
 	private Server() {
 		configure();
-		thread = new Thread(this);
+		thread = new Thread(this, this.getClass().getSimpleName());
 		start();
 		enterConsoleMode();
 	}
@@ -103,6 +103,8 @@ public class Server implements Runnable {
 				logger.info("Created socket on port {}", port);
 				logger.info("Server localhost ip: {}", InetAddress.getLocalHost().getHostAddress());
 				while (!Thread.interrupted()) {
+					logger.info("");
+					logger.info("");
 					Socket socket = serverSocket.accept();
 					logger.info("Socket [{}] accepted", socket.getInetAddress().getHostAddress());
 					ConnectedUser connectedUser = new ConnectedUser(this, socket);
@@ -122,11 +124,8 @@ public class Server implements Runnable {
 			e.printStackTrace();
 		} finally {
 			logger.info("Stop server");
+			stop();
 		}
-	}
-
-	private Thread getThread() {
-		return thread;
 	}
 
 	private void start() {
@@ -155,7 +154,7 @@ public class Server implements Runnable {
 		connectedUser.stop();
 	}
 
-	void addToHistory(TextMessage message) {
+	void addToHistory(Text message) {
 		logger.trace("Add \"{}\" to history", message.toString());
 		try {
 			if (history.remainingCapacity() == 0) {
@@ -181,7 +180,7 @@ public class Server implements Runnable {
 	}
 
 	private void configure() {
-		logger.trace("=== Configuration ===");
+		logger.info("=== Configuration ===");
 		loadProperties();
 
 		boolean doLogging = Boolean.parseBoolean(properties.getProperty(DO_LOGGING_KEY));
@@ -191,17 +190,17 @@ public class Server implements Runnable {
 		port = Integer.parseInt(properties.getProperty(SERVER_PORT_KEY));
 
 		storeProperties();
-		logger.trace("Exit configuration");
-		logger.trace("");
+		logger.info("Exit configuration");
+		logger.info("");
 	}
 
 	private void loadProperties() {
-		logger.trace("Looking for properties file \"{}\"...", PROPERTIES_FILE);
+		logger.info("Looking for properties file \"{}\"...", PROPERTIES_FILE);
 		Path path = Paths.get(PROPERTIES_FILE);
 		if (Files.exists(path)) {
-			logger.trace("\"{}\" file found", PROPERTIES_FILE);
+			logger.info("\"{}\" file found", PROPERTIES_FILE);
 			try (InputStream is = new FileInputStream(PROPERTIES_FILE)) {
-				logger.trace("Loading \"{}\"...", PROPERTIES_FILE);
+				logger.info("Loading \"{}\"...", PROPERTIES_FILE);
 				properties.load(is);
 			} catch (FileNotFoundException e) {
 				logger.error("File \"{}\" disappeared! (Shouldn't get here normally)", PROPERTIES_FILE);
@@ -210,7 +209,7 @@ public class Server implements Runnable {
 				logger.error("Problems with loading properties file \"{}\"", PROPERTIES_FILE);
 				return;
 			}
-			logger.trace("Properties file loaded successfully");
+			logger.info("Properties file loaded successfully");
 		} else {
 			logger.warn("Properties file \"{}\" not found", PROPERTIES_FILE);
 			logger.info("Properties file \"{}\" will be created and filled with default values");
