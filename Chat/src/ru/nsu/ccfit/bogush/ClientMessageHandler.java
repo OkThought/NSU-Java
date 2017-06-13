@@ -2,10 +2,7 @@ package ru.nsu.ccfit.bogush;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.message.types.Text;
-import ru.nsu.ccfit.bogush.message.types.UserEntered;
-import ru.nsu.ccfit.bogush.message.types.UserLeft;
-import ru.nsu.ccfit.bogush.message.types.UserList;
+import ru.nsu.ccfit.bogush.message.types.*;
 
 public class ClientMessageHandler extends SimpleMessageHandler {
 	private static final Logger logger = LogManager.getLogger(ClientMessageHandler.class.getSimpleName());
@@ -46,5 +43,33 @@ public class ClientMessageHandler extends SimpleMessageHandler {
 		for (UserListChangeListener listener : client.getUserListChangeListeners()) {
 			listener.userLeft(user);
 		}
+	}
+
+	@Override
+	public void handle(LoginSuccess message) {
+		logger.trace("Handle {}", message);
+		logger.info("Logged in successfully: {}", message);
+		// TODO: login success
+	}
+
+	@Override
+	public void handle(LoginError message) {
+		logger.trace("Handle {}", message);
+		logger.error("Couldn't login: {}", message);
+		// TODO: login error
+	}
+
+	@Override
+	public void handle(LogoutSuccess message) {
+		logger.trace("Handle {}", message);
+		logger.info("Logged out successfully: {}", message);
+		// TODO: logout success
+	}
+
+	@Override
+	public void handle(LogoutError message) {
+		logger.trace("Handle {}", message);
+		logger.error("Couldn't logout: {}", message);
+		// TODO: logout error
 	}
 }
