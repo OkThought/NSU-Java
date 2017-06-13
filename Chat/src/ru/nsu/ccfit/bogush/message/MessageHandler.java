@@ -7,6 +7,8 @@ public interface MessageHandler {
 	void handle(Logout message);
 	void handle(LoginSuccess message);
 	void handle(LoginError message);
+	void handle(LogoutSuccess message);
+	void handle(LogoutError message);
 	void handle(Text message);
 	void handle(UserList message);
 	void handle(UserEntered message);

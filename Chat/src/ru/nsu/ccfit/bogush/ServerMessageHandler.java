@@ -41,14 +41,14 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 			logger.error("is not the same as the actual nickname: '{}'", nickname);
 			logger.warn("Probably '{}' wants to play hacker", nickname);
 			try {
-				connectedUser.sendMessage(new LoginError("Wrong nickname"));
+				connectedUser.sendMessage(new LogoutError("Wrong nickname"));
 			} catch (InterruptedException e) {
 				logger.error("Couldn't send error message");
 			}
 		} else {
 			server.logout(connectedUser);
 			try {
-				connectedUser.sendMessage(new LoginSuccess("Successfully logged out"));
+				connectedUser.sendMessage(new LogoutSuccess("Successfully logged out"));
 			} catch (InterruptedException e) {
 				logger.error("Couldn't send success message");
 			}
@@ -65,19 +65,13 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 
 	@Override
 	public void handle(Text message) {
-		logger.info("[{}: {}]", message.getAuthor(), message.getText());
+		logger.info("[{}: \"{}\"]", message.getAuthor(), message.getVerboseText());
 		for (ConnectedUser user : server.getConnectedUsers()) {
 			if (!user.getNickname().equals(message.getAuthor().getNickname())) {
 				try {
 					user.sendMessage(message);
 				} catch (InterruptedException e) {
 					logger.error("Couldn't send message to {}", user.toString());
-				}
-			} else {
-				try {
-					user.sendMessage(new LoginSuccess("Message received"));
-				} catch (InterruptedException e) {
-					logger.error("Couldn't send success message to {}", user.toString());
 				}
 			}
 		}

@@ -9,17 +9,19 @@ public class SimpleMessageHandler implements MessageHandler {
 	private static final Logger logger = LogManager.getLogger(SimpleMessageHandler.class.getSimpleName());
 
 	@Override
+	public void handle(Login message) {
+		logger.trace("Handle {}", message);
+		notSupported(message);
+	}
+
+	@Override
 	public void handle(LoginSuccess message) {
-		logger.info("Success [{}]", message.getSuccessMessage());
+		logger.trace("Handle {}", message);
+		notSupported(message);
 	}
 
 	@Override
 	public void handle(LoginError message) {
-		logger.error("Error [{}]", message.getErrorMessage());
-	}
-
-	@Override
-	public void handle(Text message) {
 		logger.trace("Handle {}", message);
 		notSupported(message);
 	}
@@ -37,19 +39,31 @@ public class SimpleMessageHandler implements MessageHandler {
 	}
 
 	@Override
+	public void handle(Logout message) {
+		logger.trace("Handle {}", message);
+		notSupported(message);
+	}
+
+	@Override
+	public void handle(LogoutSuccess message) {
+		logger.trace("Handle {}", message);
+		notSupported(message);
+	}
+
+	@Override
+	public void handle(LogoutError message) {
+		logger.trace("Handle {}", message);
+		notSupported(message);
+	}
+
+	@Override
 	public void handle(UserLeft message) {
 		logger.trace("Handle {}", message);
 		notSupported(message);
 	}
 
 	@Override
-	public void handle(Login message) {
-		logger.trace("Handle {}", message);
-		notSupported(message);
-	}
-
-	@Override
-	public void handle(Logout message) {
+	public void handle(Text message) {
 		logger.trace("Handle {}", message);
 		notSupported(message);
 	}

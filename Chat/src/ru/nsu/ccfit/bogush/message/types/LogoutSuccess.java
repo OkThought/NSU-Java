@@ -3,10 +3,10 @@ package ru.nsu.ccfit.bogush.message.types;
 import ru.nsu.ccfit.bogush.message.Message;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 
-public class LoginSuccess implements Message {
+public class LogoutSuccess implements Message {
 	private String successMessage;
 
-	public LoginSuccess(String successMessage) {
+	public LogoutSuccess(String successMessage) {
 		this.successMessage = successMessage;
 	}
 
