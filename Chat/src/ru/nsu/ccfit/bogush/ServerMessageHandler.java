@@ -81,15 +81,13 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 
 	@Override
 	public void handle(UserList message) {
-		logger.info("Received user-list request from {}", nickname);
+		logger.info("Received {} from \"{}\"", message, nickname);
 
 		UserList userListMessage = new UserList(server.getUserList());
 		try {
 			connectedUser.sendMessage(userListMessage);
 		} catch (InterruptedException e) {
 			logger.error("Couldn't send user-list to {}", nickname);
-			return;
 		}
-		logger.info("Sent user-list {} to {}", userListMessage.toString(), nickname);
 	}
 }

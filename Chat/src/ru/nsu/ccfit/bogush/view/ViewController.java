@@ -154,7 +154,6 @@ public class ViewController implements UserListChangeListener {
 
 	@Override
 	public void userListReceived(User[] users) {
-		if (chatView == null) logger.debug("Fuck");
 		chatView.removeAllUsers();
 		for (User user : users) {
 			chatView.addUser(user);
