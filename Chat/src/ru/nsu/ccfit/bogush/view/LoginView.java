@@ -8,8 +8,6 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class LoginView extends JFrame {
 	private static final Logger logger = LogManager.getLogger(LoginView.class.getSimpleName());
@@ -47,28 +45,22 @@ public class LoginView extends JFrame {
 		rootPanel.setOpaque(true);
 
 		nickTextField = new JTextField();
-		nickTextField.addKeyListener(new KeyAdapter() {
+		Action loginAction = new AbstractAction() {
 			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					logger.trace("Enter pressed while typing");
-					login();
-				}
+			public void actionPerformed(ActionEvent e) {
+				logger.trace("Login action performed");
+				login();
 			}
-		});
+		};
+
+		nickTextField.addActionListener(loginAction);
 		nickTextField.setMinimumSize(NICK_TEXT_FIELD_MIN_SIZE);
 		nickTextField.setPreferredSize(NICK_TEXT_FIELD_PREF_SIZE);
 		nickTextField.setMaximumSize(NICK_TEXT_FIELD_MAX_SIZE);
 
 		JLabel nickLabel = new JLabel(NICK_LABEL_NAME);
 
-		JButton loginButton = new JButton(new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				logger.trace("Login button clicked");
-				login();
-			}
-		});
+		JButton loginButton = new JButton(loginAction);
 		loginButton.setText(LOGIN_BUTTON_TEXT);
 
 		nickLabel.setAlignmentX(CENTER_ALIGNMENT);
@@ -87,7 +79,7 @@ public class LoginView extends JFrame {
 	private void login() {
 		String nickname = nickTextField.getText().trim();
 		if (nickname.isEmpty()) {
-			logger.trace("nickname is empty");
+			logger.trace("Nickname is empty");
 			alert("Login", "Nickname is empty!");
 		} else {
 			viewController.login(new LoginPayload(nickname));
