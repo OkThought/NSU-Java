@@ -10,3 +10,6 @@ config.properties
 !/lib/log4j2/log4j-api-2.8.2.jar
 !/lib/javac2/**.jar
 !/lib/junit/**.jar
+
+# built jar
+/CarFactory.jar
