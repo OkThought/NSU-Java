@@ -13,3 +13,6 @@ config.properties
 
 # built jar
 /CarFactory.jar
+
+# miscellaneous
+/carfactory.properties
