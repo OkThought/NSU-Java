@@ -18,7 +18,7 @@ public class ClientMessageHandler extends SimpleMessageHandler {
 
 	@Override
 	public void handle(Text message) {
-		logger.info("[{}: {}]", message.getAuthor(), message.getText());
+		logger.info("[{}: \"{}\"]", message.getAuthor(), message.getVerboseText());
 	}
 
 	@Override
