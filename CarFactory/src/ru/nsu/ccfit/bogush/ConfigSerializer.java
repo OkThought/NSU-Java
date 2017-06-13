@@ -17,7 +17,7 @@ class ConfigSerializer {
 	private static final String WORKERS_PROP = "Workers";
 	private static final String CAR_DEALERS_PROP = "CarDealers";
 	private static final String LOG_SALES_PROP = "LogSales";
-	private static final String DEFAULT_PROPERTIES_FILE_PATH = "default.properties";
+	static final String DEFAULT_PROPERTIES_FILE_PATH = "default.properties";
 	private static final Properties defaultProperties = new Properties();
 	static {
 		try (FileInputStream inputStream = new FileInputStream(DEFAULT_PROPERTIES_FILE_PATH)) {
