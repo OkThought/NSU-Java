@@ -4,17 +4,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.types.Login;
 import ru.nsu.ccfit.bogush.message.types.Logout;
+import ru.nsu.ccfit.bogush.message.types.Text;
 import ru.nsu.ccfit.bogush.message.types.UserList;
-import ru.nsu.ccfit.bogush.view.LoginHandler;
-import ru.nsu.ccfit.bogush.view.LogoutHandler;
-import ru.nsu.ccfit.bogush.view.ViewController;
+import ru.nsu.ccfit.bogush.view.*;
 
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Client implements LoginHandler, LogoutHandler, Runnable {
+public class Client implements ConnectHandler, LoginHandler, LogoutHandler, SendTextMessageHandler, Runnable {
 	private static final int READER_QUEUE_CAPACITY = 50;
 	private static final int WRITER_QUEUE_CAPACITY = 50;
 
@@ -44,14 +43,10 @@ public class Client implements LoginHandler, LogoutHandler, Runnable {
 		SwingUtilities.invokeLater(() -> {
 			ViewController viewController = new ViewController(client);
 
-			viewController.addConnectHandler((host, port) -> {
-				client.host = host;
-				client.port = port;
-				return client.connectToServer();
-			});
-
+			viewController.addConnectHandler(client);
 			viewController.addLoginHandler(client);
 			viewController.addLogoutHandler(client);
+			viewController.addSendTextMessageHandler(client);
 		});
 	}
 
@@ -92,6 +87,13 @@ public class Client implements LoginHandler, LogoutHandler, Runnable {
 	}
 
 	@Override
+	public boolean connect(String host, int port) {
+		this.host = host;
+		this.port = port;
+		return connectToServer();
+	}
+
+	@Override
 	public void login(LoginPayload loginPayload) {
 		logger.info("Logging in with nickname \"{}\"", loginPayload.getNickname());
 		setLoginPayload(loginPayload);
@@ -119,6 +121,17 @@ public class Client implements LoginHandler, LogoutHandler, Runnable {
 			logger.error("Couldn't send logout message");
 		}
 		closeSocket();
+	}
+
+	@Override
+	public void sendTextMessage(String text) {
+		logger.info("Sending text message \"{}\"", text.replaceAll("\\p{C}", "[]"));
+		Text msg = new Text(user, text);
+		try {
+			socketMessageStream.sendMessage(msg);
+		} catch (IOException e) {
+			logger.error("Couldn't send text message");
+		}
 	}
 
 	private void setLoginPayload(LoginPayload loginPayload) {
