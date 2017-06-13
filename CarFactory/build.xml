@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="carfactory" default="all">
-	<property file="carfactory.properties"/>
 	<!-- Uncomment the following property if no tests compilation is needed -->
 	<!--
 	<property name="skip.tests" value="true"/>
@@ -51,47 +50,6 @@
 		<exclude name="**/?*.aj"/>
 	</patternset>
 	
-	<!-- JDK definitions -->
-	
-	<property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
-	<path id="jdk.classpath.1.8">
-		<fileset dir="${jdk.home.1.8}">
-			<include name="jre/lib/charsets.jar"/>
-			<include name="jre/lib/deploy.jar"/>
-			<include name="jre/lib/ext/cldrdata.jar"/>
-			<include name="jre/lib/ext/dnsns.jar"/>
-			<include name="jre/lib/ext/jaccess.jar"/>
-			<include name="jre/lib/ext/jfxrt.jar"/>
-			<include name="jre/lib/ext/localedata.jar"/>
-			<include name="jre/lib/ext/nashorn.jar"/>
-			<include name="jre/lib/ext/sunec.jar"/>
-			<include name="jre/lib/ext/sunjce_provider.jar"/>
-			<include name="jre/lib/ext/sunpkcs11.jar"/>
-			<include name="jre/lib/ext/zipfs.jar"/>
-			<include name="jre/lib/javaws.jar"/>
-			<include name="jre/lib/jce.jar"/>
-			<include name="jre/lib/jfr.jar"/>
-			<include name="jre/lib/jfxswt.jar"/>
-			<include name="jre/lib/jsse.jar"/>
-			<include name="jre/lib/management-agent.jar"/>
-			<include name="jre/lib/plugin.jar"/>
-			<include name="jre/lib/resources.jar"/>
-			<include name="jre/lib/rt.jar"/>
-			<include name="lib/ant-javafx.jar"/>
-			<include name="lib/dt.jar"/>
-			<include name="lib/javafx-mx.jar"/>
-			<include name="lib/jconsole.jar"/>
-			<include name="lib/packager.jar"/>
-			<include name="lib/sa-jdi.jar"/>
-			<include name="lib/tools.jar"/>
-		</fileset>
-	</path>
-	
-	<property name="project.jdk.home" value="${jdk.home.1.8}"/>
-	<property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
-	<property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
-	
-	
 	<!-- Project Libraries -->
 	
 	<path id="library.log4j-api-2.8.2.classpath">
@@ -108,15 +66,6 @@
 	</path>
 	<!-- Register Custom Compiler Taskdefs -->
 	
-	<property name="javac2.home.idea" value="${idea.home}/lib"/>
-	<fileset id="javac2.classpath.idea" dir="${javac2.home.idea}">
-		<include name="javac2.jar"/>
-		<include name="jdom.jar"/>
-		<include name="asm-all.jar"/>
-		<include name="jgoodies-forms.jar"/>
-        <include name="forms_rt.jar"/>
-	</fileset>
-	
 	<property name="javac2.home" value="${basedir}/lib/javac2"/>
 	<path id="javac2.classpath">
 		<pathelement location="${javac2.home}/javac2.jar"/>
@@ -124,13 +73,6 @@
 		<pathelement location="${javac2.home}/asm-all.jar"/>
 		<pathelement location="${javac2.home}/jgoodies-forms.jar"/>
 	</path>
-
-	<target name="include.idea.libraries">
-		<mkdir dir="${javac2.home}"/>
-		<copy todir="${javac2.home}">
-			<fileset refid="javac2.classpath.idea"/>
-		</copy>
-	</target>
 
 	<target name="register.custom.compilers">
 		<taskdef name="javac2"
@@ -148,11 +90,6 @@
 	
 	<dirname property="module.carfactory.basedir" file="${ant.file}"/>
 	
-	
-	<property name="module.jdk.home.carfactory" value="${project.jdk.home}"/>
-	<property name="module.jdk.bin.carfactory" value="${project.jdk.bin}"/>
-	<property name="module.jdk.classpath.carfactory" value="${project.jdk.classpath}"/>
-	
 	<property name="compiler.args.carfactory"
               value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
 	
@@ -169,7 +106,6 @@
 	</path>
 	
 	<path id="carfactory.module.production.classpath">
-		<path refid="${module.jdk.classpath.carfactory}"/>
 		<path refid="library.log4j-api-2.8.2.classpath"/>
 		<path refid="library.log4j-core-2.8.2.classpath"/>
 		<path refid="library.junit.classpath"/>
@@ -182,7 +118,6 @@
 	</path>
 	
 	<path id="carfactory.module.classpath">
-		<path refid="${module.jdk.classpath.carfactory}"/>
 		<pathelement location="${carfactory.output.dir}"/>
 		<path refid="library.log4j-api-2.8.2.classpath"/>
 		<path refid="library.log4j-core-2.8.2.classpath"/>
@@ -235,7 +170,6 @@
                 nowarn="${compiler.generate.no.warnings}"
                 memorymaximumsize="${compiler.max.memory}"
                 fork="true"
-                executable="${module.jdk.bin.carfactory}/javac"
                 includeantruntime="false">
 			<compilerarg line="${compiler.args.carfactory}"/>
 			<bootclasspath refid="carfactory.module.bootclasspath"/>
