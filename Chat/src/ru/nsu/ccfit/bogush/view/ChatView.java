@@ -13,7 +13,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
-public class ChatView extends JFrame implements UserListChangeListener {
+public class ChatView extends JFrame {
 	private static final Logger logger = LogManager.getLogger(ChatView.class.getSimpleName());
 	private static final String TITLE = "Chat";
 	private static final Color MESSAGE_BACKGROUND_COLOR = new Color(150, 150, 250, 100);
@@ -48,6 +48,7 @@ public class ChatView extends JFrame implements UserListChangeListener {
 			userComponentMap.put(user, userComponent);
 			userListPanel.add(userComponent);
 		}
+		userListPanel.updateUI();
 	}
 
 	void removeUser(User user) {
@@ -58,27 +59,13 @@ public class ChatView extends JFrame implements UserListChangeListener {
 		} else {
 			logger.error("User is absent in the component map");
 		}
+		userListPanel.updateUI();
 	}
 
-	@Override
-	public void userEntered(User user) {
-		addUser(user);
-	}
-
-	@Override
-	public void userLeft(User user) {
-		removeUser(user);
-	}
-
-	@Override
-	public void userListReceived(User[] users) {
+	void removeAllUsers() {
 		userComponentMap.clear();
 		userListPanel.removeAll();
-		for (User user : users) {
-			JComponent c = createUserComponent(user);
-			userComponentMap.put(user, c);
-			userListPanel.add(c);
-		}
+		userListPanel.updateUI();
 	}
 
 	private void createComponents() {

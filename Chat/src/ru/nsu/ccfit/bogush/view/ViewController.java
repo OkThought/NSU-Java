@@ -4,12 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.Client;
 import ru.nsu.ccfit.bogush.LoginPayload;
+import ru.nsu.ccfit.bogush.User;
+import ru.nsu.ccfit.bogush.UserListChangeListener;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-public class ViewController {
+public class ViewController implements UserListChangeListener {
 	private static final Logger logger = LogManager.getLogger(ViewController.class.getSimpleName());
 
 	private Client client;
@@ -18,9 +20,10 @@ public class ViewController {
 	private LoginView loginView;
 	private ChatView chatView;
 
+	private ArrayList<ConnectHandler> connectHandlers = new ArrayList<>();
+	private ArrayList<DisconnectHandler> disconnectHandlers = new ArrayList<>();
 	private ArrayList<LoginHandler> loginHandlers = new ArrayList<>();
 	private ArrayList<LogoutHandler> logoutHandlers = new ArrayList<>();
-	private ArrayList<ConnectHandler> connectHandlers = new ArrayList<>();
 	private ArrayList<SendTextMessageHandler> sendTextMessageHandlers = new ArrayList<>();
 
 	public ViewController(Client client) {
@@ -35,6 +38,8 @@ public class ViewController {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				logger.trace("connect window closed");
+				loginView.dispose();
+				disconnect();
 			}
 		});
 	}
@@ -61,11 +66,8 @@ public class ViewController {
 			public void windowClosed(WindowEvent e) {
 				logger.trace("chat window closed");
 				logout();
-				showLoginView();
 			}
 		});
-
-		client.addUserListChangeListener(chatView);
 	}
 
 	private void showConnectView() {
@@ -77,7 +79,7 @@ public class ViewController {
 
 	private void hideConnectView() {
 		logger.trace("Hide connect window");
-		connectView.dispose();
+		connectView.setVisible(false);
 	}
 
 	private void showLoginView() {
@@ -116,6 +118,12 @@ public class ViewController {
 		showLoginView();
 	}
 
+	private void disconnect() {
+		for (DisconnectHandler handler : disconnectHandlers) {
+			handler.disconnect();
+		}
+	}
+
 	void login(LoginPayload loginPayload) {
 		logger.trace("Login user \"{}\"", loginPayload);
 		for (LoginHandler loginHandler : loginHandlers) {
@@ -134,11 +142,38 @@ public class ViewController {
 		showLoginView();
 	}
 
+	@Override
+	public void userEntered(User user) {
+		chatView.addUser(user);
+	}
+
+	@Override
+	public void userLeft(User user) {
+		chatView.removeUser(user);
+	}
+
+	@Override
+	public void userListReceived(User[] users) {
+		if (chatView == null) logger.debug("Fuck");
+		chatView.removeAllUsers();
+		for (User user : users) {
+			chatView.addUser(user);
+		}
+	}
+
 	void sendTextMessage(String text) {
 		logger.trace("Sending text message \"{}\"", text.replaceAll("\\p{C}", "[]"));
 		for (SendTextMessageHandler handler : sendTextMessageHandlers) {
 			handler.sendTextMessage(text);
 		}
+	}
+
+	public void addConnectHandler(ConnectHandler handler) {
+		connectHandlers.add(handler);
+	}
+
+	public void addDisconnectHandler(DisconnectHandler handler) {
+		disconnectHandlers.add(handler);
 	}
 
 	public void addLoginHandler(LoginHandler handler) {
@@ -147,10 +182,6 @@ public class ViewController {
 
 	public void addLogoutHandler(LogoutHandler handler) {
 		logoutHandlers.add(handler);
-	}
-
-	public void addConnectHandler(ConnectHandler handler) {
-		connectHandlers.add(handler);
 	}
 
 	public void addSendTextMessageHandler(SendTextMessageHandler handler) {

@@ -13,7 +13,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Client implements ConnectHandler, LoginHandler, LogoutHandler, SendTextMessageHandler, Runnable {
+public class Client implements ConnectHandler, DisconnectHandler, LoginHandler, LogoutHandler, SendTextMessageHandler, Runnable {
 	private static final int READER_QUEUE_CAPACITY = 50;
 	private static final int WRITER_QUEUE_CAPACITY = 50;
 
@@ -34,20 +34,27 @@ public class Client implements ConnectHandler, LoginHandler, LogoutHandler, Send
 	private SocketWriter socketWriter;
 	private SocketReader socketReader;
 
+	private ViewController viewController;
+
 	private ArrayList<UserListChangeListener> userListChangeListeners = new ArrayList<>();
 
 	public static void main(String[] args) {
 		logger.trace("Launch client");
 		Client client = new Client();
 
-		SwingUtilities.invokeLater(() -> {
-			ViewController viewController = new ViewController(client);
+		SwingUtilities.invokeLater(client::prepareUI);
+	}
 
-			viewController.addConnectHandler(client);
-			viewController.addLoginHandler(client);
-			viewController.addLogoutHandler(client);
-			viewController.addSendTextMessageHandler(client);
-		});
+	private void prepareUI() {
+
+		viewController = new ViewController(this);
+
+		viewController.addConnectHandler(this);
+		viewController.addDisconnectHandler(this);
+		viewController.addLoginHandler(this);
+		viewController.addLogoutHandler(this);
+		viewController.addSendTextMessageHandler(this);
+		addUserListChangeListener(viewController);
 	}
 
 	private Client() {
@@ -94,6 +101,12 @@ public class Client implements ConnectHandler, LoginHandler, LogoutHandler, Send
 	}
 
 	@Override
+	public void disconnect() {
+		logger.info("Disconnecting from the server");
+		closeSocket();
+	}
+
+	@Override
 	public void login(LoginPayload loginPayload) {
 		logger.info("Logging in with nickname \"{}\"", loginPayload.getNickname());
 		setLoginPayload(loginPayload);
@@ -120,7 +133,6 @@ public class Client implements ConnectHandler, LoginHandler, LogoutHandler, Send
 		} catch (IOException e) {
 			logger.error("Couldn't send logout message");
 		}
-		closeSocket();
 	}
 
 	@Override
