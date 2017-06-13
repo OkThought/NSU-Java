@@ -21,6 +21,10 @@ public class Text implements Message {
 		return text;
 	}
 
+	public String getVerboseText() {
+		return text.replaceAll("\\p{C}", "[]");
+	}
+
 	@Override
 	public void handleBy(MessageHandler handler) {
 		handler.handle(this);
@@ -32,7 +36,7 @@ public class Text implements Message {
 				.append("[")
 				.append(getAuthor())
 				.append(": \"")
-				.append(getText())
+				.append(getVerboseText())
 				.append("\"]")
 				.toString();
 	}
