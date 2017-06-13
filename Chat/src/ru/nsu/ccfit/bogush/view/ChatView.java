@@ -129,22 +129,9 @@ public class ChatView extends JFrame implements UserListChangeListener {
 		JPanel composePanel = new JPanel();
 		composePanel.setLayout(new BorderLayout());
 
-		JTextArea composeTextArea = new JTextArea();
-		composeTextArea.setBorder(BorderFactory.createEmptyBorder(MARGIN,MARGIN,MARGIN,MARGIN));
-		composeTextArea.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (!e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_ENTER) {
-					sendMessage(composeTextArea.getText());
-					composeTextArea.setText("");
-				}
-			}
-		});
-		JScrollPane composeScrollPane = new JScrollPane(composeTextArea);
-
-		composePanel.add(composeScrollPane, BorderLayout.CENTER);
 
 		JPanel buttonContainer = new JPanel();
+		JTextArea composeTextArea = new JTextArea();
 		JButton sendButton = new JButton(new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -157,6 +144,19 @@ public class ChatView extends JFrame implements UserListChangeListener {
 		buttonContainer.add(sendButton);
 		composePanel.add(buttonContainer, BorderLayout.LINE_END);
 		composePanel.setMinimumSize(COMPOSE_PANEL_SIZE);
+
+		composeTextArea.setBorder(BorderFactory.createEmptyBorder(MARGIN,MARGIN,MARGIN,MARGIN));
+		composeTextArea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (!e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_ENTER) {
+					e.consume();
+					sendButton.doClick();
+				}
+			}
+		});
+		JScrollPane composeScrollPane = new JScrollPane(composeTextArea);
+		composePanel.add(composeScrollPane, BorderLayout.CENTER);
 		return composePanel;
 	}
 
