@@ -21,16 +21,8 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 	@Override
 	public void handle(Login message) {
 		logger.trace("Handle {}", message);
-		connectedUser.setLoginPayload(message.getLoginPayload());
+		user = connectedUser.login(message.getLoginPayload());
 		nickname = connectedUser.getNickname();
-		user = new User(nickname);
-		connectedUser.broadcastToOthers(new UserEntered(user));
-		logger.info("Sending login success message back to {}", user);
-		try {
-			connectedUser.sendMessage(new LoginSuccess("Logged in successfully"));
-		} catch (InterruptedException e) {
-			logger.error("Couldn't write success message");
-		}
 	}
 
 	@Override
@@ -47,12 +39,7 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 				logger.error("Couldn't send error message");
 			}
 		} else {
-			try {
-				connectedUser.sendMessage(new LogoutSuccess("Successfully logged out"));
-			} catch (InterruptedException e) {
-				logger.error("Couldn't send success message");
-			}
-			connectedUser.broadcastToOthers(new UserLeft(user));
+			connectedUser.logout(user);
 		}
 	}
 

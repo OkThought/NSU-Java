@@ -112,6 +112,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	}
 
 	private void disconnect() {
+		logger.trace("Disconnecting");
 		for (DisconnectHandler handler : chatEventHandlers) {
 			handler.disconnect();
 		}

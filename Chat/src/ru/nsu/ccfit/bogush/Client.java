@@ -13,7 +13,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Client implements ChatEventHandler, Runnable {
+public class Client implements ChatEventHandler, LostConnectionListener, Runnable {
 	private static final int READER_QUEUE_CAPACITY = 50;
 	private static final int WRITER_QUEUE_CAPACITY = 50;
 
@@ -23,31 +23,26 @@ public class Client implements ChatEventHandler, Runnable {
 
 	private String host;
 	private int port;
-
 	private Socket socket;
+	private SocketWriter socketWriter;
+	private SocketReader socketReader;
 
 	private Thread thread;
 
 	private User user;
 	private LoginPayload loginPayload;
-	private SocketMessageStream socketMessageStream;
-	private SocketWriter socketWriter;
-	private SocketReader socketReader;
-
-	private ViewController viewController;
 
 	private ArrayList<UserListChangeListener> userListChangeListeners = new ArrayList<>();
 	private ArrayList<ReceiveTextMessageListener> receiveTextMessageListeners = new ArrayList<>();
 
 	public static void main(String[] args) {
-		logger.trace("Launch client");
+		logger.info("Launch client");
 		Client client = new Client();
-
 		SwingUtilities.invokeLater(client::prepareUI);
 	}
 
 	private void prepareUI() {
-		viewController = new ViewController(this);
+		ViewController viewController = new ViewController(this);
 		viewController.addChatEventHandler(this);
 		addUserListChangeListener(viewController);
 		addReceiveTextMessageHandler(viewController);
@@ -76,8 +71,8 @@ public class Client implements ChatEventHandler, Runnable {
 			logger.trace("Opening socket");
 			socket = new Socket(host, port);
 			logger.trace("Opened socket on {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
-			socketMessageStream = new SocketMessageStream(socket);
-			socketReader = new SocketReader(socketMessageStream, READER_QUEUE_CAPACITY);
+			SocketMessageStream socketMessageStream = new SocketMessageStream(socket);
+			socketReader = new SocketReader(socketMessageStream, this, READER_QUEUE_CAPACITY);
 			socketWriter = new SocketWriter(socketMessageStream, WRITER_QUEUE_CAPACITY);
 			start();
 			logger.trace("Created {}", socketMessageStream.getClass().getSimpleName());
@@ -85,7 +80,7 @@ public class Client implements ChatEventHandler, Runnable {
 			logger.error("Couldn't open socket");
 			return false;
 		}
-		logger.info("Connected to {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
+		logger.info("Connected successfully");
 		return true;
 	}
 
@@ -100,6 +95,7 @@ public class Client implements ChatEventHandler, Runnable {
 	public void disconnect() {
 		logger.info("Disconnecting from the server");
 		closeSocket();
+		logger.info("Disconnected successfully");
 	}
 
 	@Override
@@ -122,10 +118,9 @@ public class Client implements ChatEventHandler, Runnable {
 
 	@Override
 	public void logout() {
-		logger.info("Disconnecting from {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
+		logger.info("Logging out");
 		try {
 			socketWriter.write(new Logout(loginPayload));
-			logger.info("Disconnected");
 		} catch (InterruptedException e) {
 			logger.error("Couldn't send logout message");
 		}
@@ -140,6 +135,12 @@ public class Client implements ChatEventHandler, Runnable {
 		} catch (InterruptedException e) {
 			logger.error("Couldn't send text message");
 		}
+	}
+
+	@Override
+	public void lostConnection() {
+		logger.info("Lost connection with server");
+		stop();
 	}
 
 	private void setLoginPayload(LoginPayload loginPayload) {

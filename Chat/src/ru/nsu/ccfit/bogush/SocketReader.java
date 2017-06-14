@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.Message;
 
 import java.io.EOFException;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -36,12 +37,12 @@ class SocketReader implements Runnable {
 		while (!Thread.interrupted()) {
 			try {
 				Message msg = messageReceiver.receiveMessage();
-				messageQueue.put(msg);
 				logger.info("Received {}", msg);
+				messageQueue.put(msg);
 			} catch (InterruptedException e) {
 				logger.trace("Interrupted");
 				break;
-			} catch (EOFException e) {
+			} catch (EOFException | SocketException e) {
 				logger.info("Lost connection");
 				for (LostConnectionListener listener : lostConnectionListeners) {
 					listener.lostConnection();
