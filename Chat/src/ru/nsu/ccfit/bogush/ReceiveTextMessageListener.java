@@ -2,6 +2,6 @@ package ru.nsu.ccfit.bogush;
 
 import ru.nsu.ccfit.bogush.message.types.Text;
 
-public interface ReceiveTextMessageHandler {
+public interface ReceiveTextMessageListener {
 	void receive(Text msg);
 }

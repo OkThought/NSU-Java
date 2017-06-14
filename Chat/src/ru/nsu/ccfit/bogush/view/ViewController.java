@@ -9,7 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-public class ViewController implements UserListChangeListener, ReceiveTextMessageHandler {
+public class ViewController implements UserListChangeListener, ReceiveTextMessageListener {
 	private static final Logger logger = LogManager.getLogger(ViewController.class.getSimpleName());
 
 	private Client client;

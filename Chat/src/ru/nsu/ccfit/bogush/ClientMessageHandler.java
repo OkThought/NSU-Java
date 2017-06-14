@@ -16,7 +16,7 @@ public class ClientMessageHandler extends SimpleMessageHandler {
 	@Override
 	public void handle(Text message) {
 		logger.trace("Handle {}", message);
-		for (ReceiveTextMessageHandler handler : client.getReceiveTextMessageHandlers()) {
+		for (ReceiveTextMessageListener handler : client.getReceiveTextMessageListeners()) {
 			handler.receive(message);
 		}
 	}

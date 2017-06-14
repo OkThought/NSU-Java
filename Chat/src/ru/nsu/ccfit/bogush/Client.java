@@ -37,7 +37,7 @@ public class Client implements ConnectHandler, DisconnectHandler, LoginHandler, 
 	private ViewController viewController;
 
 	private ArrayList<UserListChangeListener> userListChangeListeners = new ArrayList<>();
-	private ArrayList<ReceiveTextMessageHandler> receiveTextMessageHandlers = new ArrayList<>();
+	private ArrayList<ReceiveTextMessageListener> receiveTextMessageListeners = new ArrayList<>();
 
 	public static void main(String[] args) {
 		logger.trace("Launch client");
@@ -191,15 +191,15 @@ public class Client implements ConnectHandler, DisconnectHandler, LoginHandler, 
 		userListChangeListeners.add(listener);
 	}
 
-	public void addReceiveTextMessageHandler(ReceiveTextMessageHandler handler) {
-		receiveTextMessageHandlers.add(handler);
+	public void addReceiveTextMessageHandler(ReceiveTextMessageListener handler) {
+		receiveTextMessageListeners.add(handler);
 	}
 
 	public ArrayList<UserListChangeListener> getUserListChangeListeners() {
 		return userListChangeListeners;
 	}
 
-	public ArrayList<ReceiveTextMessageHandler> getReceiveTextMessageHandlers() {
-		return receiveTextMessageHandlers;
+	public ArrayList<ReceiveTextMessageListener> getReceiveTextMessageListeners() {
+		return receiveTextMessageListeners;
 	}
 }
