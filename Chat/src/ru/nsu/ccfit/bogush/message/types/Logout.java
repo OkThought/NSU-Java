@@ -1,6 +1,6 @@
 package ru.nsu.ccfit.bogush.message.types;
 
-import ru.nsu.ccfit.bogush.LoginPayload;
+import ru.nsu.ccfit.bogush.network.LoginPayload;
 import ru.nsu.ccfit.bogush.message.Message;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 

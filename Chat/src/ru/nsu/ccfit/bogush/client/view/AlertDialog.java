@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.bogush.view;
+package ru.nsu.ccfit.bogush.client.view;
 
 import javax.swing.*;
 import javax.swing.border.Border;

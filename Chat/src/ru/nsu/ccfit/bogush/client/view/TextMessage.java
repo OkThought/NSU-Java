@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.bogush.view;
+package ru.nsu.ccfit.bogush.client.view;
 
 import ru.nsu.ccfit.bogush.User;
 

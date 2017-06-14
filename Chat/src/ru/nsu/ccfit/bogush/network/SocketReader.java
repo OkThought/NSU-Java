@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.bogush;
+package ru.nsu.ccfit.bogush.network;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,7 +9,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
-class SocketReader implements Runnable {
+public class SocketReader implements Runnable {
 	private static final Logger logger = LogManager.getLogger(SocketReader.class.getSimpleName());
 
 	private Thread thread;
@@ -17,12 +17,12 @@ class SocketReader implements Runnable {
 	private LinkedBlockingQueue<Message> messageQueue;
 	private ArrayList<LostConnectionListener> lostConnectionListeners = new ArrayList<>();
 
-	SocketReader(MessageReceiver messageReceiver, LostConnectionListener lostConnectionListener, int queueCapacity) {
+	public SocketReader(MessageReceiver messageReceiver, LostConnectionListener lostConnectionListener, int queueCapacity) {
 		this(messageReceiver, queueCapacity);
 		addLostConnectionListener(lostConnectionListener);
 	}
 
-	SocketReader(MessageReceiver messageReceiver, int queueCapacity) {
+	public SocketReader(MessageReceiver messageReceiver, int queueCapacity) {
 		this.messageReceiver = messageReceiver;
 		messageQueue = new LinkedBlockingQueue<>(queueCapacity);
 		thread = new Thread(this, this.getClass().getSimpleName());
@@ -56,17 +56,17 @@ class SocketReader implements Runnable {
 		}
 	}
 
-	void start() {
+	public void start() {
 		logger.trace("Start {}", SocketReader.class.getSimpleName());
 		thread.start();
 	}
 
-	void stop() {
+	public void stop() {
 		logger.trace("Stop {}", SocketReader.class.getSimpleName());
 		thread.interrupt();
 	}
 
-	Message read() throws InterruptedException {
+	public Message read() throws InterruptedException {
 		Message msg = messageQueue.take();
 		logger.trace("Took {} from message queue", msg);
 		return msg;

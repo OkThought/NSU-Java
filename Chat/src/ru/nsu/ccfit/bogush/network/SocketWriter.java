@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.bogush;
+package ru.nsu.ccfit.bogush.network;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,14 +7,14 @@ import ru.nsu.ccfit.bogush.message.Message;
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
-class SocketWriter implements Runnable {
+public class SocketWriter implements Runnable {
 	private static final Logger logger = LogManager.getLogger(SocketWriter.class.getSimpleName());
 
 	private Thread thread;
 	private final MessageSender messageSender;
 	private LinkedBlockingQueue<Message> messageQueue;
 
-	SocketWriter(MessageSender messageSender, int queueCapacity) {
+	public SocketWriter(MessageSender messageSender, int queueCapacity) {
 		this.messageSender = messageSender;
 		this.messageQueue = new LinkedBlockingQueue<>(queueCapacity);
 		thread = new Thread(this, this.getClass().getSimpleName());
@@ -36,17 +36,17 @@ class SocketWriter implements Runnable {
 		}
 	}
 
-	void start() {
+	public void start() {
 		logger.trace("Start {}", SocketWriter.class.getSimpleName());
 		thread.start();
 	}
 
-	void stop() {
+	public void stop() {
 		logger.trace("Stop {}", SocketWriter.class.getSimpleName());
 		thread.interrupt();
 	}
 
-	void write(Message message) throws InterruptedException {
+	public void write(Message message) throws InterruptedException {
 		logger.trace("Put {} to message queue", message);
 		messageQueue.put(message);
 	}

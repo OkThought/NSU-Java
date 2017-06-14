@@ -1,12 +1,14 @@
-package ru.nsu.ccfit.bogush;
+package ru.nsu.ccfit.bogush.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.nsu.ccfit.bogush.*;
 import ru.nsu.ccfit.bogush.message.types.Login;
 import ru.nsu.ccfit.bogush.message.types.Logout;
 import ru.nsu.ccfit.bogush.message.types.Text;
 import ru.nsu.ccfit.bogush.message.types.UserList;
-import ru.nsu.ccfit.bogush.view.*;
+import ru.nsu.ccfit.bogush.client.view.*;
+import ru.nsu.ccfit.bogush.network.*;
 
 import javax.swing.*;
 import java.io.*;

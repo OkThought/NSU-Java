@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.bogush;
+package ru.nsu.ccfit.bogush.network;
 
 public class Session {
 	private int id;

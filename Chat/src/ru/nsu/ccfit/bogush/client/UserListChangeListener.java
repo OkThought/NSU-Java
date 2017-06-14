@@ -1,4 +1,6 @@
-package ru.nsu.ccfit.bogush;
+package ru.nsu.ccfit.bogush.client;
+
+import ru.nsu.ccfit.bogush.User;
 
 public interface UserListChangeListener {
 	void userEntered(User user);

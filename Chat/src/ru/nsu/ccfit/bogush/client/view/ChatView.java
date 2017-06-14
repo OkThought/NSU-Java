@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.bogush.view;
+package ru.nsu.ccfit.bogush.client.view;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

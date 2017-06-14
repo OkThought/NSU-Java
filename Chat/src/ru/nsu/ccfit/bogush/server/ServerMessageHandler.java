@@ -1,8 +1,9 @@
-package ru.nsu.ccfit.bogush;
+package ru.nsu.ccfit.bogush.server;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.message.*;
+import ru.nsu.ccfit.bogush.message.SimpleMessageHandler;
+import ru.nsu.ccfit.bogush.User;
 import ru.nsu.ccfit.bogush.message.types.*;
 
 public class ServerMessageHandler extends SimpleMessageHandler {

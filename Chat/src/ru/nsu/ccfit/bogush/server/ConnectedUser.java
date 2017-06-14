@@ -1,13 +1,14 @@
-package ru.nsu.ccfit.bogush;
+package ru.nsu.ccfit.bogush.server;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.nsu.ccfit.bogush.*;
 import ru.nsu.ccfit.bogush.message.Message;
-import ru.nsu.ccfit.bogush.message.MessageHandler;
 import ru.nsu.ccfit.bogush.message.types.LoginSuccess;
 import ru.nsu.ccfit.bogush.message.types.LogoutSuccess;
 import ru.nsu.ccfit.bogush.message.types.UserEntered;
 import ru.nsu.ccfit.bogush.message.types.UserLeft;
+import ru.nsu.ccfit.bogush.network.*;
 
 import java.io.IOException;
 import java.net.Socket;

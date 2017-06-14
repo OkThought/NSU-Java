@@ -1,8 +1,8 @@
-package ru.nsu.ccfit.bogush.view;
+package ru.nsu.ccfit.bogush.client.view;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.LoginPayload;
+import ru.nsu.ccfit.bogush.network.LoginPayload;
 
 import javax.swing.*;
 import javax.swing.border.Border;
