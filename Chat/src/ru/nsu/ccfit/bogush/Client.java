@@ -132,11 +132,11 @@ public class Client implements ChatEventHandler, Runnable {
 	}
 
 	@Override
-	public void sendTextMessage(String text) {
-		logger.info("Sending text message \"{}\"", text.replaceAll("\\p{C}", "[]"));
-		Text msg = new Text(user, text);
+	public void sendTextMessage(TextMessage msg) {
+		logger.info("Sending text message {}", msg);
+		Text text = new Text(msg.getAuthor(), msg.getText());
 		try {
-			socketWriter.write(msg);
+			socketWriter.write(text);
 		} catch (InterruptedException e) {
 			logger.error("Couldn't send text message");
 		}
@@ -145,7 +145,6 @@ public class Client implements ChatEventHandler, Runnable {
 	private void setLoginPayload(LoginPayload loginPayload) {
 		logger.trace("Set login payload");
 		this.loginPayload = loginPayload;
-
 	}
 
 	public void setUser(User user) {

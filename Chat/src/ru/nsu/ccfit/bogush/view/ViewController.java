@@ -159,16 +159,20 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 		}
 	}
 
-	void sendTextMessage(String text) {
-		logger.trace("Sending text message \"{}\"", text.replaceAll("\\p{C}", "[]"));
+	void sendTextMessage(TextMessage msg) {
+		logger.trace("Sending text message {}", msg);
 		for (SendTextMessageHandler handler : chatEventHandlers) {
-			handler.sendTextMessage(text);
+			handler.sendTextMessage(msg);
 		}
+	}
+
+	User getUser() {
+		return client.getUser();
 	}
 
 	@Override
 	public void receive(Text msg) {
-		chatView.appendMessage(msg.getText());
+		chatView.appendMessage(new TextMessage(msg.getAuthor(), msg.getText()));
 	}
 
 	public void addChatEventHandler(ChatEventHandler handler) {

@@ -147,21 +147,15 @@ public class ChatView extends JFrame {
 	}
 
 	private void sendMessage() {
-		String msg = composeTextArea.getText();
+		String text = composeTextArea.getText();
 		composeTextArea.setText("");
+		TextMessage msg = new TextMessage(viewController.getUser(), text);
 		appendMessage(msg);
 		viewController.sendTextMessage(msg);
 	}
 
-	void appendMessage(String msg) {
-		messagesPanel.add(createMessageComponent(msg));
+	void appendMessage(TextMessage msg) {
+		messagesPanel.add(new MessageComponent(msg));
 		messagesPanel.updateUI();
-	}
-
-	private JComponent createMessageComponent(String msg) {
-		JLabel messageLabel = new JLabel(msg);
-		messageLabel.setOpaque(true);
-		messageLabel.setBackground(MESSAGE_BACKGROUND_COLOR);
-		return messageLabel;
 	}
 }
