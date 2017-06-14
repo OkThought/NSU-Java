@@ -28,7 +28,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		this(server, socket, DEFAULT_IN_QUEUE_CAPACITY, DEFAULT_OUT_QUEUE_CAPACITY);
 	}
 
-	ConnectedUser(Server server, Socket socket,
+	private ConnectedUser(Server server, Socket socket,
 	                     int inQueueCapacity, int outQueueCapacity) throws IOException {
 		logger.trace("Create {}", ConnectedUser.class.getSimpleName());
 		this.server = server;
