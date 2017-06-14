@@ -84,8 +84,7 @@ class ChatView extends JFrame {
 		JPanel userListPanel = new JPanel();
 		userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
 		Border line = BorderFactory.createLineBorder(Color.BLACK);
-		Border margin = MARGIN_BORDER;
-		userListPanel.setBorder(BorderFactory.createCompoundBorder(line, margin));
+		userListPanel.setBorder(BorderFactory.createCompoundBorder(line, MARGIN_BORDER));
 		userListPanel.setMinimumSize(USER_LIST_PANEL_SIZE);
 		return userListPanel;
 	}
