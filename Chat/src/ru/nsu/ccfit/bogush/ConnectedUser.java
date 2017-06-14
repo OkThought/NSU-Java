@@ -17,7 +17,6 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 
 	private Server server;
 	private Socket socket;
-	private MessageHandler messageHandler;
 	private LoginPayload loginPayload;
 
 	private SocketReader socketReader;
