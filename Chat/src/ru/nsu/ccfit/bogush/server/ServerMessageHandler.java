@@ -45,7 +45,7 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 	}
 
 	@Override
-	public void handle(Text message) {
+	public void handle(TextMessage message) {
 		logger.trace("Handle {}", message);
 		connectedUser.broadcastToOthers(message);
 		server.addToHistory(message);

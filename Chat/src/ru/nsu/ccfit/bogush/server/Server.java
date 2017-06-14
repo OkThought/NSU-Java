@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import ru.nsu.ccfit.bogush.LoggingConfiguration;
 import ru.nsu.ccfit.bogush.User;
-import ru.nsu.ccfit.bogush.message.types.Text;
+import ru.nsu.ccfit.bogush.message.types.TextMessage;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -50,7 +50,7 @@ public class Server implements Runnable {
 
 	private HashSet<ConnectedUser> connectedUsers = new HashSet<>();
 
-	private ArrayBlockingQueue<Text> history = new ArrayBlockingQueue<>(HISTORY_CAPACITY);
+	private ArrayBlockingQueue<TextMessage> history = new ArrayBlockingQueue<>(HISTORY_CAPACITY);
 
 	private int port;
 
@@ -154,7 +154,7 @@ public class Server implements Runnable {
 		connectedUser.stop();
 	}
 
-	void addToHistory(Text message) {
+	void addToHistory(TextMessage message) {
 		logger.trace("Add \"{}\" to history", message.toString());
 		try {
 			if (history.remainingCapacity() == 0) {

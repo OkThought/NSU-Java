@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.*;
 import ru.nsu.ccfit.bogush.client.Client;
 import ru.nsu.ccfit.bogush.client.UserListChangeListener;
-import ru.nsu.ccfit.bogush.message.types.Text;
+import ru.nsu.ccfit.bogush.message.types.TextMessage;
 import ru.nsu.ccfit.bogush.network.LoginPayload;
 import ru.nsu.ccfit.bogush.network.ReceiveTextMessageListener;
 
@@ -176,8 +176,8 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	}
 
 	@Override
-	public void receive(Text msg) {
-		chatView.appendMessage(new TextMessage(msg.getAuthor(), msg.getText()));
+	public void receive(TextMessage msg) {
+		chatView.appendMessage(msg);
 	}
 
 	public void addChatEventHandler(ChatEventHandler handler) {

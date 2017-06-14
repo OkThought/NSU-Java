@@ -3,6 +3,7 @@ package ru.nsu.ccfit.bogush.client.view;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.User;
+import ru.nsu.ccfit.bogush.message.types.TextMessage;
 
 import javax.swing.*;
 import javax.swing.border.Border;

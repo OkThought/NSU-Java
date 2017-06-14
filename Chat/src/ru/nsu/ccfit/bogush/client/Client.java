@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.*;
 import ru.nsu.ccfit.bogush.message.types.Login;
 import ru.nsu.ccfit.bogush.message.types.Logout;
-import ru.nsu.ccfit.bogush.message.types.Text;
+import ru.nsu.ccfit.bogush.message.types.TextMessage;
 import ru.nsu.ccfit.bogush.message.types.UserList;
 import ru.nsu.ccfit.bogush.client.view.*;
 import ru.nsu.ccfit.bogush.network.*;
@@ -130,12 +130,12 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 
 	@Override
 	public void sendTextMessage(TextMessage msg) {
-		logger.info("Sending text message {}", msg);
-		Text text = new Text(msg.getAuthor(), msg.getText());
+		logger.info("Sending textMessage message {}", msg);
+		TextMessage textMessage = new TextMessage(msg.getAuthor(), msg.getText());
 		try {
-			socketWriter.write(text);
+			socketWriter.write(textMessage);
 		} catch (InterruptedException e) {
-			logger.error("Couldn't send text message");
+			logger.error("Couldn't send textMessage message");
 		}
 	}
 

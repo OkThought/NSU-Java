@@ -9,7 +9,7 @@ public interface MessageHandler {
 	void handle(LoginError message);
 	void handle(LogoutSuccess message);
 	void handle(LogoutError message);
-	void handle(Text message);
+	void handle(TextMessage message);
 	void handle(UserList message);
 	void handle(UserEntered message);
 	void handle(UserLeft message);

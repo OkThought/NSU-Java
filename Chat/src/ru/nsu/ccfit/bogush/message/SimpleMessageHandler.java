@@ -62,7 +62,7 @@ public class SimpleMessageHandler implements MessageHandler {
 	}
 
 	@Override
-	public void handle(Text message) {
+	public void handle(TextMessage message) {
 		logger.trace("Handle {}", message);
 		notSupported(message);
 	}
