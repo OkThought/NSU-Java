@@ -146,7 +146,11 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 
 	@Override
 	public void userEntered(User user) {
-		chatView.addUser(user);
+		if (chatView == null) {
+			logger.warn("User entered but chat view was not created yet");
+		} else {
+			chatView.addUser(user);
+		}
 	}
 
 	@Override
