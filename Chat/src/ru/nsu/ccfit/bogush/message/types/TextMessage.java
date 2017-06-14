@@ -32,12 +32,10 @@ public class TextMessage implements Message {
 
 	@Override
 	public String toString() {
-		return new StringBuilder()
-				.append("[")
-				.append(getAuthor())
-				.append(": \"")
-				.append(getVerboseText())
-				.append("\"]")
-				.toString();
+		return "[" +
+				getAuthor() +
+				": \"" +
+				getVerboseText() +
+				"\"]";
 	}
 }
