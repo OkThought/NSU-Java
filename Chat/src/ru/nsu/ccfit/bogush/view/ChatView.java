@@ -28,7 +28,6 @@ class ChatView extends JFrame {
 	private JSplitPane chatPane;
 	private JSplitPane root;
 	private JPanel userListPanel;
-	private JList<String> messageList;
 	private DefaultListModel<String> messageListModel;
 
 	ChatView(ViewController viewController) throws HeadlessException {
@@ -101,7 +100,7 @@ class ChatView extends JFrame {
 		chatPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
 		messageListModel = new DefaultListModel<>();
-		messageList = new JList<>(messageListModel);
+		JList<String> messageList = new JList<>(messageListModel);
 
 		JScrollPane chatScrollPane = new JScrollPane(messageList,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
