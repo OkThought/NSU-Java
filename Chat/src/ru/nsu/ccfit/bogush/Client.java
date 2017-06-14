@@ -157,14 +157,14 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		return user;
 	}
 
-	public void start() {
+	private void start() {
 		logger.trace("Start client");
 		thread.start();
 		socketReader.start();
 		socketWriter.start();
 	}
 
-	public void stop() {
+	private void stop() {
 		logger.trace("Stop client");
 		thread.interrupt();
 		socketReader.stop();
@@ -181,19 +181,19 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		}
 	}
 
-	public void addUserListChangeListener(UserListChangeListener listener) {
+	private void addUserListChangeListener(UserListChangeListener listener) {
 		userListChangeListeners.add(listener);
 	}
 
-	public void addReceiveTextMessageHandler(ReceiveTextMessageListener handler) {
+	private void addReceiveTextMessageHandler(ReceiveTextMessageListener handler) {
 		receiveTextMessageListeners.add(handler);
 	}
 
-	public ArrayList<UserListChangeListener> getUserListChangeListeners() {
+	ArrayList<UserListChangeListener> getUserListChangeListeners() {
 		return userListChangeListeners;
 	}
 
-	public ArrayList<ReceiveTextMessageListener> getReceiveTextMessageListeners() {
+	ArrayList<ReceiveTextMessageListener> getReceiveTextMessageListeners() {
 		return receiveTextMessageListeners;
 	}
 }
