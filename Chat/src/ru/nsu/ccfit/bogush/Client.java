@@ -71,7 +71,7 @@ public class Client implements ChatEventHandler, Runnable {
 	}
 
 	private boolean connectToServer() {
-		logger.info("Connecting to server");
+		logger.info("Connecting to server on {}:{}", host, port);
 		try {
 			logger.trace("Opening socket");
 			socket = new Socket(host, port);

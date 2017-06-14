@@ -100,7 +100,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	}
 
 	void connect(String host, int port) {
-		logger.info("Connecting to {}:{}", host, port);
+		logger.trace("Connecting to {}:{}", host, port);
 		for (ConnectHandler handler : chatEventHandlers) {
 			if (!handler.connect(host, port)) {
 				new AlertDialog(connectView, "Connect", "Couldn't connect to server");

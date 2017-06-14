@@ -37,8 +37,6 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 	public void handle(Logout message) {
 		logger.trace("Handle {}", message);
 		String requested = message.getLoginPayload().getNickname();
-		logger.info("Received logout message from {}", requested);
-
 		if (!requested.equals(nickname)) {
 			logger.error("Nickname '{}' requested for logging out", requested);
 			logger.error("is not the same as the actual nickname: '{}'", nickname);
@@ -67,8 +65,7 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 
 	@Override
 	public void handle(UserList message) {
-		logger.info("Received {} from \"{}\"", message, nickname);
-
+		logger.trace("Handle {}", message);
 		UserList userListMessage = new UserList(server.getUserList());
 		try {
 			connectedUser.sendMessage(userListMessage);
