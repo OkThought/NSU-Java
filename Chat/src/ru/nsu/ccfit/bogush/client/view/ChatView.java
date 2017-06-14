@@ -11,7 +11,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
 
 class ChatView extends JFrame {
 	private static final Logger logger = LogManager.getLogger(ChatView.class.getSimpleName());
@@ -19,16 +18,15 @@ class ChatView extends JFrame {
 	private static final int MARGIN = 4;
 	private static final Border MARGIN_BORDER = BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN);
 	private static final Dimension COMPOSE_PANEL_SIZE = new Dimension(-1, 30);
-	private static final Dimension USER_LIST_PANEL_SIZE = new Dimension(100, -1);
+	private static final Dimension USER_LIST_PANE_SIZE = new Dimension(100, -1);
 
 	private ViewController viewController;
-
-	private HashMap<User, JComponent> userComponentMap = new HashMap<>();
 
 	private JTextArea composeTextArea;
 	private JSplitPane chatPane;
 	private JSplitPane root;
-	private JPanel userListPanel;
+	private JScrollPane userListPane;
+	private DefaultListModel<User> userListModel;
 	private DefaultListModel<String> messageListModel;
 
 	ChatView(ViewController viewController) throws HeadlessException {
@@ -43,57 +41,48 @@ class ChatView extends JFrame {
 
 	void addUser(User user) {
 		logger.trace("Adding {}", user);
-		if (userComponentMap.containsKey(user)) {
-			logger.warn("User already in the component map");
+		if (userListModel.contains(user)) {
+			logger.warn("User already in the list");
 		} else {
-			JComponent userComponent = createUserComponent(user);
-			userComponentMap.put(user, userComponent);
-			userListPanel.add(userComponent);
+			userListModel.addElement(user);
 		}
-		userListPanel.validate();
-		userListPanel.repaint();
+		userListPane.validate();
+		userListPane.repaint();
 	}
 
 	void removeUser(User user) {
 		logger.trace("Removing {}", user);
-		if (userComponentMap.containsKey(user)) {
-			userListPanel.remove(userComponentMap.get(user));
-			userComponentMap.remove(user);
+		if (userListModel.contains(user)) {
+			userListModel.removeElement(user);
 		} else {
-			logger.error("User is absent in the component map");
+			logger.error("User is absent in the list");
 		}
-		userListPanel.validate();
-		userListPanel.repaint();
+		userListPane.validate();
+		userListPane.repaint();
 	}
 
 	void removeAllUsers() {
-		userComponentMap.clear();
-		userListPanel.removeAll();
-		userListPanel.validate();
-		userListPanel.repaint();
+		userListModel.removeAllElements();
+		userListPane.validate();
+		userListPane.repaint();
 	}
 
 	private void createComponents() {
-		userListPanel = createUserListPanel();
+		createUserListPane();
 		createChatPane();
-		root = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, userListPanel, chatPane);
+		root = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, userListPane, chatPane);
 		root.setBorder(MARGIN_BORDER);
 		root.setOpaque(true);
 	}
 
-	private JPanel createUserListPanel() {
-		JPanel userListPanel = new JPanel();
-		userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
-		Border line = BorderFactory.createLineBorder(Color.BLACK);
-		userListPanel.setBorder(BorderFactory.createCompoundBorder(line, MARGIN_BORDER));
-		userListPanel.setMinimumSize(USER_LIST_PANEL_SIZE);
-		return userListPanel;
-	}
-
-	private JComponent createUserComponent(User user) {
-		JLabel label = new JLabel(user.getNickname());
-		label.setHorizontalAlignment(SwingConstants.LEFT);
-		return label;
+	private void createUserListPane() {
+		userListModel = new DefaultListModel<>();
+		JList<User> userList = new JList<>(userListModel);
+		userListPane = new JScrollPane(userList,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		userListPane.setBorder(MARGIN_BORDER);
+		userListPane.setMinimumSize(USER_LIST_PANE_SIZE);
 	}
 
 	private void createChatPane() {
