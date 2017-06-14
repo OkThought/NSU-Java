@@ -10,6 +10,7 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 
 	private Server server;
 	private ConnectedUser connectedUser;
+	private User user;
 	private String nickname;
 
 	public ServerMessageHandler(Server server, ConnectedUser connectedUser) {
@@ -22,7 +23,9 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 		logger.trace("Handle {}", message);
 		connectedUser.setLoginPayload(message.getLoginPayload());
 		nickname = connectedUser.getNickname();
-
+		user = new User(nickname);
+		broadcastToOthers(new UserEntered(user));
+		logger.info("Sending login success message back to {}", user);
 		try {
 			connectedUser.sendMessage(new LoginSuccess("Logged in successfully"));
 		} catch (InterruptedException e) {
@@ -52,30 +55,14 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 			} catch (InterruptedException e) {
 				logger.error("Couldn't send success message");
 			}
-			Message userLeft = new UserLeft(new User(nickname));
-			for (ConnectedUser user : server.getConnectedUsers()) {
-				try {
-					user.sendMessage(userLeft);
-				} catch (InterruptedException e) {
-					logger.error("Couldn't send logout message to {}", user.getNickname());
-				}
-			}
+			broadcastToOthers(new UserLeft(user));
 		}
 	}
 
 	@Override
 	public void handle(Text message) {
-		logger.info("[{}: \"{}\"]", message.getAuthor(), message.getVerboseText());
-		for (ConnectedUser user : server.getConnectedUsers()) {
-			if (!user.getNickname().equals(message.getAuthor().getNickname())) {
-				try {
-					user.sendMessage(message);
-				} catch (InterruptedException e) {
-					logger.error("Couldn't send message to {}", user.toString());
-				}
-			}
-		}
-		logger.info("Broadcast'ed message to all but sender");
+		logger.trace("Handle {}", message);
+		broadcastToOthers(message);
 		server.addToHistory(message);
 	}
 
@@ -88,6 +75,19 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 			connectedUser.sendMessage(userListMessage);
 		} catch (InterruptedException e) {
 			logger.error("Couldn't send user-list to {}", nickname);
+		}
+	}
+
+	private void broadcastToOthers(Message msg) {
+		logger.info("Broadcasting to others {}", msg);
+		for (ConnectedUser cu : server.getConnectedUsers()) {
+			if (!cu.equals(connectedUser)) {
+				try {
+					cu.sendMessage(msg);
+				} catch (InterruptedException e) {
+					logger.error("Couldn't send {} to {}", msg, cu);
+				}
+			}
 		}
 	}
 }
