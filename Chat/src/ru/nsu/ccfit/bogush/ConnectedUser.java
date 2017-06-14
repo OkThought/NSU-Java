@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.Message;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
+import ru.nsu.ccfit.bogush.message.types.UserLeft;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -54,8 +55,22 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		}
 	}
 
+	void broadcastToOthers(Message msg) {
+		logger.info("Broadcasting to others {}", msg);
+		for (ConnectedUser cu : server.getConnectedUsers()) {
+			if (!cu.equals(this)) {
+				try {
+					cu.sendMessage(msg);
+				} catch (InterruptedException e) {
+					logger.error("Couldn't send {} to {}", msg, cu);
+				}
+			}
+		}
+	}
+
 	@Override
 	public void lostConnection() {
+		broadcastToOthers(new UserLeft(new User(getNickname())));
 		server.logout(this);
 		stop();
 	}

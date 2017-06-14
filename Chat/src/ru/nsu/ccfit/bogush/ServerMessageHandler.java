@@ -13,7 +13,7 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 	private User user;
 	private String nickname;
 
-	public ServerMessageHandler(Server server, ConnectedUser connectedUser) {
+	ServerMessageHandler(Server server, ConnectedUser connectedUser) {
 		this.server = server;
 		this.connectedUser = connectedUser;
 	}
@@ -24,7 +24,7 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 		connectedUser.setLoginPayload(message.getLoginPayload());
 		nickname = connectedUser.getNickname();
 		user = new User(nickname);
-		broadcastToOthers(new UserEntered(user));
+		connectedUser.broadcastToOthers(new UserEntered(user));
 		logger.info("Sending login success message back to {}", user);
 		try {
 			connectedUser.sendMessage(new LoginSuccess("Logged in successfully"));
@@ -55,14 +55,14 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 			} catch (InterruptedException e) {
 				logger.error("Couldn't send success message");
 			}
-			broadcastToOthers(new UserLeft(user));
+			connectedUser.broadcastToOthers(new UserLeft(user));
 		}
 	}
 
 	@Override
 	public void handle(Text message) {
 		logger.trace("Handle {}", message);
-		broadcastToOthers(message);
+		connectedUser.broadcastToOthers(message);
 		server.addToHistory(message);
 	}
 
@@ -78,16 +78,5 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 		}
 	}
 
-	private void broadcastToOthers(Message msg) {
-		logger.info("Broadcasting to others {}", msg);
-		for (ConnectedUser cu : server.getConnectedUsers()) {
-			if (!cu.equals(connectedUser)) {
-				try {
-					cu.sendMessage(msg);
-				} catch (InterruptedException e) {
-					logger.error("Couldn't send {} to {}", msg, cu);
-				}
-			}
-		}
-	}
+
 }
