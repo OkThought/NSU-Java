@@ -24,11 +24,11 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 
 	private Thread thread;
 
-	public ConnectedUser(Server server, Socket socket) throws IOException {
+	ConnectedUser(Server server, Socket socket) throws IOException {
 		this(server, socket, DEFAULT_IN_QUEUE_CAPACITY, DEFAULT_OUT_QUEUE_CAPACITY);
 	}
 
-	public ConnectedUser(Server server, Socket socket,
+	ConnectedUser(Server server, Socket socket,
 	                     int inQueueCapacity, int outQueueCapacity) throws IOException {
 		logger.trace("Create {}", ConnectedUser.class.getSimpleName());
 		this.server = server;
@@ -74,22 +74,22 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		stop();
 	}
 
-	public void setLoginPayload(LoginPayload loginPayload) {
+	void setLoginPayload(LoginPayload loginPayload) {
 		this.loginPayload = loginPayload;
 	}
 
-	public void sendMessage(Message message) throws InterruptedException {
+	void sendMessage(Message message) throws InterruptedException {
 		socketWriter.write(message);
 	}
 
-	public void start() {
+	void start() {
 		logger.trace("Start {}", ConnectedUser.class.getSimpleName());
 		thread.start();
 		socketReader.start();
 		socketWriter.start();
 	}
 
-	public void stop() {
+	void stop() {
 		logger.trace("Stop {}", ConnectedUser.class.getSimpleName());
 		thread.interrupt();
 		socketReader.stop();
