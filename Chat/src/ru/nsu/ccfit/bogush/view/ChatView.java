@@ -12,22 +12,24 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
-public class ChatView extends JFrame {
+class ChatView extends JFrame {
 	private static final Logger logger = LogManager.getLogger(ChatView.class.getSimpleName());
 	private static final String TITLE = "Chat";
-	private static final Color MESSAGE_BACKGROUND_COLOR = new Color(150, 150, 250, 100);
 	private static final int MARGIN = 4;
-	private static final Dimension MESSAGES_PANEL_SIZE = new Dimension(-1, 250);
+	private static final Border MARGIN_BORDER = BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN);
 	private static final Dimension COMPOSE_PANEL_SIZE = new Dimension(-1, 30);
+	private static final Dimension USER_LIST_PANEL_SIZE = new Dimension(100, -1);
 
 	private ViewController viewController;
 
 	private HashMap<User, JComponent> userComponentMap = new HashMap<>();
 
 	private JTextArea composeTextArea;
+	private JSplitPane chatPane;
 	private JSplitPane root;
-	private JPanel messagesPanel;
 	private JPanel userListPanel;
+	private JList<String> messageList;
+	private DefaultListModel<String> messageListModel;
 
 	ChatView(ViewController viewController) throws HeadlessException {
 		super(TITLE);
@@ -48,7 +50,8 @@ public class ChatView extends JFrame {
 			userComponentMap.put(user, userComponent);
 			userListPanel.add(userComponent);
 		}
-		userListPanel.updateUI();
+		userListPanel.validate();
+		userListPanel.repaint();
 	}
 
 	void removeUser(User user) {
@@ -59,21 +62,22 @@ public class ChatView extends JFrame {
 		} else {
 			logger.error("User is absent in the component map");
 		}
-		userListPanel.updateUI();
+		userListPanel.validate();
+		userListPanel.repaint();
 	}
 
 	void removeAllUsers() {
 		userComponentMap.clear();
 		userListPanel.removeAll();
-		userListPanel.updateUI();
+		userListPanel.validate();
+		userListPanel.repaint();
 	}
 
 	private void createComponents() {
 		userListPanel = createUserListPanel();
-		JSplitPane chatPanel = createChatPane();
-
-		root = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, userListPanel, chatPanel);
-		root.setBorder(BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN));
+		createChatPane();
+		root = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, userListPanel, chatPane);
+		root.setBorder(MARGIN_BORDER);
 		root.setOpaque(true);
 	}
 
@@ -81,9 +85,9 @@ public class ChatView extends JFrame {
 		JPanel userListPanel = new JPanel();
 		userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
 		Border line = BorderFactory.createLineBorder(Color.BLACK);
-		Border margin = BorderFactory.createEmptyBorder(MARGIN,MARGIN,MARGIN,MARGIN);
+		Border margin = MARGIN_BORDER;
 		userListPanel.setBorder(BorderFactory.createCompoundBorder(line, margin));
-		userListPanel.setMinimumSize(new Dimension(100, -1));
+		userListPanel.setMinimumSize(USER_LIST_PANEL_SIZE);
 		return userListPanel;
 	}
 
@@ -93,23 +97,23 @@ public class ChatView extends JFrame {
 		return label;
 	}
 
-	private JSplitPane createChatPane() {
-		JSplitPane chatPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		messagesPanel = new JPanel();
-		messagesPanel.setLayout(new BoxLayout(messagesPanel, BoxLayout.Y_AXIS));
-		messagesPanel.setBackground(Color.WHITE);
-		messagesPanel.setMinimumSize(MESSAGES_PANEL_SIZE);
+	private void createChatPane() {
+		chatPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
-		JScrollPane chatScrollPane = new JScrollPane(messagesPanel);
+		messageListModel = new DefaultListModel<>();
+		messageList = new JList<>(messageListModel);
+
+		JScrollPane chatScrollPane = new JScrollPane(messageList,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		chatScrollPane.setLayout(new ScrollPaneLayout());
-		chatScrollPane.setBorder(BorderFactory.createEmptyBorder(MARGIN,MARGIN,MARGIN,MARGIN));
-
-		chatPane.setTopComponent(chatScrollPane);
+		chatScrollPane.setBorder(MARGIN_BORDER);
 
 		JPanel composePanel = createComposePanel();
+
+		chatPane.setTopComponent(chatScrollPane);
 		chatPane.setBottomComponent(composePanel);
 		chatPane.setResizeWeight(BOTTOM_ALIGNMENT);
-		return chatPane;
 	}
 
 	private JPanel createComposePanel() {
@@ -131,7 +135,7 @@ public class ChatView extends JFrame {
 		composePanel.add(buttonContainer, BorderLayout.LINE_END);
 		composePanel.setMinimumSize(COMPOSE_PANEL_SIZE);
 
-		composeTextArea.setBorder(BorderFactory.createEmptyBorder(MARGIN,MARGIN,MARGIN,MARGIN));
+		composeTextArea.setBorder(MARGIN_BORDER);
 		composeTextArea.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -155,7 +159,8 @@ public class ChatView extends JFrame {
 	}
 
 	void appendMessage(TextMessage msg) {
-		messagesPanel.add(new MessageComponent(msg));
-		messagesPanel.updateUI();
+		messageListModel.addElement(msg.getAuthor().getNickname() + ": " + msg.getText());
+		chatPane.validate();
+		chatPane.repaint();
 	}
 }
