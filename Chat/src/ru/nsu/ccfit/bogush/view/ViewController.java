@@ -6,12 +6,13 @@ import ru.nsu.ccfit.bogush.Client;
 import ru.nsu.ccfit.bogush.LoginPayload;
 import ru.nsu.ccfit.bogush.User;
 import ru.nsu.ccfit.bogush.UserListChangeListener;
+import ru.nsu.ccfit.bogush.message.types.Text;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-public class ViewController implements UserListChangeListener {
+public class ViewController implements UserListChangeListener, ReceiveTextMessageHandler {
 	private static final Logger logger = LogManager.getLogger(ViewController.class.getSimpleName());
 
 	private Client client;
@@ -60,7 +61,6 @@ public class ViewController implements UserListChangeListener {
 	private void createChatView() {
 		logger.trace("create chat window");
 		chatView = new ChatView(this);
-		chatView.addUser(client.getUser());
 		chatView.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
@@ -126,11 +126,13 @@ public class ViewController implements UserListChangeListener {
 
 	void login(LoginPayload loginPayload) {
 		logger.trace("Login user \"{}\"", loginPayload);
+		createChatView();
 		for (LoginHandler loginHandler : loginHandlers) {
 			loginHandler.login(loginPayload);
 		}
-		hideLoginView();
+		chatView.addUser(client.getUser());
 		showChatView();
+		hideLoginView();
 	}
 
 	void logout() {
@@ -165,6 +167,11 @@ public class ViewController implements UserListChangeListener {
 		for (SendTextMessageHandler handler : sendTextMessageHandlers) {
 			handler.sendTextMessage(text);
 		}
+	}
+
+	@Override
+	public void receive(Text msg) {
+		chatView.appendMessage(msg.getText());
 	}
 
 	public void addConnectHandler(ConnectHandler handler) {

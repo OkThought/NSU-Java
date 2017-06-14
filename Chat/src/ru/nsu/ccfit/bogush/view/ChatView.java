@@ -3,7 +3,6 @@ package ru.nsu.ccfit.bogush.view;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.User;
-import ru.nsu.ccfit.bogush.UserListChangeListener;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -25,11 +24,12 @@ public class ChatView extends JFrame {
 
 	private HashMap<User, JComponent> userComponentMap = new HashMap<>();
 
+	private JTextArea composeTextArea;
 	private JSplitPane root;
 	private JPanel messagesPanel;
 	private JPanel userListPanel;
 
-	public ChatView(ViewController viewController) throws HeadlessException {
+	ChatView(ViewController viewController) throws HeadlessException {
 		super(TITLE);
 		this.viewController = viewController;
 		createComponents();
@@ -40,7 +40,7 @@ public class ChatView extends JFrame {
 	}
 
 	void addUser(User user) {
-		logger.trace("Add {}", user);
+		logger.trace("Adding {}", user);
 		if (userComponentMap.containsKey(user)) {
 			logger.warn("User already in the component map");
 		} else {
@@ -52,7 +52,7 @@ public class ChatView extends JFrame {
 	}
 
 	void removeUser(User user) {
-		logger.trace("Remove {}", user);
+		logger.trace("Removing {}", user);
 		if (userComponentMap.containsKey(user)) {
 			userListPanel.remove(userComponentMap.get(user));
 			userComponentMap.remove(user);
@@ -118,13 +118,12 @@ public class ChatView extends JFrame {
 
 
 		JPanel buttonContainer = new JPanel();
-		JTextArea composeTextArea = new JTextArea();
+		composeTextArea = new JTextArea();
 		JButton sendButton = new JButton(new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				logger.trace("Send button was clicked");
-				sendMessage(composeTextArea.getText());
-				composeTextArea.setText("");
+				sendMessage();
 			}
 		});
 		sendButton.setText("Send");
@@ -147,10 +146,16 @@ public class ChatView extends JFrame {
 		return composePanel;
 	}
 
-	private void sendMessage(String msg) {
+	private void sendMessage() {
+		String msg = composeTextArea.getText();
+		composeTextArea.setText("");
+		appendMessage(msg);
+		viewController.sendTextMessage(msg);
+	}
+
+	void appendMessage(String msg) {
 		messagesPanel.add(createMessageComponent(msg));
 		messagesPanel.updateUI();
-		viewController.sendTextMessage(msg);
 	}
 
 	private JComponent createMessageComponent(String msg) {

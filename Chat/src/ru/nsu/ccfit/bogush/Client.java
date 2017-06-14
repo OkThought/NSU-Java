@@ -37,6 +37,7 @@ public class Client implements ConnectHandler, DisconnectHandler, LoginHandler, 
 	private ViewController viewController;
 
 	private ArrayList<UserListChangeListener> userListChangeListeners = new ArrayList<>();
+	private ArrayList<ReceiveTextMessageHandler> receiveTextMessageHandlers = new ArrayList<>();
 
 	public static void main(String[] args) {
 		logger.trace("Launch client");
@@ -55,6 +56,7 @@ public class Client implements ConnectHandler, DisconnectHandler, LoginHandler, 
 		viewController.addLogoutHandler(this);
 		viewController.addSendTextMessageHandler(this);
 		addUserListChangeListener(viewController);
+		addReceiveTextMessageHandler(viewController);
 	}
 
 	private Client() {
@@ -112,14 +114,14 @@ public class Client implements ConnectHandler, DisconnectHandler, LoginHandler, 
 		setLoginPayload(loginPayload);
 		setUser(new User(loginPayload));
 		try {
-			socketMessageStream.sendMessage(new Login(loginPayload));
-		} catch (IOException e) {
+			socketWriter.write(new Login(loginPayload));
+		} catch (InterruptedException e) {
 			logger.error("Couldn't send login message");
 		}
 
 		try {
-			socketMessageStream.sendMessage(new UserList());
-		} catch (IOException e) {
+			socketWriter.write(new UserList());
+		} catch (InterruptedException e) {
 			logger.error("Couldn't send user list request message");
 		}
 	}
@@ -128,9 +130,9 @@ public class Client implements ConnectHandler, DisconnectHandler, LoginHandler, 
 	public void logout() {
 		logger.info("Disconnecting from {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
 		try {
-			socketMessageStream.sendMessage(new Logout(loginPayload));
+			socketWriter.write(new Logout(loginPayload));
 			logger.info("Disconnected");
-		} catch (IOException e) {
+		} catch (InterruptedException e) {
 			logger.error("Couldn't send logout message");
 		}
 	}
@@ -140,8 +142,8 @@ public class Client implements ConnectHandler, DisconnectHandler, LoginHandler, 
 		logger.info("Sending text message \"{}\"", text.replaceAll("\\p{C}", "[]"));
 		Text msg = new Text(user, text);
 		try {
-			socketMessageStream.sendMessage(msg);
-		} catch (IOException e) {
+			socketWriter.write(msg);
+		} catch (InterruptedException e) {
 			logger.error("Couldn't send text message");
 		}
 	}
@@ -189,7 +191,15 @@ public class Client implements ConnectHandler, DisconnectHandler, LoginHandler, 
 		userListChangeListeners.add(listener);
 	}
 
+	public void addReceiveTextMessageHandler(ReceiveTextMessageHandler handler) {
+		receiveTextMessageHandlers.add(handler);
+	}
+
 	public ArrayList<UserListChangeListener> getUserListChangeListeners() {
 		return userListChangeListeners;
+	}
+
+	public ArrayList<ReceiveTextMessageHandler> getReceiveTextMessageHandlers() {
+		return receiveTextMessageHandlers;
 	}
 }

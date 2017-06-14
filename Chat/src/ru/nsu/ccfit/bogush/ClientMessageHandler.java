@@ -3,6 +3,7 @@ package ru.nsu.ccfit.bogush;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.types.*;
+import ru.nsu.ccfit.bogush.view.ReceiveTextMessageHandler;
 
 public class ClientMessageHandler extends SimpleMessageHandler {
 	private static final Logger logger = LogManager.getLogger(ClientMessageHandler.class.getSimpleName());
@@ -15,7 +16,10 @@ public class ClientMessageHandler extends SimpleMessageHandler {
 
 	@Override
 	public void handle(Text message) {
-		logger.info("[{}: \"{}\"]", message.getAuthor(), message.getVerboseText());
+		logger.trace("Handle {}", message);
+		for (ReceiveTextMessageHandler handler : client.getReceiveTextMessageHandlers()) {
+			handler.receive(message);
+		}
 	}
 
 	@Override
