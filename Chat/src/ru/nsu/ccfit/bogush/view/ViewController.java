@@ -18,11 +18,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	private LoginView loginView;
 	private ChatView chatView;
 
-	private ArrayList<ConnectHandler> connectHandlers = new ArrayList<>();
-	private ArrayList<DisconnectHandler> disconnectHandlers = new ArrayList<>();
-	private ArrayList<LoginHandler> loginHandlers = new ArrayList<>();
-	private ArrayList<LogoutHandler> logoutHandlers = new ArrayList<>();
-	private ArrayList<SendTextMessageHandler> sendTextMessageHandlers = new ArrayList<>();
+	private ArrayList<ChatEventHandler> chatEventHandlers = new ArrayList<>();
 
 	public ViewController(Client client) {
 		this.client = client;
@@ -105,7 +101,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 
 	void connect(String host, int port) {
 		logger.info("Connecting to {}:{}", host, port);
-		for (ConnectHandler handler : connectHandlers) {
+		for (ConnectHandler handler : chatEventHandlers) {
 			if (!handler.connect(host, port)) {
 				new AlertDialog(connectView, "Connect", "Couldn't connect to server");
 				return;
@@ -116,7 +112,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	}
 
 	private void disconnect() {
-		for (DisconnectHandler handler : disconnectHandlers) {
+		for (DisconnectHandler handler : chatEventHandlers) {
 			handler.disconnect();
 		}
 	}
@@ -124,7 +120,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	void login(LoginPayload loginPayload) {
 		logger.trace("Login user \"{}\"", loginPayload);
 		createChatView();
-		for (LoginHandler loginHandler : loginHandlers) {
+		for (LoginHandler loginHandler : chatEventHandlers) {
 			loginHandler.login(loginPayload);
 		}
 		chatView.addUser(client.getUser());
@@ -134,7 +130,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 
 	void logout() {
 		logger.trace("Logging out");
-		for (LogoutHandler logoutHandler : logoutHandlers) {
+		for (LogoutHandler logoutHandler : chatEventHandlers) {
 			logoutHandler.logout();
 		}
 		hideChatView();
@@ -165,7 +161,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 
 	void sendTextMessage(String text) {
 		logger.trace("Sending text message \"{}\"", text.replaceAll("\\p{C}", "[]"));
-		for (SendTextMessageHandler handler : sendTextMessageHandlers) {
+		for (SendTextMessageHandler handler : chatEventHandlers) {
 			handler.sendTextMessage(text);
 		}
 	}
@@ -175,23 +171,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 		chatView.appendMessage(msg.getText());
 	}
 
-	public void addConnectHandler(ConnectHandler handler) {
-		connectHandlers.add(handler);
-	}
-
-	public void addDisconnectHandler(DisconnectHandler handler) {
-		disconnectHandlers.add(handler);
-	}
-
-	public void addLoginHandler(LoginHandler handler) {
-		loginHandlers.add(handler);
-	}
-
-	public void addLogoutHandler(LogoutHandler handler) {
-		logoutHandlers.add(handler);
-	}
-
-	public void addSendTextMessageHandler(SendTextMessageHandler handler) {
-		sendTextMessageHandlers.add(handler);
+	public void addChatEventHandler(ChatEventHandler handler) {
+		chatEventHandlers.add(handler);
 	}
 }

@@ -13,7 +13,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Client implements ConnectHandler, DisconnectHandler, LoginHandler, LogoutHandler, SendTextMessageHandler, Runnable {
+public class Client implements ChatEventHandler, Runnable {
 	private static final int READER_QUEUE_CAPACITY = 50;
 	private static final int WRITER_QUEUE_CAPACITY = 50;
 
@@ -47,14 +47,8 @@ public class Client implements ConnectHandler, DisconnectHandler, LoginHandler, 
 	}
 
 	private void prepareUI() {
-
 		viewController = new ViewController(this);
-
-		viewController.addConnectHandler(this);
-		viewController.addDisconnectHandler(this);
-		viewController.addLoginHandler(this);
-		viewController.addLogoutHandler(this);
-		viewController.addSendTextMessageHandler(this);
+		viewController.addChatEventHandler(this);
 		addUserListChangeListener(viewController);
 		addReceiveTextMessageHandler(viewController);
 	}
