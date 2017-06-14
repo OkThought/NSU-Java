@@ -48,7 +48,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 			try {
 				socketReader.read().handleBy(serverMessageHandler);
 			} catch (InterruptedException e) {
-				logger.error("Socket reader interrupted");
+				logger.trace("Socket reader interrupted");
 				break;
 			}
 		}

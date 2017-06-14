@@ -64,7 +64,7 @@ public class Client implements ChatEventHandler, Runnable {
 			try {
 				socketReader.read().handleBy(clientMessageHandler);
 			} catch (InterruptedException e) {
-				logger.error("Socket reader interrupted");
+				logger.trace("Socket reader interrupted");
 				break;
 			}
 		}
