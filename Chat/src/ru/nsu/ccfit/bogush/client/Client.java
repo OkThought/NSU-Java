@@ -3,6 +3,7 @@ package ru.nsu.ccfit.bogush.client;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.*;
+import ru.nsu.ccfit.bogush.client.view.handlers.ChatEventHandler;
 import ru.nsu.ccfit.bogush.message.types.Login;
 import ru.nsu.ccfit.bogush.message.types.Logout;
 import ru.nsu.ccfit.bogush.message.types.TextMessage;
