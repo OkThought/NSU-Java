@@ -2,10 +2,7 @@ package ru.nsu.ccfit.bogush.view;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.Client;
-import ru.nsu.ccfit.bogush.LoginPayload;
-import ru.nsu.ccfit.bogush.User;
-import ru.nsu.ccfit.bogush.UserListChangeListener;
+import ru.nsu.ccfit.bogush.*;
 import ru.nsu.ccfit.bogush.message.types.Text;
 
 import java.awt.event.WindowAdapter;
