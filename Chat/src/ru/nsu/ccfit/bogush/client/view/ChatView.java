@@ -17,7 +17,7 @@ class ChatView extends JFrame {
 	private static final String TITLE = "Chat";
 	private static final int MARGIN = 4;
 	private static final Border MARGIN_BORDER = BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN);
-	private static final Dimension COMPOSE_PANEL_SIZE = new Dimension(-1, 30);
+	private static final Dimension COMPOSE_PANEL_SIZE = new Dimension(100, 30);
 	private static final Dimension USER_LIST_PANE_SIZE = new Dimension(100, -1);
 
 	private ViewController viewController;
@@ -25,7 +25,10 @@ class ChatView extends JFrame {
 	private JTextArea composeTextArea;
 	private JSplitPane chatPane;
 	private JSplitPane root;
-	private JScrollPane userListPane;
+
+	private JScrollPane userListScrollPane;
+	private JScrollPane chatScrollPane;
+
 	private DefaultListModel<User> userListModel;
 	private DefaultListModel<String> messageListModel;
 
@@ -46,8 +49,8 @@ class ChatView extends JFrame {
 		} else {
 			userListModel.addElement(user);
 		}
-		userListPane.validate();
-		userListPane.repaint();
+		userListScrollPane.validate();
+		userListScrollPane.repaint();
 	}
 
 	void removeUser(User user) {
@@ -57,20 +60,20 @@ class ChatView extends JFrame {
 		} else {
 			logger.error("User is absent in the list");
 		}
-		userListPane.validate();
-		userListPane.repaint();
+		userListScrollPane.validate();
+		userListScrollPane.repaint();
 	}
 
 	void removeAllUsers() {
 		userListModel.removeAllElements();
-		userListPane.validate();
-		userListPane.repaint();
+		userListScrollPane.validate();
+		userListScrollPane.repaint();
 	}
 
 	private void createComponents() {
 		createUserListPane();
 		createChatPane();
-		root = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, userListPane, chatPane);
+		root = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, userListScrollPane, chatPane);
 		root.setBorder(MARGIN_BORDER);
 		root.setOpaque(true);
 	}
@@ -78,11 +81,20 @@ class ChatView extends JFrame {
 	private void createUserListPane() {
 		userListModel = new DefaultListModel<>();
 		JList<User> userList = new JList<>(userListModel);
-		userListPane = new JScrollPane(userList,
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		userListPane.setBorder(MARGIN_BORDER);
-		userListPane.setMinimumSize(USER_LIST_PANE_SIZE);
+		ListElementRenderer renderer = new ListElementRenderer();
+		userList.setCellRenderer(renderer);
+		userListScrollPane = new JScrollPane(userList,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		userListScrollPane.setBorder(MARGIN_BORDER);
+		userListScrollPane.setMinimumSize(USER_LIST_PANE_SIZE);
+
+		JViewport viewport = userListScrollPane.getViewport();
+		viewport.addChangeListener(e -> {
+			renderer.setWidth(viewport.getWidth());
+			userListScrollPane.validate();
+			userListScrollPane.repaint();
+		});
 	}
 
 	private void createChatPane() {
@@ -90,12 +102,21 @@ class ChatView extends JFrame {
 
 		messageListModel = new DefaultListModel<>();
 		JList<String> messageList = new JList<>(messageListModel);
+		ListElementRenderer renderer = new ListElementRenderer();
+		messageList.setCellRenderer(renderer);
 
-		JScrollPane chatScrollPane = new JScrollPane(messageList,
+		chatScrollPane = new JScrollPane(messageList,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		chatScrollPane.setLayout(new ScrollPaneLayout());
 		chatScrollPane.setBorder(MARGIN_BORDER);
+
+		JViewport viewport = chatScrollPane.getViewport();
+		viewport.addChangeListener(e -> {
+			renderer.setWidth(viewport.getWidth());
+			chatScrollPane.validate();
+			chatScrollPane.repaint();
+		});
 
 		JPanel composePanel = createComposePanel();
 
@@ -148,7 +169,7 @@ class ChatView extends JFrame {
 
 	void appendMessage(TextMessage msg) {
 		messageListModel.addElement(msg.getAuthor().getNickname() + ": " + msg.getText());
-		chatPane.validate();
-		chatPane.repaint();
+		chatScrollPane.validate();
+		chatScrollPane.repaint();
 	}
 }
