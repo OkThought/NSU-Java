@@ -95,28 +95,24 @@ public class Server implements Runnable {
 	public void run() {
 		try {
 			serverSocket = new ServerSocket(port);
-			try {
-				if (port == 0) {
-					port = serverSocket.getLocalPort();
-					logger.info("Port set automatically to {}", port);
+			if (port == 0) {
+				port = serverSocket.getLocalPort();
+				logger.info("Port set automatically to {}", port);
+			}
+			logger.info("Created socket on port {}", port);
+			logger.info("Server localhost ip: {}", InetAddress.getLocalHost().getHostAddress());
+			while (!Thread.interrupted()) {
+				logger.info("");
+				logger.info("");
+				Socket socket = serverSocket.accept();
+				logger.info("Socket [{}] accepted", socket.getInetAddress().getHostAddress());
+				ConnectedUser connectedUser = new ConnectedUser(this, socket);
+				if (connectedUsers.contains(connectedUser)) {
+					logger.debug("User already connected");
+				} else {
+					connectedUsers.add(connectedUser);
+					connectedUser.start();
 				}
-				logger.info("Created socket on port {}", port);
-				logger.info("Server localhost ip: {}", InetAddress.getLocalHost().getHostAddress());
-				while (!Thread.interrupted()) {
-					logger.info("");
-					logger.info("");
-					Socket socket = serverSocket.accept();
-					logger.info("Socket [{}] accepted", socket.getInetAddress().getHostAddress());
-					ConnectedUser connectedUser = new ConnectedUser(this, socket);
-					if (connectedUsers.contains(connectedUser)) {
-						logger.debug("User already connected");
-					} else {
-						connectedUsers.add(connectedUser);
-						connectedUser.start();
-					}
-				}
-			} finally {
-				serverSocket.close();
 			}
 		} catch (SocketException e) {
 			logger.info(e.getMessage());
@@ -137,7 +133,9 @@ public class Server implements Runnable {
 	private void stop() {
 		logger.info("Stopping the server");
 		try {
+			logger.trace("Closing socket");
 			serverSocket.close();
+			logger.trace("Socket closed");
 		} catch (IOException e) {
 			logger.error("Couldn't close server socket: {}", e.getMessage());
 		}
