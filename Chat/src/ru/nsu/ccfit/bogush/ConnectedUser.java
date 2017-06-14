@@ -71,7 +71,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 	@Override
 	public void lostConnection() {
 		broadcastToOthers(new UserLeft(new User(getNickname())));
-		server.logout(this);
+		server.disconnect(this);
 		stop();
 	}
 

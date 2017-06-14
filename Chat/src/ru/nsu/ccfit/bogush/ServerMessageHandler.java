@@ -49,7 +49,6 @@ public class ServerMessageHandler extends SimpleMessageHandler {
 				logger.error("Couldn't send error message");
 			}
 		} else {
-			server.logout(connectedUser);
 			try {
 				connectedUser.sendMessage(new LogoutSuccess("Successfully logged out"));
 			} catch (InterruptedException e) {

@@ -147,7 +147,7 @@ public class Server implements Runnable {
 		logger.info("Server stopped. Exiting...");
 	}
 
-	void logout(ConnectedUser connectedUser) {
+	void disconnect(ConnectedUser connectedUser) {
 		connectedUsers.remove(connectedUser);
 		connectedUser.stop();
 	}
