@@ -1,20 +1,17 @@
 package ru.nsu.ccfit.bogush.message.types;
 
-import ru.nsu.ccfit.bogush.User;
 import ru.nsu.ccfit.bogush.message.Message;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 
 public class TextMessage implements Message {
-	private User author;
 	private String text;
 
-	public TextMessage(User author, String text) {
-		this.author = author;
-		this.text = text;
+	public TextMessage(TextMessage other) {
+		this.text = other.text;
 	}
 
-	public User getAuthor() {
-		return author;
+	public TextMessage(String text) {
+		this.text = text;
 	}
 
 	public String getText() {
@@ -32,10 +29,6 @@ public class TextMessage implements Message {
 
 	@Override
 	public String toString() {
-		return "[" +
-				getAuthor() +
-				": \"" +
-				getVerboseText() +
-				"\"]";
+		return getClass().getSimpleName() + "(\"" + getVerboseText() + "\")";
 	}
 }

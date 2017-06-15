@@ -4,10 +4,10 @@ import ru.nsu.ccfit.bogush.User;
 import ru.nsu.ccfit.bogush.message.Message;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 
-public class UserLeft implements Message {
+public class LogoutEvent implements Message {
 	private User user;
 
-	public UserLeft(User user) {
+	public LogoutEvent(User user) {
 		this.user = user;
 	}
 

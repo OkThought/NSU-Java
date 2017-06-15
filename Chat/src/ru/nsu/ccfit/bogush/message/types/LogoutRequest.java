@@ -3,16 +3,17 @@ package ru.nsu.ccfit.bogush.message.types;
 import ru.nsu.ccfit.bogush.network.LoginPayload;
 import ru.nsu.ccfit.bogush.message.Message;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
+import ru.nsu.ccfit.bogush.network.Session;
 
-public class Logout implements Message {
-	private LoginPayload loginPayload;
+public class LogoutRequest implements Message {
+	private Session session;
 
-	public Logout(LoginPayload loginPayload) {
-		this.loginPayload = loginPayload;
+	public LogoutRequest(Session session) {
+		this.session = session;
 	}
 
-	public LoginPayload getLoginPayload() {
-		return loginPayload;
+	public Session getSession() {
+		return session;
 	}
 
 	@Override
@@ -22,6 +23,6 @@ public class Logout implements Message {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + "(\"" + loginPayload.getNickname() + "\")";
+		return getClass().getSimpleName() + "(\"" + session + "\")";
 	}
 }

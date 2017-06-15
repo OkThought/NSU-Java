@@ -162,13 +162,12 @@ class ChatView extends JFrame {
 	private void sendMessage() {
 		String text = composeTextArea.getText();
 		composeTextArea.setText("");
-		TextMessage msg = new TextMessage(viewController.getUser(), text);
-		appendMessage(msg);
-		viewController.sendTextMessage(msg);
+		appendMessage(viewController.getUser().getNickname(), text);
+		viewController.sendTextMessage(text);
 	}
 
-	void appendMessage(TextMessage msg) {
-		messageListModel.addElement(msg.getAuthor().getNickname() + ": " + msg.getText());
+	void appendMessage(String author, String text) {
+		messageListModel.addElement(author + ": " + text);
 		chatScrollPane.validate();
 		chatScrollPane.repaint();
 	}

@@ -4,10 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.*;
 import ru.nsu.ccfit.bogush.message.Message;
-import ru.nsu.ccfit.bogush.message.types.LoginSuccess;
-import ru.nsu.ccfit.bogush.message.types.LogoutSuccess;
-import ru.nsu.ccfit.bogush.message.types.UserEntered;
-import ru.nsu.ccfit.bogush.message.types.UserLeft;
+import ru.nsu.ccfit.bogush.message.types.*;
 import ru.nsu.ccfit.bogush.network.*;
 
 import java.io.IOException;
@@ -22,13 +19,13 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 	private Server server;
 	private Socket socket;
 	private LoginPayload loginPayload;
-	private User user;
 	private boolean online = false;
 
 	private SocketReader socketReader;
 	private SocketWriter socketWriter;
 
 	private Thread thread;
+	private Session session;
 
 	ConnectedUser(Server server, Socket socket) throws IOException {
 		this(server, socket, DEFAULT_IN_QUEUE_CAPACITY, DEFAULT_OUT_QUEUE_CAPACITY);
@@ -47,16 +44,9 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		logger.trace("{} created", ConnectedUser.class.getSimpleName());
 	}
 
-	void start() {
-		logger.trace("Start {}", ConnectedUser.class.getSimpleName());
-		thread.start();
-		socketReader.start();
-		socketWriter.start();
-	}
-
 	@Override
 	public void run() {
-		ServerMessageHandler serverMessageHandler = new ServerMessageHandler(server, this);
+		ServerMessageHandler serverMessageHandler = new ServerMessageHandler(this);
 		while (!Thread.interrupted()) {
 			try {
 				socketReader.read().handleBy(serverMessageHandler);
@@ -65,6 +55,58 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 				break;
 			}
 		}
+	}
+
+	void start() {
+		logger.trace("Start {}", ConnectedUser.class.getSimpleName());
+		thread.start();
+		socketReader.start();
+		socketWriter.start();
+	}
+
+	void login(LoginPayload loginPayload) {
+		this.loginPayload = loginPayload;
+		session = new Session(hashCode());
+		online = true;
+		User user = loginPayload.getUser();
+		logger.info("Sending login success message back to {}", user);
+		try {
+			sendMessage(new LoginSuccess(session));
+		} catch (InterruptedException e) {
+			logger.error("Couldn't write success message");
+		}
+		broadcastToOthers(new LoginEvent(user));
+	}
+
+	void logout() {
+		online = false;
+		LogoutSuccess msg = new LogoutSuccess();
+		try {
+			sendMessage(msg);
+		} catch (InterruptedException e) {
+			logger.error("Couldn't send {}", msg);
+		}
+		broadcastToOthers(new LogoutEvent(getUser()));
+	}
+
+	void stop() {
+		logger.trace("Stop {}", ConnectedUser.class.getSimpleName());
+		thread.interrupt();
+		socketReader.stop();
+		socketWriter.stop();
+	}
+
+	@Override
+	public void lostConnection() {
+		if (online) {
+			broadcastToOthers(new LogoutEvent(loginPayload.getUser()));
+		}
+		server.disconnect(this);
+		stop();
+	}
+
+	void sendMessage(Message message) throws InterruptedException {
+		socketWriter.write(message);
 	}
 
 	void broadcastToOthers(Message msg) {
@@ -80,39 +122,24 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		}
 	}
 
-	void sendMessage(Message message) throws InterruptedException {
-		socketWriter.write(message);
+	void addToHistory(ClientTextMessage message) {
+		server.addToHistory(message);
 	}
 
-	void logout(User user) {
-		online = false;
-		LogoutSuccess msg = new LogoutSuccess("Logged out successfully");
-		try {
-			sendMessage(msg);
-		} catch (InterruptedException e) {
-			logger.error("Couldn't send {}", msg);
-		}
-		broadcastToOthers(new UserLeft(user));
+	Session getSession() {
+		return session;
 	}
 
-	void stop() {
-		logger.trace("Stop {}", ConnectedUser.class.getSimpleName());
-		thread.interrupt();
-		socketReader.stop();
-		socketWriter.stop();
+	public User getUser() {
+		return loginPayload.getUser();
 	}
 
-	@Override
-	public void lostConnection() {
-		if (online) {
-			broadcastToOthers(new UserLeft(user));
-		}
-		server.disconnect(this);
-		stop();
+	User[] getUserList() {
+		return server.getUserList();
 	}
 
-	public String getNickname() {
-		return loginPayload.getNickname();
+	String getNickname() {
+		return loginPayload.getUser().getNickname();
 	}
 
 	@Override
@@ -135,19 +162,5 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		if (!server.equals(that.server)) return false;
 		if (!socket.equals(that.socket)) return false;
 		return loginPayload.equals(that.loginPayload);
-	}
-
-	public User login(LoginPayload loginPayload) {
-		this.loginPayload = loginPayload;
-		online = true;
-		user = new User(loginPayload);
-		logger.info("Sending login success message back to {}", user);
-		try {
-			sendMessage(new LoginSuccess("Logged in successfully"));
-		} catch (InterruptedException e) {
-			logger.error("Couldn't write success message");
-		}
-		broadcastToOthers(new UserEntered(user));
-		return user;
 	}
 }

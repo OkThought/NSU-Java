@@ -1,17 +1,24 @@
 package ru.nsu.ccfit.bogush.message;
 
 import ru.nsu.ccfit.bogush.message.types.*;
+import ru.nsu.ccfit.bogush.message.types.ErrorMessage;
 
 public interface MessageHandler {
-	void handle(Login message);
-	void handle(Logout message);
+	void handle(LoginRequest message);
+	void handle(LoginEvent message);
 	void handle(LoginSuccess message);
-	void handle(LoginError message);
+
+	void handle(LogoutRequest message);
+	void handle(LogoutEvent message);
 	void handle(LogoutSuccess message);
-	void handle(LogoutError message);
-	void handle(TextMessage message);
-	void handle(UserList message);
-	void handle(UserEntered message);
-	void handle(UserLeft message);
+
+	void handle(ClientTextMessage message);
+	void handle(ServerTextMessage message);
+
+	void handle(UserListRequest message);
+	void handle(UserListSuccess message);
+
+	void handle(ErrorMessage message);
+
 	void handle(Message message);
 }

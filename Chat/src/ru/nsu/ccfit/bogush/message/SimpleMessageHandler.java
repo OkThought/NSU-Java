@@ -3,72 +3,72 @@ package ru.nsu.ccfit.bogush.message;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.types.*;
+import ru.nsu.ccfit.bogush.message.types.ErrorMessage;
 
 public class SimpleMessageHandler implements MessageHandler {
 	private static final Logger logger = LogManager.getLogger(SimpleMessageHandler.class.getSimpleName());
 
 	@Override
-	public void handle(Login message) {
-		logger.trace("Handle {}", message);
-		notSupported(message);
+	public void handle(LoginRequest message) {
+		defaultHandle(message);
+	}
+
+	@Override
+	public void handle(LoginEvent message) {
+		defaultHandle(message);
 	}
 
 	@Override
 	public void handle(LoginSuccess message) {
-		logger.trace("Handle {}", message);
-		notSupported(message);
+		defaultHandle(message);
 	}
 
 	@Override
-	public void handle(LoginError message) {
-		logger.trace("Handle {}", message);
-		notSupported(message);
+	public void handle(UserListRequest message) {
+		defaultHandle(message);
 	}
 
 	@Override
-	public void handle(UserList message) {
-		logger.trace("Handle {}", message);
-		notSupported(message);
+	public void handle(UserListSuccess message) {
+		defaultHandle(message);
 	}
 
 	@Override
-	public void handle(UserEntered message) {
-		logger.trace("Handle {}", message);
-		notSupported(message);
+	public void handle(LogoutRequest message) {
+		defaultHandle(message);
 	}
 
 	@Override
-	public void handle(Logout message) {
-		logger.trace("Handle {}", message);
-		notSupported(message);
+	public void handle(LogoutEvent message) {
+		defaultHandle(message);
 	}
 
 	@Override
 	public void handle(LogoutSuccess message) {
-		logger.trace("Handle {}", message);
-		notSupported(message);
+		defaultHandle(message);
 	}
 
 	@Override
-	public void handle(LogoutError message) {
-		logger.trace("Handle {}", message);
-		notSupported(message);
+	public void handle(ClientTextMessage message) {
+		defaultHandle(message);
 	}
 
 	@Override
-	public void handle(UserLeft message) {
-		logger.trace("Handle {}", message);
-		notSupported(message);
+	public void handle(ServerTextMessage message) {
+		defaultHandle(message);
 	}
 
 	@Override
-	public void handle(TextMessage message) {
-		logger.trace("Handle {}", message);
-		notSupported(message);
+	public void handle(ErrorMessage message) {
+		defaultHandle(message);
 	}
 
 	@Override
 	public void handle(Message message) {
+		defaultHandle(message);
+	}
+
+	private void defaultHandle(Message message) {
 		logger.trace("Handle {}", message);
 		notSupported(message);
 	}

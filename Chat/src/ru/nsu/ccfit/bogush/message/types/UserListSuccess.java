@@ -6,17 +6,15 @@ import ru.nsu.ccfit.bogush.message.MessageHandler;
 
 import java.util.Collection;
 
-public class UserList implements Message {
+public class UserListSuccess implements Message {
 	private static final int MAX_USERS_TO_STRING = 3;
 	private User[] users;
 
-	public UserList() {}
-
-	public UserList(User[] users) {
+	public UserListSuccess(User[] users) {
 		this.users = users;
 	}
 
-	public UserList(Collection<User> users) {
+	public UserListSuccess(Collection<User> users) {
 		this.users = users.toArray(new User[users.size()]);
 	}
 
@@ -33,7 +31,7 @@ public class UserList implements Message {
 	public String toString() {
 		String result;
 		if (users == null) {
-			result = this.getClass().getSimpleName() + "(request)";
+			result = this.getClass().getSimpleName() + "(null)";
 		} else if (users.length == 0) {
 			result = this.getClass().getSimpleName() + "([])";
 		} else {

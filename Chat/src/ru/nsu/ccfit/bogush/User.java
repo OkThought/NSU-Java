@@ -1,7 +1,5 @@
 package ru.nsu.ccfit.bogush;
 
-import ru.nsu.ccfit.bogush.network.LoginPayload;
-
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -9,10 +7,6 @@ public class User implements Serializable {
 
 	public User(String nickname) {
 		this.nickname = nickname;
-	}
-
-	public User(LoginPayload loginPayload) {
-		nickname = loginPayload.getNickname();
 	}
 
 	public String getNickname() {

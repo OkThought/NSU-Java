@@ -5,62 +5,67 @@ import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.SimpleMessageHandler;
 import ru.nsu.ccfit.bogush.User;
 import ru.nsu.ccfit.bogush.message.types.*;
+import ru.nsu.ccfit.bogush.message.types.ErrorMessage;
+import ru.nsu.ccfit.bogush.network.Session;
 
 public class ServerMessageHandler extends SimpleMessageHandler {
 	private static final Logger logger = LogManager.getLogger(ServerMessageHandler.class.getSimpleName());
 
-	private Server server;
 	private ConnectedUser connectedUser;
-	private User user;
-	private String nickname;
 
-	ServerMessageHandler(Server server, ConnectedUser connectedUser) {
-		this.server = server;
+	ServerMessageHandler(ConnectedUser connectedUser) {
 		this.connectedUser = connectedUser;
 	}
 
 	@Override
-	public void handle(Login message) {
+	public void handle(LoginRequest message) {
 		logger.trace("Handle {}", message);
-		user = connectedUser.login(message.getLoginPayload());
-		nickname = connectedUser.getNickname();
+		connectedUser.login(message.getLoginPayload());
 	}
 
 	@Override
-	public void handle(Logout message) {
+	public void handle(LogoutRequest message) {
 		logger.trace("Handle {}", message);
-		String requested = message.getLoginPayload().getNickname();
-		if (!requested.equals(nickname)) {
-			logger.error("Nickname '{}' requested for logging out", requested);
-			logger.error("is not the same as the actual nickname: '{}'", nickname);
-			logger.warn("Probably '{}' wants to play hacker", nickname);
+		logger.error("Received logout request {} from {}", message, connectedUser.getUser());
+		if (checkSession(message.getSession())) {
+			connectedUser.logout();
+		}
+	}
+
+	@Override
+	public void handle(ClientTextMessage message) {
+		logger.trace("Handle {}", message);
+		if (checkSession(message.getSession())) {
+			connectedUser.broadcastToOthers(new ServerTextMessage(message, connectedUser.getUser()));
+			connectedUser.addToHistory(message);
+		}
+	}
+
+	@Override
+	public void handle(UserListRequest message) {
+		logger.trace("Handle {}", message);
+		if (checkSession(message.getSession())) {
+			UserListSuccess userListSuccessMessage = new UserListSuccess(connectedUser.getUserList());
 			try {
-				connectedUser.sendMessage(new LogoutError("Wrong nickname"));
+				connectedUser.sendMessage(userListSuccessMessage);
+			} catch (InterruptedException e) {
+				logger.error("Couldn't send user-list to {}", connectedUser.getNickname());
+			}
+		}
+	}
+
+	private boolean checkSession(Session requested) {
+		Session actual = connectedUser.getSession();
+		if (!requested.equals(actual)) {
+			logger.error("{} not equals actual {}", requested, actual);
+			logger.warn("Probably '{}' wants to play hacker", connectedUser.getNickname());
+			try {
+				connectedUser.sendMessage(new ErrorMessage("Wrong session id"));
 			} catch (InterruptedException e) {
 				logger.error("Couldn't send error message");
 			}
-		} else {
-			connectedUser.logout(user);
+			return false;
 		}
+		return true;
 	}
-
-	@Override
-	public void handle(TextMessage message) {
-		logger.trace("Handle {}", message);
-		connectedUser.broadcastToOthers(message);
-		server.addToHistory(message);
-	}
-
-	@Override
-	public void handle(UserList message) {
-		logger.trace("Handle {}", message);
-		UserList userListMessage = new UserList(server.getUserList());
-		try {
-			connectedUser.sendMessage(userListMessage);
-		} catch (InterruptedException e) {
-			logger.error("Couldn't send user-list to {}", nickname);
-		}
-	}
-
-
 }

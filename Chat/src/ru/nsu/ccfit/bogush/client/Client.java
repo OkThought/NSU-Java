@@ -4,10 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.*;
 import ru.nsu.ccfit.bogush.client.view.handlers.ChatEventHandler;
-import ru.nsu.ccfit.bogush.message.types.Login;
-import ru.nsu.ccfit.bogush.message.types.Logout;
-import ru.nsu.ccfit.bogush.message.types.TextMessage;
-import ru.nsu.ccfit.bogush.message.types.UserList;
+import ru.nsu.ccfit.bogush.message.types.*;
 import ru.nsu.ccfit.bogush.client.view.*;
 import ru.nsu.ccfit.bogush.network.*;
 
@@ -32,7 +29,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 
 	private Thread thread;
 
-	private User user;
+	private Session session;
 	private LoginPayload loginPayload;
 
 	private ArrayList<UserListChangeListener> userListChangeListeners = new ArrayList<>();
@@ -102,20 +99,13 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	}
 
 	@Override
-	public void login(LoginPayload loginPayload) {
-		logger.info("Logging in with nickname \"{}\"", loginPayload.getNickname());
-		setLoginPayload(loginPayload);
-		setUser(new User(loginPayload));
+	public void login(String nickname) {
+		logger.info("Logging in with nickname \"{}\"", nickname);
+		setLoginPayload(new LoginPayload(new User(nickname)));
 		try {
-			socketWriter.write(new Login(loginPayload));
+			socketWriter.write(new LoginRequest(loginPayload));
 		} catch (InterruptedException e) {
 			logger.error("Couldn't send login message");
-		}
-
-		try {
-			socketWriter.write(new UserList());
-		} catch (InterruptedException e) {
-			logger.error("Couldn't send user list request message");
 		}
 	}
 
@@ -123,7 +113,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	public void logout() {
 		logger.info("Logging out");
 		try {
-			socketWriter.write(new Logout(loginPayload));
+			socketWriter.write(new LogoutRequest(session));
 		} catch (InterruptedException e) {
 			logger.error("Couldn't send logout message");
 		}
@@ -131,12 +121,12 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 
 	@Override
 	public void sendTextMessage(TextMessage msg) {
-		logger.info("Sending textMessage message {}", msg);
-		TextMessage textMessage = new TextMessage(msg.getAuthor(), msg.getText());
+		ClientTextMessage textMessage = new ClientTextMessage(msg, session);
+		logger.info("Sending {}", textMessage);
 		try {
 			socketWriter.write(textMessage);
 		} catch (InterruptedException e) {
-			logger.error("Couldn't send textMessage message");
+			logger.error("Couldn't send text message");
 		}
 	}
 
@@ -151,13 +141,17 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		this.loginPayload = loginPayload;
 	}
 
-	public void setUser(User user) {
-		logger.trace("Set user to {}", user);
-		this.user = user;
+	void onLoginSuccess(Session session) {
+		this.session = session;
+		try {
+			socketWriter.write(new UserListRequest(session));
+		} catch (InterruptedException e) {
+			logger.error("Couldn't send user list request message");
+		}
 	}
 
 	public User getUser() {
-		return user;
+		return loginPayload.getUser();
 	}
 
 	private void start() {

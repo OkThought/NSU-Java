@@ -4,10 +4,10 @@ import ru.nsu.ccfit.bogush.network.LoginPayload;
 import ru.nsu.ccfit.bogush.message.Message;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 
-public class Login implements Message {
+public class LoginRequest implements Message {
 	private LoginPayload loginPayload;
 
-	public Login(LoginPayload loginPayload) {
+	public LoginRequest(LoginPayload loginPayload) {
 		this.loginPayload = loginPayload;
 	}
 
@@ -22,6 +22,6 @@ public class Login implements Message {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + "(\"" + loginPayload.getNickname() + "\")";
+		return this.getClass().getSimpleName() + "(" + loginPayload + ")";
 	}
 }

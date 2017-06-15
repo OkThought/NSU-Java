@@ -4,10 +4,10 @@ import ru.nsu.ccfit.bogush.message.Message;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 import ru.nsu.ccfit.bogush.network.Session;
 
-public class LoginSuccess implements Message {
+public class UserListRequest implements Message {
 	private Session session;
 
-	public LoginSuccess(Session session) {
+	public UserListRequest(Session session) {
 		this.session = session;
 	}
 
@@ -22,6 +22,6 @@ public class LoginSuccess implements Message {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + "(" + session +")";
+		return getClass().getSimpleName() + "(" + session + ")";
 	}
 }

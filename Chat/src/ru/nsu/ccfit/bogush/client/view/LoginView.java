@@ -2,7 +2,6 @@ package ru.nsu.ccfit.bogush.client.view;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.network.LoginPayload;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -80,9 +79,9 @@ public class LoginView extends JFrame {
 		String nickname = nickTextField.getText().trim();
 		if (nickname.isEmpty()) {
 			logger.trace("Nickname is empty");
-			alert("Login", "Nickname is empty!");
+			alert(TITLE, "Nickname is empty!");
 		} else {
-			viewController.login(new LoginPayload(nickname));
+			viewController.login(nickname);
 		}
 	}
 }

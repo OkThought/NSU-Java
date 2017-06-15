@@ -6,8 +6,8 @@ import ru.nsu.ccfit.bogush.*;
 import ru.nsu.ccfit.bogush.client.Client;
 import ru.nsu.ccfit.bogush.client.UserListChangeListener;
 import ru.nsu.ccfit.bogush.client.view.handlers.*;
+import ru.nsu.ccfit.bogush.message.types.ServerTextMessage;
 import ru.nsu.ccfit.bogush.message.types.TextMessage;
-import ru.nsu.ccfit.bogush.network.LoginPayload;
 import ru.nsu.ccfit.bogush.network.ReceiveTextMessageListener;
 
 import java.awt.event.WindowAdapter;
@@ -123,11 +123,11 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 		}
 	}
 
-	void login(LoginPayload loginPayload) {
-		logger.trace("Login user \"{}\"", loginPayload);
+	void login(String nickname) {
+		logger.trace("Logging in with nickname \"{}\"", nickname);
 		createChatView();
 		for (LoginHandler loginHandler : chatEventHandlers) {
-			loginHandler.login(loginPayload);
+			loginHandler.login(nickname);
 		}
 		chatView.addUser(client.getUser());
 		showChatView();
@@ -165,7 +165,8 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 		}
 	}
 
-	void sendTextMessage(TextMessage msg) {
+	void sendTextMessage(String text) {
+		TextMessage msg = new TextMessage(text);
 		logger.trace("Sending text message {}", msg);
 		for (SendTextMessageHandler handler : chatEventHandlers) {
 			handler.sendTextMessage(msg);
@@ -177,8 +178,8 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	}
 
 	@Override
-	public void receive(TextMessage msg) {
-		chatView.appendMessage(msg);
+	public void textMessageReceived(User author, TextMessage msg) {
+		chatView.appendMessage(author.getNickname(), msg.getText());
 	}
 
 	public void addChatEventHandler(ChatEventHandler handler) {
