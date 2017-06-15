@@ -98,11 +98,11 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 			logger.trace("Opening socket");
 			socket = new Socket(host, port);
 			logger.trace("Opened socket on {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
-			SocketMessageStream socketMessageStream = new SocketMessageStream(socket);
-			socketReader = new SocketReader(socketMessageStream, this, READER_QUEUE_CAPACITY);
-			socketWriter = new SocketWriter(socketMessageStream, WRITER_QUEUE_CAPACITY);
+			MessageObjectStream messageObjectStream = new MessageObjectStream(socket);
+			socketReader = new SocketReader(messageObjectStream, this, READER_QUEUE_CAPACITY);
+			socketWriter = new SocketWriter(messageObjectStream, WRITER_QUEUE_CAPACITY);
 			start();
-			logger.trace("Created {}", socketMessageStream.getClass().getSimpleName());
+			logger.trace("Created {}", messageObjectStream.getClass().getSimpleName());
 		} catch (IOException e) {
 			logger.error("Couldn't open socket");
 			return false;
