@@ -27,5 +27,6 @@ LoC/tests/input/
 LoC/out/
 out/
 
-# Server properties files
+# properties files
 /server.properties
+/client.properties

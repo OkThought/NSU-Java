@@ -31,10 +31,10 @@ public class ConnectView extends JFrame {
 	private JPanel rootPanel;
 	private SpringLayout layout;
 
-	public ConnectView(ViewController viewController) throws HeadlessException {
+	public ConnectView(ViewController viewController, String ip, String port) throws HeadlessException {
 		super(TITLE);
 		this.viewController = viewController;
-		createComponents();
+		createComponents(ip, port);
 		this.setContentPane(rootPanel);
 		this.setMinimumSize(MIN_SIZE);
 		this.setMaximumSize(MAX_SIZE);
@@ -66,7 +66,7 @@ public class ConnectView extends JFrame {
 		layout.putConstraint(SpringLayout.VERTICAL_CENTER, c, -MARGIN.height, SpringLayout.SOUTH, rootPanel);
 	}
 
-	private void createComponents() {
+	private void createComponents(String ip, String port) {
 		rootPanel = new JPanel();
 		layout = new SpringLayout();
 		rootPanel.setLayout(layout);
@@ -76,7 +76,7 @@ public class ConnectView extends JFrame {
 		northMarginConstraint(serverIpLabel);
 		rootPanel.add(serverIpLabel);
 
-		serverIpTextField = new JTextField();
+		serverIpTextField = new JTextField(ip);
 		serverIpLabel.setLabelFor(serverIpTextField);
 		serverIpTextField.setMaximumSize(TEXT_FIELD_MAX_SIZE);
 		serverIpTextField.setPreferredSize(TEXT_FIELD_SIZE);
@@ -97,7 +97,7 @@ public class ConnectView extends JFrame {
 		westMarginConstraint(serverPortLabel);
 		rootPanel.add(serverPortLabel);
 
-		serverPortTextField = new JTextField();
+		serverPortTextField = new JTextField(port);
 		verticalConstraintBetween(serverIpTextField, serverPortTextField);
 		serverPortTextField.setMaximumSize(TEXT_FIELD_MAX_SIZE);
 		serverPortTextField.setPreferredSize(TEXT_FIELD_SIZE);

@@ -18,6 +18,9 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	private static final Logger logger = LogManager.getLogger(ViewController.class.getSimpleName());
 
 	private Client client;
+	private final String ip;
+	private final String port;
+	private final String nickname;
 
 	private ConnectView connectView;
 	private LoginView loginView;
@@ -25,19 +28,24 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 
 	private ArrayList<ChatEventHandler> chatEventHandlers = new ArrayList<>();
 
-	public ViewController(Client client) {
+	public ViewController(Client client, String ip, String port, String nickname) {
 		this.client = client;
+		this.ip = ip;
+		this.port = port;
+		this.nickname = nickname;
 		showConnectView();
 	}
 
 	private void createConnectView() {
 		logger.trace("create connect window");
-		connectView = new ConnectView(this);
+		connectView = new ConnectView(this, ip, port);
 		connectView.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				logger.trace("connect window closed");
-				loginView.dispose();
+				if (loginView != null) {
+					loginView.dispose();
+				}
 				disconnect();
 			}
 		});
@@ -45,7 +53,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 
 	private void createLoginView() {
 		logger.trace("create login window");
-		loginView = new LoginView(this);
+		loginView = new LoginView(this, nickname);
 
 		loginView.addWindowListener(new WindowAdapter() {
 			@Override

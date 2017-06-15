@@ -11,15 +11,38 @@ import ru.nsu.ccfit.bogush.network.*;
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class Client implements ChatEventHandler, LostConnectionListener, Runnable {
 	private static final int READER_QUEUE_CAPACITY = 50;
 	private static final int WRITER_QUEUE_CAPACITY = 50;
 
+	private static final String PROPERTIES_FILE     = "client.properties";
+	private static final String IP_KEY              = "ip";
+	private static final String PORT_KEY            = "port";
+	private static final String NICKNAME_KEY        = "nickname";
+	private static final String IP_DEFAULT          = "0.0.0.0";
+	private static final String PORT_DEFAULT        = "0";
+	private static final String NICKNAME_DEFAULT    = "nickname";
+	private static final String PROPERTIES_COMMENT  = "Client properties file";
+
+	private static final Properties DEFAULT_PROPERTIES = new Properties();
+
+	static {
+		DEFAULT_PROPERTIES.setProperty(IP_KEY, IP_DEFAULT);
+		DEFAULT_PROPERTIES.setProperty(PORT_KEY, PORT_DEFAULT);
+		DEFAULT_PROPERTIES.setProperty(NICKNAME_KEY, NICKNAME_DEFAULT);
+	}
+
 	static { LoggingConfiguration.addConfigFile(LoggingConfiguration.DEFAULT_LOGGER_CONFIG_FILE); }
 
 	private static final Logger logger = LogManager.getLogger(Client.class.getSimpleName());
+
+	private Properties properties = new Properties(DEFAULT_PROPERTIES);
 
 	private String host;
 	private int port;
@@ -42,13 +65,17 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	}
 
 	private void prepareUI() {
-		ViewController viewController = new ViewController(this);
+		ViewController viewController = new ViewController(this,
+				properties.getProperty(IP_KEY),
+				properties.getProperty(PORT_KEY),
+				properties.getProperty(NICKNAME_KEY));
 		viewController.addChatEventHandler(this);
 		addUserListChangeListener(viewController);
 		addReceiveTextMessageHandler(viewController);
 	}
 
 	private Client() {
+		configure();
 		thread = new Thread(this, this.getClass().getSimpleName());
 	}
 
@@ -164,6 +191,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	private void stop() {
 		logger.trace("Stop client");
 		thread.interrupt();
+		storeLastSettings();
 		socketReader.stop();
 		socketWriter.stop();
 	}
@@ -175,6 +203,70 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		} catch (IOException e) {
 			logger.fatal("Couldn't close socket");
 			System.exit(1);
+		}
+	}
+
+	private void storeLastSettings() {
+		String nickname = loginPayload.getUser().getNickname();
+		String portStr = String.valueOf(this.port);
+		boolean differFromDefaults = false;
+
+		if (!nickname.equals(NICKNAME_DEFAULT)) {
+			differFromDefaults = true;
+			properties.setProperty(NICKNAME_KEY, nickname);
+		}
+
+		if (!host.equals(IP_DEFAULT)) {
+			differFromDefaults = true;
+			properties.setProperty(IP_KEY, host);
+		}
+
+		if (!portStr.equals(PORT_DEFAULT)) {
+			differFromDefaults = true;
+			properties.setProperty(PORT_KEY, portStr);
+		}
+
+		if (differFromDefaults) {
+			storeProperties();
+		}
+	}
+
+	private void configure() {
+		logger.info("");
+		logger.info("=== Configuration ===");
+		loadProperties();
+		logger.info("Exit configuration");
+		logger.info("");
+	}
+
+	private void loadProperties() {
+		logger.info("Looking for properties file \"{}\"...", PROPERTIES_FILE);
+		Path path = Paths.get(PROPERTIES_FILE);
+		if (Files.exists(path)) {
+			logger.info("\"{}\" file found", PROPERTIES_FILE);
+			try (InputStream is = new FileInputStream(PROPERTIES_FILE)) {
+				logger.info("Loading \"{}\"...", PROPERTIES_FILE);
+				properties.load(is);
+			} catch (FileNotFoundException e) {
+				logger.error("File \"{}\" disappeared! (Shouldn't get here normally)", PROPERTIES_FILE);
+				return;
+			} catch (IOException e) {
+				logger.error("Problems with loading properties file \"{}\"", PROPERTIES_FILE);
+				return;
+			}
+			logger.info("Properties file loaded successfully");
+		} else {
+			logger.info("Properties file \"{}\" not found", PROPERTIES_FILE);
+		}
+	}
+
+	private void storeProperties() {
+		logger.info("Storing properties...");
+		try (OutputStream os = new FileOutputStream(PROPERTIES_FILE)) {
+			properties.store(os, PROPERTIES_COMMENT);
+			logger.info("Saved properties in \"{}\" file successfully", PROPERTIES_FILE);
+		} catch (IOException e) {
+			logger.error("Problems with storing properties file \"{}\"", PROPERTIES_FILE);
 		}
 	}
 

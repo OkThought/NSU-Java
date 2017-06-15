@@ -26,10 +26,10 @@ public class LoginView extends JFrame {
 	private JPanel rootPanel;
 	private JTextField nickTextField;
 
-	public LoginView(ViewController viewController) throws HeadlessException {
+	public LoginView(ViewController viewController, String nickname) throws HeadlessException {
 		super(TITLE);
 		this.viewController = viewController;
-		createComponents();
+		createComponents(nickname);
 		this.setContentPane(rootPanel);
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
@@ -37,13 +37,13 @@ public class LoginView extends JFrame {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	}
 
-	private void createComponents() {
+	private void createComponents(String nickname) {
 		rootPanel = new JPanel();
 		rootPanel.setLayout(new BoxLayout(rootPanel, BoxLayout.Y_AXIS));
 		rootPanel.setBorder(ROOT_BORDER);
 		rootPanel.setOpaque(true);
 
-		nickTextField = new JTextField();
+		nickTextField = new JTextField(nickname);
 		Action loginAction = new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
