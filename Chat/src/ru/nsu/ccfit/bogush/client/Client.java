@@ -207,21 +207,21 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	}
 
 	private void storeLastSettings() {
-		String nickname = loginPayload.getUser().getNickname();
+		String nickname = loginPayload == null ? null : loginPayload.getUser().getNickname();
 		String portStr = String.valueOf(this.port);
 		boolean differFromDefaults = false;
 
-		if (!nickname.equals(NICKNAME_DEFAULT)) {
+		if (!NICKNAME_DEFAULT.equals(nickname)) {
 			differFromDefaults = true;
 			properties.setProperty(NICKNAME_KEY, nickname);
 		}
 
-		if (!host.equals(IP_DEFAULT)) {
+		if (!IP_DEFAULT.equals(host)) {
 			differFromDefaults = true;
 			properties.setProperty(IP_KEY, host);
 		}
 
-		if (!portStr.equals(PORT_DEFAULT)) {
+		if (!PORT_DEFAULT.equals(portStr)) {
 			differFromDefaults = true;
 			properties.setProperty(PORT_KEY, portStr);
 		}
