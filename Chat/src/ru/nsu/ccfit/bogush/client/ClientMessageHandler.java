@@ -4,11 +4,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.types.ErrorMessage;
 import ru.nsu.ccfit.bogush.network.ReceiveTextMessageListener;
-import ru.nsu.ccfit.bogush.message.SimpleMessageHandler;
+import ru.nsu.ccfit.bogush.message.DefaultMessageHandler;
 import ru.nsu.ccfit.bogush.User;
 import ru.nsu.ccfit.bogush.message.types.*;
 
-public class ClientMessageHandler extends SimpleMessageHandler {
+public class ClientMessageHandler extends DefaultMessageHandler {
 	private static final Logger logger = LogManager.getLogger(ClientMessageHandler.class.getSimpleName());
 
 	private Client client;

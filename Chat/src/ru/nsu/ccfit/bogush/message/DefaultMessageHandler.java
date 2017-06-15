@@ -5,8 +5,8 @@ import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.types.*;
 import ru.nsu.ccfit.bogush.message.types.ErrorMessage;
 
-public class SimpleMessageHandler implements MessageHandler {
-	private static final Logger logger = LogManager.getLogger(SimpleMessageHandler.class.getSimpleName());
+public class DefaultMessageHandler implements MessageHandler {
+	private static final Logger logger = LogManager.getLogger(DefaultMessageHandler.class.getSimpleName());
 
 	@Override
 	public void handle(LoginRequest message) {

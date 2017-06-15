@@ -2,13 +2,12 @@ package ru.nsu.ccfit.bogush.server;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.message.SimpleMessageHandler;
-import ru.nsu.ccfit.bogush.User;
+import ru.nsu.ccfit.bogush.message.DefaultMessageHandler;
 import ru.nsu.ccfit.bogush.message.types.*;
 import ru.nsu.ccfit.bogush.message.types.ErrorMessage;
 import ru.nsu.ccfit.bogush.network.Session;
 
-public class ServerMessageHandler extends SimpleMessageHandler {
+public class ServerMessageHandler extends DefaultMessageHandler {
 	private static final Logger logger = LogManager.getLogger(ServerMessageHandler.class.getSimpleName());
 
 	private ConnectedUser connectedUser;
