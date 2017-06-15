@@ -8,9 +8,7 @@ import ru.nsu.ccfit.bogush.message.types.TextMessage;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
 class ChatView extends JFrame {
 	private static final Logger logger = LogManager.getLogger(ChatView.class.getSimpleName());
@@ -154,6 +152,14 @@ class ChatView extends JFrame {
 				}
 			}
 		});
+
+		this.addWindowFocusListener(new WindowAdapter() {
+			@Override
+			public void windowGainedFocus(WindowEvent e) {
+				composeTextArea.requestFocusInWindow();
+			}
+		});
+
 		JScrollPane composeScrollPane = new JScrollPane(composeTextArea);
 		composePanel.add(composeScrollPane, BorderLayout.CENTER);
 		return composePanel;
