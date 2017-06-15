@@ -1,9 +1,8 @@
 package ru.nsu.ccfit.bogush.message.types;
 
-import ru.nsu.ccfit.bogush.message.Message;
-import ru.nsu.ccfit.bogush.message.MessageHandler;
+import java.io.Serializable;
 
-public class TextMessage implements Message {
+public class TextMessage implements Serializable {
 	private String text;
 
 	public TextMessage(TextMessage other) {
@@ -20,11 +19,6 @@ public class TextMessage implements Message {
 
 	public String getVerboseText() {
 		return text.replaceAll("\\p{C}", "[]");
-	}
-
-	@Override
-	public void handleBy(MessageHandler handler) {
-		handler.handle(this);
 	}
 
 	@Override
