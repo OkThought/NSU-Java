@@ -17,6 +17,11 @@ class ChatView extends JFrame {
 	private static final Border MARGIN_BORDER = BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN);
 	private static final Dimension COMPOSE_PANEL_SIZE = new Dimension(100, 30);
 	private static final Dimension USER_LIST_PANE_SIZE = new Dimension(100, -1);
+	private static final String FORMAT =
+			"<div style='padding: 2px 6px'>" +
+					"<span style='color:gray; font-size:0.9em'>%s:</span>" +
+					"<span style='color:black; font-size:1.1em'>%s</span>" +
+			"</div>";
 
 	private ViewController viewController;
 
@@ -29,6 +34,7 @@ class ChatView extends JFrame {
 
 	private DefaultListModel<User> userListModel;
 	private DefaultListModel<String> messageListModel;
+	private JList<String> messageList;
 
 	ChatView(ViewController viewController) throws HeadlessException {
 		super(TITLE);
@@ -99,7 +105,7 @@ class ChatView extends JFrame {
 		chatPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
 		messageListModel = new DefaultListModel<>();
-		JList<String> messageList = new JList<>(messageListModel);
+		messageList = new JList<>(messageListModel);
 		ListElementRenderer renderer = new ListElementRenderer();
 		messageList.setCellRenderer(renderer);
 
@@ -173,8 +179,16 @@ class ChatView extends JFrame {
 	}
 
 	void appendMessage(String author, String text) {
-		messageListModel.addElement(author + ": " + text);
+		messageListModel.addElement(String.format(FORMAT, author, text));
+		SwingUtilities.invokeLater(this::autoScroll);
 		chatScrollPane.validate();
 		chatScrollPane.repaint();
+	}
+
+	private void autoScroll() {
+		int lastIndex = messageListModel.getSize()-1;
+		if (lastIndex > 0) {
+			messageList.ensureIndexIsVisible(lastIndex);
+		}
 	}
 }
