@@ -3,7 +3,6 @@ package ru.nsu.ccfit.bogush.client.view;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.User;
-import ru.nsu.ccfit.bogush.message.types.TextMessage;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -17,10 +16,12 @@ class ChatView extends JFrame {
 	private static final Border MARGIN_BORDER = BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN);
 	private static final Dimension COMPOSE_PANEL_SIZE = new Dimension(100, 30);
 	private static final Dimension USER_LIST_PANE_SIZE = new Dimension(100, -1);
-	private static final String FORMAT =
+	private static final Color SELECTION_BACKGROUND = new Color(255, 255, 255, 0);
+	private static final Color SELECTION_FOREGROUND = Color.BLACK;
+	private static final String MESSAGE_FORMAT =
 			"<div style='padding: 2px 6px'>" +
-					"<span style='color:gray; font-size:0.9em'>%s:</span>" +
-					"<span style='color:black; font-size:1.1em'>%s</span>" +
+					"<span style='color:gray; font-size:0.9em;'>%s: </span>" +
+					"<span style='font-size:1.1em'>%s</span>" +
 			"</div>";
 
 	private ViewController viewController;
@@ -87,6 +88,9 @@ class ChatView extends JFrame {
 		JList<User> userList = new JList<>(userListModel);
 		ListElementRenderer renderer = new ListElementRenderer();
 		userList.setCellRenderer(renderer);
+		userList.setSelectionBackground(SELECTION_BACKGROUND);
+		userList.setSelectionForeground(SELECTION_FOREGROUND);
+
 		userListScrollPane = new JScrollPane(userList,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -95,7 +99,7 @@ class ChatView extends JFrame {
 
 		JViewport viewport = userListScrollPane.getViewport();
 		viewport.addChangeListener(e -> {
-			renderer.setWidth(viewport.getWidth());
+			renderer.setWidth(viewport.getWidth() - MARGIN * 2);
 			userListScrollPane.validate();
 			userListScrollPane.repaint();
 		});
@@ -108,6 +112,8 @@ class ChatView extends JFrame {
 		messageList = new JList<>(messageListModel);
 		ListElementRenderer renderer = new ListElementRenderer();
 		messageList.setCellRenderer(renderer);
+		messageList.setSelectionBackground(SELECTION_BACKGROUND);
+		messageList.setSelectionForeground(SELECTION_FOREGROUND);
 
 		chatScrollPane = new JScrollPane(messageList,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -117,7 +123,7 @@ class ChatView extends JFrame {
 
 		JViewport viewport = chatScrollPane.getViewport();
 		viewport.addChangeListener(e -> {
-			renderer.setWidth(viewport.getWidth());
+			renderer.setWidth(viewport.getWidth() - MARGIN * 2);
 			chatScrollPane.validate();
 			chatScrollPane.repaint();
 		});
@@ -179,7 +185,7 @@ class ChatView extends JFrame {
 	}
 
 	void appendMessage(String author, String text) {
-		messageListModel.addElement(String.format(FORMAT, author, text));
+		messageListModel.addElement(String.format(MESSAGE_FORMAT, author, text));
 		SwingUtilities.invokeLater(this::autoScroll);
 		chatScrollPane.validate();
 		chatScrollPane.repaint();
