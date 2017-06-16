@@ -2,4 +2,3 @@
 server.properties
 client.properties
 out/
-!lib
