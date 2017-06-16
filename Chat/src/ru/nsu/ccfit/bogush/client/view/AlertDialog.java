@@ -7,17 +7,29 @@ import java.awt.event.ActionEvent;
 
 public class AlertDialog extends JDialog {
 	private static final Dimension SIZE = new Dimension(150, 80);
-	private static final Border MARGIN_BORDER = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+	private static final int MARGIN = 10;
+	private static final Border MARGIN_BORDER = BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN);
+	private static final String ALERT_LABEL_FORMAT_STRING =
+			"<html>" +
+					"<body WIDTH=%d style='text-align:center'>" +
+							"%s" +
+					"<body>" +
+			"</html>";
 
 	public AlertDialog(Frame owner, String title, String description) {
 		super(owner, title, true);
-		JPanel contentPanel = new JPanel();
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		this.setMinimumSize(SIZE);
+		this.setResizable(false);
+
+		JPanel contentPanel = new JPanel(new BorderLayout());
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 		contentPanel.setBorder(MARGIN_BORDER);
 
-		JLabel alertLabel = new JLabel(description);
+		JLabel alertLabel = new JLabel(String.format(ALERT_LABEL_FORMAT_STRING, SIZE.width-MARGIN*2, description));
 		alertLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		contentPanel.add(alertLabel);
+		contentPanel.add(alertLabel, BorderLayout.CENTER);
 
 		JButton alertButton = new JButton(new AbstractAction() {
 			@Override
@@ -27,13 +39,10 @@ public class AlertDialog extends JDialog {
 		});
 		alertButton.setText("Ok");
 		alertButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		contentPanel.add(alertButton);
+		contentPanel.add(alertButton, BorderLayout.SOUTH);
 
 		this.setContentPane(contentPanel);
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		this.setLocationRelativeTo(null);
-		this.setSize(SIZE);
-		this.setResizable(false);
+		this.pack();
 		this.setVisible(true);
 	}
 }
