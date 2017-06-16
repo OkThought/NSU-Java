@@ -46,7 +46,6 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 				if (loginView != null) {
 					loginView.dispose();
 				}
-				disconnect();
 			}
 		});
 	}
@@ -60,6 +59,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 			public void windowClosed(WindowEvent e) {
 				logger.trace("login window closed");
 				showConnectView();
+				disconnect();
 			}
 		});
 	}
@@ -116,7 +116,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 		logger.trace("Connecting to {}:{}", host, port);
 		for (ConnectHandler handler : chatEventHandlers) {
 			if (!handler.connect(host, port)) {
-				new AlertDialog(connectView, "Connect", "Couldn't connect to server");
+				new AlertDialog(connectView, "Connect", "Failed to connect to server");
 				return;
 			}
 		}
@@ -142,7 +142,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 		hideLoginView();
 	}
 
-	void logout() {
+	private void logout() {
 		logger.trace("Logging out");
 		for (LogoutHandler logoutHandler : chatEventHandlers) {
 			logoutHandler.logout();
