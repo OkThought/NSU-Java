@@ -1,9 +1,15 @@
 package ru.nsu.ccfit.bogush.message.types;
 
+import javax.xml.bind.annotation.XmlElement;
 import java.io.Serializable;
 
 public class TextMessage implements Serializable {
+	@XmlElement(name = "message")
 	private String text;
+
+	public TextMessage() {
+		text = "";
+	}
 
 	public TextMessage(TextMessage other) {
 		this.text = other.text;

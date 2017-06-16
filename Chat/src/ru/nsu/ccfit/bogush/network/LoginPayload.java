@@ -19,6 +19,8 @@ public class LoginPayload implements Serializable {
 		this.type = type;
 	}
 
+	public LoginPayload() { user = new User(); type = ""; }
+
 	public User getUser() {
 		return user;
 	}

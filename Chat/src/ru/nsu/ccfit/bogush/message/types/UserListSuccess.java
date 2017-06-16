@@ -4,11 +4,19 @@ import ru.nsu.ccfit.bogush.User;
 import ru.nsu.ccfit.bogush.message.Message;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Collection;
 
+@XmlRootElement(name = "success")
+@XmlType
 public class UserListSuccess implements Message {
 	private static final int MAX_USERS_TO_STRING = 3;
+	@XmlElement(name = "listusers")
 	private User[] users;
+
+	public UserListSuccess() {}
 
 	public UserListSuccess(User[] users) {
 		this.users = users;
