@@ -42,15 +42,11 @@ public class SocketReader implements Runnable {
 			} catch (InterruptedException e) {
 				logger.trace("Interrupted");
 				break;
-			} catch (EOFException | SocketException e) {
+			} catch (MessageReceiver.Exception e) {
 				logger.info("Lost connection");
 				for (LostConnectionListener listener : lostConnectionListeners) {
 					listener.lostConnection();
 				}
-				break;
-			} catch (Exception e) {
-				e.printStackTrace();
-				logger.error("Couldn't receive message");
 				break;
 			}
 		}

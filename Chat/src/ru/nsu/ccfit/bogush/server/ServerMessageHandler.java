@@ -48,7 +48,7 @@ public class ServerMessageHandler extends DefaultMessageHandler {
 			try {
 				connectedUser.sendMessage(userListSuccessMessage);
 			} catch (InterruptedException e) {
-				logger.error("Couldn't send user-list to {}", connectedUser.getNickname());
+				logger.error("Failed to send user-list to {}", connectedUser.getNickname());
 			}
 		}
 	}
@@ -61,7 +61,7 @@ public class ServerMessageHandler extends DefaultMessageHandler {
 			try {
 				connectedUser.sendMessage(new ErrorMessage("Wrong session id"));
 			} catch (InterruptedException e) {
-				logger.error("Couldn't send error message");
+				logger.error("Failed to send error message");
 			}
 			return false;
 		}

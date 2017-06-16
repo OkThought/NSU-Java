@@ -6,6 +6,7 @@ import ru.nsu.ccfit.bogush.*;
 import ru.nsu.ccfit.bogush.message.Message;
 import ru.nsu.ccfit.bogush.message.types.*;
 import ru.nsu.ccfit.bogush.network.*;
+import ru.nsu.ccfit.bogush.serialization.Serializer;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -27,18 +28,18 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 	private Thread thread;
 	private Session session;
 
-	ConnectedUser(Server server, Socket socket) throws IOException {
-		this(server, socket, DEFAULT_IN_QUEUE_CAPACITY, DEFAULT_OUT_QUEUE_CAPACITY);
+	ConnectedUser(Server server, Socket socket, Serializer<Message> serializer) throws IOException {
+		this(server, socket, serializer, DEFAULT_IN_QUEUE_CAPACITY, DEFAULT_OUT_QUEUE_CAPACITY);
 	}
 
-	private ConnectedUser(Server server, Socket socket,
-	                     int inQueueCapacity, int outQueueCapacity) throws IOException {
+	ConnectedUser(Server server, Socket socket, Serializer<Message> serializer,
+	              int inQueueCapacity, int outQueueCapacity) throws IOException {
 		logger.trace("Create {}", ConnectedUser.class.getSimpleName());
 		this.server = server;
 		this.socket = socket;
-		SocketMessageStream socketMessageStream = new SocketMessageStream(socket);
-		socketReader = new SocketReader(socketMessageStream, this, inQueueCapacity);
-		socketWriter = new SocketWriter(socketMessageStream, outQueueCapacity);
+		MessageStream messageStream = new MessageStream(serializer);
+		socketReader = new SocketReader(messageStream, this, inQueueCapacity);
+		socketWriter = new SocketWriter(messageStream, outQueueCapacity);
 
 		thread = new Thread(this, this.getClass().getSimpleName());
 		logger.trace("{} created", ConnectedUser.class.getSimpleName());
@@ -73,7 +74,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		try {
 			sendMessage(new LoginSuccess(session));
 		} catch (InterruptedException e) {
-			logger.error("Couldn't write success message");
+			logger.error("Failed to write success message");
 		}
 		broadcastToOthers(new LoginEvent(user));
 	}
@@ -84,7 +85,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		try {
 			sendMessage(msg);
 		} catch (InterruptedException e) {
-			logger.error("Couldn't send {}", msg);
+			logger.error("Failed to send {}", msg);
 		}
 		broadcastToOthers(new LogoutEvent(getUser()));
 	}
@@ -116,7 +117,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 				try {
 					cu.sendMessage(msg);
 				} catch (InterruptedException e) {
-					logger.error("Couldn't send {} to {}", msg, cu);
+					logger.error("Failed to send {} to {}", msg, cu);
 				}
 			}
 		}

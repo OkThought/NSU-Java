@@ -27,8 +27,8 @@ public class SocketWriter implements Runnable {
 				Message msg = messageQueue.take();
 				messageSender.sendMessage(msg);
 				logger.info("Send {}", msg);
-			} catch (IOException e) {
-				logger.error("Couldn't send message");
+			} catch (MessageSender.Exception e) {
+				logger.error("Failed to send message");
 			} catch (InterruptedException e) {
 				logger.trace("Interrupted");
 				break;

@@ -4,9 +4,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.*;
 import ru.nsu.ccfit.bogush.client.view.handlers.ChatEventHandler;
+import ru.nsu.ccfit.bogush.message.Message;
 import ru.nsu.ccfit.bogush.message.types.*;
 import ru.nsu.ccfit.bogush.client.view.*;
 import ru.nsu.ccfit.bogush.network.*;
+import ru.nsu.ccfit.bogush.serialization.MessageSerializerFactory;
+import ru.nsu.ccfit.bogush.serialization.Serializer;
 
 import javax.swing.*;
 import java.io.*;
@@ -17,17 +20,23 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import static ru.nsu.ccfit.bogush.serialization.Serializer.Type.*;
+
 public class Client implements ChatEventHandler, LostConnectionListener, Runnable {
 	private static final int READER_QUEUE_CAPACITY = 50;
 	private static final int WRITER_QUEUE_CAPACITY = 50;
 
-	private static final String PROPERTIES_FILE     = "client.properties";
-	private static final String IP_KEY              = "ip";
-	private static final String PORT_KEY            = "port";
-	private static final String NICKNAME_KEY        = "nickname";
-	private static final String IP_DEFAULT          = "0.0.0.0";
-	private static final String PORT_DEFAULT        = "0";
-	private static final String NICKNAME_DEFAULT    = "nickname";
+	private static final String PROPERTIES_FILE                 = "client.properties";
+	private static final String IP_KEY                          = "ip";
+	private static final String PORT_KEY                        = "port";
+	private static final String NICKNAME_KEY                    = "nickname";
+	private static final String SERIALIZATION_TYPE_KEY          = "serialization";
+
+	private static final String IP_DEFAULT                      = "0.0.0.0";
+	private static final String PORT_DEFAULT                    = "0";
+	private static final String NICKNAME_DEFAULT                = "nickname";
+	private static final String SERIALIZATION_TYPE_DEFAULT      = "xml";
+
 	private static final String PROPERTIES_COMMENT  = "Client properties file";
 
 	private static final Properties DEFAULT_PROPERTIES = new Properties();
@@ -36,6 +45,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		DEFAULT_PROPERTIES.setProperty(IP_KEY, IP_DEFAULT);
 		DEFAULT_PROPERTIES.setProperty(PORT_KEY, PORT_DEFAULT);
 		DEFAULT_PROPERTIES.setProperty(NICKNAME_KEY, NICKNAME_DEFAULT);
+		DEFAULT_PROPERTIES.setProperty(SERIALIZATION_TYPE_KEY, SERIALIZATION_TYPE_DEFAULT);
 	}
 
 	static { LoggingConfiguration.addConfigFile(LoggingConfiguration.DEFAULT_LOGGER_CONFIG_FILE); }
@@ -57,6 +67,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 
 	private ArrayList<UserListChangeListener> userListChangeListeners = new ArrayList<>();
 	private ArrayList<ReceiveTextMessageListener> receiveTextMessageListeners = new ArrayList<>();
+	private Serializer.Type type;
 
 	public static void main(String[] args) {
 		logger.info("Launch client");
@@ -98,13 +109,19 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 			logger.trace("Opening socket");
 			socket = new Socket(host, port);
 			logger.trace("Opened socket on {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
-			MessageObjectStream messageObjectStream = new MessageObjectStream(socket);
-			socketReader = new SocketReader(messageObjectStream, this, READER_QUEUE_CAPACITY);
-			socketWriter = new SocketWriter(messageObjectStream, WRITER_QUEUE_CAPACITY);
+			InputStream in = socket.getInputStream();
+			OutputStream out = socket.getOutputStream();
+			Serializer<Message> serializer = MessageSerializerFactory.createSerializer(in, out, type);
+			MessageStream objectMessageStream = new MessageStream(serializer);
+			socketReader = new SocketReader(objectMessageStream, this, READER_QUEUE_CAPACITY);
+			socketWriter = new SocketWriter(objectMessageStream, WRITER_QUEUE_CAPACITY);
 			start();
-			logger.trace("Created {}", messageObjectStream.getClass().getSimpleName());
+			logger.trace("Created {}", objectMessageStream.getClass().getSimpleName());
 		} catch (IOException e) {
-			logger.error("Couldn't open socket");
+			logger.error("Failed to open socket");
+			return false;
+		} catch (Serializer.SerializerException e) {
+			logger.error("Failed to create serializer: {}", e.getMessage());
 			return false;
 		}
 		logger.info("Connected successfully");
@@ -132,7 +149,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		try {
 			socketWriter.write(new LoginRequest(loginPayload));
 		} catch (InterruptedException e) {
-			logger.error("Couldn't send login message");
+			logger.error("Failed to send login message");
 		}
 	}
 
@@ -142,7 +159,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		try {
 			socketWriter.write(new LogoutRequest(session));
 		} catch (InterruptedException e) {
-			logger.error("Couldn't send logout message");
+			logger.error("Failed to send logout message");
 		}
 	}
 
@@ -153,7 +170,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		try {
 			socketWriter.write(textMessage);
 		} catch (InterruptedException e) {
-			logger.error("Couldn't send text message");
+			logger.error("Failed to send text message");
 		}
 	}
 
@@ -173,7 +190,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		try {
 			socketWriter.write(new UserListRequest(session));
 		} catch (InterruptedException e) {
-			logger.error("Couldn't send user list request message");
+			logger.error("Failed to send user list request message");
 		}
 	}
 
@@ -201,8 +218,8 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 			logger.trace("Closing socket");
 			socket.close();
 		} catch (IOException e) {
-			logger.fatal("Couldn't close socket");
-			System.exit(1);
+			logger.fatal("Failed to close socket");
+			System.exit(-1);
 		}
 	}
 
@@ -235,6 +252,20 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		logger.info("");
 		logger.info("=== Configuration ===");
 		loadProperties();
+		String typeString = properties.getProperty(SERIALIZATION_TYPE_KEY);
+		switch (typeString.trim().toLowerCase()) {
+			case OBJ:
+				type = OBJ_SERIALIZER;
+				break;
+			case XML:
+				type = XML_SERIALIZER;
+				break;
+			default:
+				logger.fatal("Unknown serialization type: {}", typeString);
+				System.exit(-1);
+				break;
+		}
+		logger.info("Serializer type: {}", type);
 		logger.info("Exit configuration");
 		logger.info("");
 	}

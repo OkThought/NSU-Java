@@ -4,74 +4,76 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-import ru.nsu.ccfit.bogush.LoggingConfiguration;
-import ru.nsu.ccfit.bogush.User;
-import ru.nsu.ccfit.bogush.message.types.ClientTextMessage;
+import ru.nsu.ccfit.bogush.*;
+import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.types.*;
+import ru.nsu.ccfit.bogush.network.SocketAcceptor;
+import ru.nsu.ccfit.bogush.serialization.MessageSerializerFactory;
+import ru.nsu.ccfit.bogush.serialization.Serializer;
 
 import java.io.*;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 
-public class Server implements Runnable {
+public class Server {
 	static { LoggingConfiguration.addConfigFile(LoggingConfiguration.DEFAULT_LOGGER_CONFIG_FILE); }
 	private static final Logger logger = LogManager.getLogger(Server.class.getSimpleName());
 
 	private static final String DO_LOGGING_KEY = "log";
-	private static final String SERVER_PORT_KEY = "server-port";
+	private static final String SERVER_XML_PORT_KEY = "server-xml-port";
+	private static final String SERVER_OBJ_PORT_KEY = "server-obj-port";
+	private static final String HISTORY_CAPACITY_KEY = "message-history-capacity";
+	private static final String IN_QUEUE_CAPACITY_KEY = "input-message-queue-capacity";
+	private static final String OUT_QUEUE_CAPACITY_KEY = "output-message-queue-capacity";
+
 
 	private static final String DO_LOGGING_DEFAULT = "true";
 	private static final String SERVER_PORT_DEFAULT = "0";
+	private static final String HISTORY_CAPACITY_DEFAULT = "50";
+	private static final String IN_QUEUE_CAPACITY_DEFAULT = "50";
+	private static final String OUT_QUEUE_CAPACITY_DEFAULT = "50";
 
 	private static final String PROPERTIES_FILE = "server.properties";
 	private static final String PROPERTIES_COMMENT = "Server properties file";
-
+	private static final String STOP_COMMAND = "stop";
 	private static final Properties DEFAULT_PROPERTIES = new Properties();
 
 	static {
 		DEFAULT_PROPERTIES.setProperty(DO_LOGGING_KEY, DO_LOGGING_DEFAULT);
-		DEFAULT_PROPERTIES.setProperty(SERVER_PORT_KEY, SERVER_PORT_DEFAULT);
+		DEFAULT_PROPERTIES.setProperty(SERVER_XML_PORT_KEY, SERVER_PORT_DEFAULT);
+		DEFAULT_PROPERTIES.setProperty(SERVER_OBJ_PORT_KEY, SERVER_PORT_DEFAULT);
+		DEFAULT_PROPERTIES.setProperty(HISTORY_CAPACITY_KEY, HISTORY_CAPACITY_DEFAULT);
+		DEFAULT_PROPERTIES.setProperty(IN_QUEUE_CAPACITY_KEY, IN_QUEUE_CAPACITY_DEFAULT);
+		DEFAULT_PROPERTIES.setProperty(OUT_QUEUE_CAPACITY_KEY, OUT_QUEUE_CAPACITY_DEFAULT);
 	}
-
-	private static final int HISTORY_CAPACITY = 50;
-	private static final String STOP_COMMAND = "stop";
-
-	private ServerSocket serverSocket;
 
 	private Properties properties = new Properties(DEFAULT_PROPERTIES);
 
+	private SocketAcceptor xmlAcceptor;
+	private SocketAcceptor objAcceptor;
 	private HashSet<ConnectedUser> connectedUsers = new HashSet<>();
-
-	private ArrayBlockingQueue<ClientTextMessage> history = new ArrayBlockingQueue<>(HISTORY_CAPACITY);
-
-	private int port;
-
-	private Thread thread;
+	private ArrayBlockingQueue<ClientTextMessage> history;
+	private int objPort;
+	private int xmlPort;
 
 	private static void help() {
 		System.out.println("Type 'stop' to stop the server");
 	}
 
-	public static void main(String[] args) {
-		Server server = new Server();
+	private static void displayLocalHostAddress() throws UnknownHostException {
+		logger.info("Server localhost address: {}", InetAddress.getLocalHost().getHostAddress());
 	}
 
-	private Server() {
-		configure();
-		thread = new Thread(this, this.getClass().getSimpleName());
-		start();
-		enterConsoleMode();
-	}
-
-	private void enterConsoleMode() {
+	private static void enterConsoleMode(Server server) {
 		logger.info("Entering console mode...\n\n");
 		help();
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
@@ -79,7 +81,7 @@ public class Server implements Runnable {
 			while ((command = reader.readLine()) != null) {
 				if (command.trim().toLowerCase().equals(STOP_COMMAND)) {
 					logger.trace("Command '{}' received", STOP_COMMAND);
-					stop();
+					server.stop();
 					return;
 				} else {
 					System.out.println("Unknown command");
@@ -89,63 +91,74 @@ public class Server implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 			logger.error("eof found");
+			server.stop();
 			System.exit(1);
 		}
 	}
 
-	@Override
-	public void run() {
+	public static void main(String[] args) {
 		try {
-			serverSocket = new ServerSocket(port);
-			if (port == 0) {
-				port = serverSocket.getLocalPort();
-				logger.info("Port set automatically to {}", port);
-			}
-			logger.info("Created socket on port {}", port);
-			logger.info("Server localhost ip: {}", InetAddress.getLocalHost().getHostAddress());
-			while (!Thread.interrupted()) {
-				logger.info("");
-				logger.info("");
-				Socket socket = serverSocket.accept();
-				logger.info("Socket [{}] accepted", socket.getInetAddress().getHostAddress());
-				ConnectedUser connectedUser = new ConnectedUser(this, socket);
-				if (connectedUsers.contains(connectedUser)) {
-					logger.debug("User already connected");
-				} else {
-					connectedUsers.add(connectedUser);
-					connectedUser.start();
-				}
-			}
-		} catch (SocketException e) {
-			logger.info(e.getMessage());
+			displayLocalHostAddress();
+		} catch (UnknownHostException e) {
+			logger.error("Failed to get localhost address");
+		}
+		Server server = new Server();
+		server.start();
+		enterConsoleMode(server);
+	}
+
+	private Server() {
+		configure();
+		objAcceptor = new SocketAcceptor(objPort,
+				socket -> socketAccepted(socket, Serializer.Type.OBJ_SERIALIZER),
+				"Object acceptor");
+		xmlAcceptor = new SocketAcceptor(xmlPort,
+				socket -> socketAccepted(socket, Serializer.Type.XML_SERIALIZER),
+				"XML acceptor");
+	}
+
+	private void socketAccepted(Socket socket, Serializer.Type type) {
+		try {
+			logger.info("Socket [{}] accepted", socket.getInetAddress().getHostAddress());
+			InputStream in = socket.getInputStream();
+			OutputStream out = socket.getOutputStream();
+			logger.info("Creating serializer of type {}...", type);
+			Serializer<Message> serializer = MessageSerializerFactory.createSerializer(in, out, type);
+			logger.info("Serializer created successfully");
+			ConnectedUser connectedUser = new ConnectedUser(this, socket, serializer);
+			addConnectedUser(connectedUser);
 		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			logger.info("Stop server");
-			stop();
+			logger.error("Failed to get input or output socket stream");
+		} catch (Serializer.SerializerException e) {
+			logger.error("Failed to create serializer");
+		}
+	}
+
+	private void addConnectedUser(ConnectedUser connectedUser) {
+		if (connectedUsers.contains(connectedUser)) {
+			logger.debug("User already connected");
+		} else {
+			connectedUsers.add(connectedUser);
+			connectedUser.start();
 		}
 	}
 
 	private void start() {
 		logger.info("Start server");
-		thread.start();
+		objAcceptor.start();
+		xmlAcceptor.start();
 		logger.info("Server started");
 	}
 
 	private void stop() {
 		logger.info("Stopping the server");
-		try {
-			logger.trace("Closing socket");
-			serverSocket.close();
-			logger.trace("Socket closed");
-		} catch (IOException e) {
-			logger.error("Couldn't close server socket: {}", e.getMessage());
-		}
 
 		for (ConnectedUser user : connectedUsers) {
 			user.stop();
 		}
-		thread.interrupt();
+		objAcceptor.stop();
+		xmlAcceptor.stop();
+
 		logger.info("Server stopped. Exiting...");
 	}
 
@@ -180,6 +193,7 @@ public class Server implements Runnable {
 	}
 
 	private void configure() {
+		logger.info("");
 		logger.info("=== Configuration ===");
 		loadProperties();
 
@@ -187,7 +201,12 @@ public class Server implements Runnable {
 		if (!doLogging) {
 			Configurator.setRootLevel(Level.OFF);
 		}
-		port = Integer.parseInt(properties.getProperty(SERVER_PORT_KEY));
+
+		xmlPort = Integer.parseInt(properties.getProperty(SERVER_XML_PORT_KEY));
+		objPort = Integer.parseInt(properties.getProperty(SERVER_OBJ_PORT_KEY));
+
+		int historyCapacity = Integer.parseInt(properties.getProperty(HISTORY_CAPACITY_KEY));
+		history = new ArrayBlockingQueue<>(historyCapacity);
 
 		storeProperties();
 		logger.info("Exit configuration");
@@ -218,7 +237,8 @@ public class Server implements Runnable {
 
 	private void storeProperties() {
 		// force store each key-value pair
-		for (String key : properties.stringPropertyNames()) {
+		for (Enumeration keys = properties.propertyNames(); keys.hasMoreElements();) {
+			String key = (String) keys.nextElement();
 			properties.setProperty(key, properties.getProperty(key));
 		}
 
