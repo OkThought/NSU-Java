@@ -26,7 +26,3 @@ LoC/tests/input/
 # Output files
 LoC/out/
 out/
-
-# properties files
-/server.properties
-/client.properties
