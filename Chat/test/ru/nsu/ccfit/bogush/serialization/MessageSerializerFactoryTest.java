@@ -1,5 +1,6 @@
+package ru.nsu.ccfit.bogush.serialization;
+
 import org.junit.Test;
-import ru.nsu.ccfit.bogush.serialization.MessageSerializerFactory;
 
 public class MessageSerializerFactoryTest {
 	@Test
