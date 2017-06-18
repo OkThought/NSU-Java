@@ -65,7 +65,7 @@ public class ClientTextMessage extends TextMessage implements Message, Request {
 
 		ClientTextMessage that = (ClientTextMessage) o;
 
-		return session != null ? session.equals(that.session) : that.session == null;
+		return (session != null ? session.equals(that.session) : that.session == null) && super.equals(o);
 	}
 
 	@Override

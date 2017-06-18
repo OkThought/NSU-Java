@@ -67,7 +67,7 @@ public class ServerTextMessage extends TextMessage implements Message, Event {
 
 		ServerTextMessage that = (ServerTextMessage) o;
 
-		return author != null ? author.equals(that.author) : that.author == null;
+		return (author != null ? author.equals(that.author) : that.author == null) && super.equals(o);
 	}
 
 	@Override
