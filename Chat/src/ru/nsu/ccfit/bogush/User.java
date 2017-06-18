@@ -8,16 +8,22 @@ import java.io.Serializable;
 @XmlRootElement(name = "user")
 @XmlType
 public class User implements Serializable {
+	private static String defaultType = "";
+
 	private String nickname;
 	private String type;
 
 	public User() {
-		nickname = "";
-		type = "";
+		this("");
 	}
 
 	public User(String nickname) {
+		this(nickname, defaultType);
+	}
+
+	public User(String nickname, String type) {
 		this.nickname = nickname;
+		this.type = type;
 	}
 
 	@XmlElement(name = "name")
@@ -51,5 +57,13 @@ public class User implements Serializable {
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof User && ((User) obj).getNickname().equals(nickname);
+	}
+
+	public static String getDefaultType() {
+		return defaultType;
+	}
+
+	public static void setDefaultType(String defaultType) {
+		User.defaultType = defaultType;
 	}
 }
