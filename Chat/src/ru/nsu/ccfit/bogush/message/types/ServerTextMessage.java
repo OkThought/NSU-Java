@@ -58,4 +58,20 @@ public class ServerTextMessage extends TextMessage implements Message, Event {
 	public String getEventName() {
 		return EVENT_NAME;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		ServerTextMessage that = (ServerTextMessage) o;
+
+		return author != null ? author.equals(that.author) : that.author == null;
+	}
+
+	@Override
+	public int hashCode() {
+		return author != null ? author.hashCode() : 0;
+	}
 }

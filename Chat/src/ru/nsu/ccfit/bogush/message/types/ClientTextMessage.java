@@ -57,4 +57,19 @@ public class ClientTextMessage extends TextMessage implements Message, Request {
 	public String getCommandName() {
 		return COMMAND_NAME;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		ClientTextMessage that = (ClientTextMessage) o;
+
+		return session != null ? session.equals(that.session) : that.session == null;
+	}
+
+	@Override
+	public int hashCode() {
+		return session != null ? session.hashCode() : 0;
+	}
 }

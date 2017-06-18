@@ -7,6 +7,7 @@ import ru.nsu.ccfit.bogush.message.MessageHandler;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Arrays;
 import java.util.Collection;
 
 @XmlRootElement(name = "success")
@@ -63,5 +64,21 @@ public class UserListSuccess implements Message {
 			result = sb.toString();
 		}
 		return result;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		UserListSuccess that = (UserListSuccess) o;
+
+		// Probably incorrect - comparing Object[] arrays with Arrays.equals
+		return Arrays.equals(users, that.users);
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(users);
 	}
 }

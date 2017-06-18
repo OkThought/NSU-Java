@@ -51,4 +51,19 @@ public class LoginEvent implements Event {
 	public String getEventName() {
 		return EVENT_NAME;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		LoginEvent that = (LoginEvent) o;
+
+		return user != null ? user.equals(that.user) : that.user == null;
+	}
+
+	@Override
+	public int hashCode() {
+		return user != null ? user.hashCode() : 0;
+	}
 }

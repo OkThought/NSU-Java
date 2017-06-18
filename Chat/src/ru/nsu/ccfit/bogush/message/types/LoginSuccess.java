@@ -34,4 +34,19 @@ public class LoginSuccess implements Message {
 	public String toString() {
 		return this.getClass().getSimpleName() + "(" + session +")";
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		LoginSuccess that = (LoginSuccess) o;
+
+		return session != null ? session.equals(that.session) : that.session == null;
+	}
+
+	@Override
+	public int hashCode() {
+		return session != null ? session.hashCode() : 0;
+	}
 }

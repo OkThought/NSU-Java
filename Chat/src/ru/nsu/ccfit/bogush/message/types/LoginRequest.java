@@ -35,21 +35,21 @@ public class LoginRequest implements Request {
 	}
 
 	@XmlElement(name = "name")
+	public String getNickname() {
+		return loginPayload.getUser().getNickname();
+	}
+
 	public void setNickname(String nickname) {
 		loginPayload.setUser(new User(nickname));
 	}
 
 	@XmlElement(name = "type")
-	public void setType(String type) {
-		loginPayload.setType(type);
-	}
-
-	public String getNickname() {
-		return loginPayload.getUser().getNickname();
-	}
-
 	public String getType() {
-		return loginPayload.getType();
+		return loginPayload.getUser().getType();
+	}
+
+	public void setType(String type) {
+		loginPayload.getUser().setType(type);
 	}
 
 	@Override
@@ -60,5 +60,20 @@ public class LoginRequest implements Request {
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + "(" + loginPayload + ")";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		LoginRequest that = (LoginRequest) o;
+
+		return loginPayload != null ? loginPayload.equals(that.loginPayload) : that.loginPayload == null;
+	}
+
+	@Override
+	public int hashCode() {
+		return loginPayload != null ? loginPayload.hashCode() : 0;
 	}
 }
