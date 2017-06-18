@@ -48,7 +48,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		DEFAULT_PROPERTIES.setProperty(SERIALIZATION_TYPE_KEY, SERIALIZATION_TYPE_DEFAULT);
 	}
 
-	static { LoggingConfiguration.addConfigFile(LoggingConfiguration.DEFAULT_LOGGER_CONFIG_FILE); }
+	static { LoggingConfiguration.setConfigFile(); }
 
 	private static final Logger logger = LogManager.getLogger(Client.class.getSimpleName());
 

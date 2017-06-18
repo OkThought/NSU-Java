@@ -25,7 +25,7 @@ import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Server {
-	static { LoggingConfiguration.addConfigFile(LoggingConfiguration.DEFAULT_LOGGER_CONFIG_FILE); }
+	static { LoggingConfiguration.setConfigFile(); }
 	private static final Logger logger = LogManager.getLogger(Server.class.getSimpleName());
 
 	private static final String DO_LOGGING_KEY = "log";
