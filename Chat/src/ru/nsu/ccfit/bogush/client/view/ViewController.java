@@ -6,7 +6,6 @@ import ru.nsu.ccfit.bogush.*;
 import ru.nsu.ccfit.bogush.client.Client;
 import ru.nsu.ccfit.bogush.client.UserListChangeListener;
 import ru.nsu.ccfit.bogush.client.view.handlers.*;
-import ru.nsu.ccfit.bogush.message.types.ServerTextMessage;
 import ru.nsu.ccfit.bogush.message.types.TextMessage;
 import ru.nsu.ccfit.bogush.network.ReceiveTextMessageListener;
 
@@ -37,7 +36,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	}
 
 	private void createConnectView() {
-		logger.trace("create connect window");
+		logger.trace("Create connect window");
 		connectView = new ConnectView(this, ip, port);
 		connectView.addWindowListener(new WindowAdapter() {
 			@Override
@@ -51,13 +50,13 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	}
 
 	private void createLoginView() {
-		logger.trace("create login window");
+		logger.trace("Create login window");
 		loginView = new LoginView(this, nickname);
 
 		loginView.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				logger.trace("login window closed");
+				logger.trace("Login window closed");
 				showConnectView();
 				disconnect();
 			}
@@ -65,12 +64,12 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	}
 
 	private void createChatView() {
-		logger.trace("create chat window");
+		logger.trace("Create chat window");
 		chatView = new ChatView(this);
 		chatView.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				logger.trace("chat window closed");
+				logger.trace("Chat window closed");
 				logout();
 			}
 		});
@@ -113,26 +112,27 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	}
 
 	void connect(String host, int port) {
-		logger.trace("Connecting to {}:{}", host, port);
+//		logger.trace("Connecting to {}:{}", host, port);
 		for (ConnectHandler handler : chatEventHandlers) {
 			if (!handler.connect(host, port)) {
 				new AlertDialog(connectView, "Connect", "Failed to connect to server");
 				return;
 			}
 		}
+//		logger.trace("Connected successfully");
 		hideConnectView();
 		showLoginView();
 	}
 
 	private void disconnect() {
-		logger.trace("Disconnecting");
+//		logger.trace("Disconnecting");
 		for (DisconnectHandler handler : chatEventHandlers) {
 			handler.disconnect();
 		}
 	}
 
 	void login(String nickname) {
-		logger.trace("Logging in with nickname \"{}\"", nickname);
+//		logger.trace("Logging in with nickname \"{}\"", nickname);
 		createChatView();
 		for (LoginHandler loginHandler : chatEventHandlers) {
 			loginHandler.login(nickname);
@@ -143,7 +143,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	}
 
 	private void logout() {
-		logger.trace("Logging out");
+//		logger.trace("Logging out");
 		for (LogoutHandler logoutHandler : chatEventHandlers) {
 			logoutHandler.logout();
 		}

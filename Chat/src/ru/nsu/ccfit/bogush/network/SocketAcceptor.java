@@ -9,7 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class SocketAcceptor implements Runnable {
-	private static final Logger logger = LogManager.getLogger(Server.class.getSimpleName());
+	private static final Logger logger = LogManager.getLogger(SocketAcceptor.class.getSimpleName());
 
 	private int port;
 	private SocketAcceptedListener socketAcceptedListener;
@@ -34,11 +34,11 @@ public class SocketAcceptor implements Runnable {
 			port = serverSocket.getLocalPort();
 			logger.info("Port set automatically to {}", port);
 		}
-		logger.trace("Created socket on port {}", port);
+		logger.trace("Opened {}", serverSocket);
 		while (!Thread.interrupted()) {
 			try {
 				Socket socket = serverSocket.accept();
-				logger.trace("Accepted socket {}", serverSocket);
+				logger.trace("Accepted {}", socket);
 				socketAcceptedListener.socketAccepted(socket);
 			} catch (IOException e) {
 				logger.error("Failed to accept socket: {}", e.getMessage());

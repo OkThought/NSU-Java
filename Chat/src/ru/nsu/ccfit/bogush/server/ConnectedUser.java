@@ -34,7 +34,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 
 	ConnectedUser(Server server, Socket socket, Serializer<Message> serializer,
 	              int inQueueCapacity, int outQueueCapacity) throws IOException {
-		logger.trace("Create {}", ConnectedUser.class.getSimpleName());
+		logger.trace("Create {}", this);
 		this.server = server;
 		this.socket = socket;
 		MessageStream messageStream = new MessageStream(serializer);
@@ -59,7 +59,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 	}
 
 	void start() {
-		logger.trace("Start {}", ConnectedUser.class.getSimpleName());
+		logger.trace("Start {}", this);
 		thread.start();
 		socketReader.start();
 		socketWriter.start();
@@ -91,7 +91,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 	}
 
 	void stop() {
-		logger.trace("Stop {}", ConnectedUser.class.getSimpleName());
+		logger.trace("Stop {}", this);
 		thread.interrupt();
 		socketReader.stop();
 		socketWriter.stop();
@@ -145,7 +145,9 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 
 	@Override
 	public String toString() {
-		return getNickname();
+		if (loginPayload == null || loginPayload.getUser() == null)
+			return getClass().getSimpleName();
+		return getClass().getSimpleName() + "(\"" + getNickname() + "\")";
 	}
 
 	@Override

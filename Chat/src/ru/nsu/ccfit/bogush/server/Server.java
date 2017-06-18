@@ -119,7 +119,7 @@ public class Server {
 
 	private void socketAccepted(Socket socket, Serializer.Type type) {
 		try {
-			logger.info("Socket [{}] accepted", socket.getInetAddress().getHostAddress());
+			logger.info("{} accepted", socket);
 			InputStream in = socket.getInputStream();
 			OutputStream out = socket.getOutputStream();
 			logger.info("Creating serializer of type {}...", type);
@@ -130,7 +130,8 @@ public class Server {
 		} catch (IOException e) {
 			logger.error("Failed to get input or output socket stream");
 		} catch (Serializer.SerializerException e) {
-			logger.error("Failed to create serializer");
+			logger.error("Failed to create serializer: {}", e.getMessage());
+			e.printStackTrace();
 		}
 	}
 

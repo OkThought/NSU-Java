@@ -41,4 +41,9 @@ public class ObjectMessageSerializer implements Serializer<Message> {
 	public Type getType() {
 		return Type.OBJ_SERIALIZER;
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
 }

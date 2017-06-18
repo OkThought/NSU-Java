@@ -22,32 +22,39 @@ public class SocketWriter implements Runnable {
 
 	@Override
 	public void run() {
+		logger.trace("Started {}", this);
 		while (!Thread.interrupted()) {
 			try {
 				Message msg = messageQueue.take();
+				logger.info("Sending {}...", msg);
 				messageSender.sendMessage(msg);
-				logger.info("Send {}", msg);
+				logger.info("{} sent successfully", msg);
 			} catch (MessageSender.Exception e) {
 				logger.error("Failed to send message");
 			} catch (InterruptedException e) {
-				logger.trace("Interrupted");
+				logger.trace("Interrupted {}", this);
 				break;
 			}
 		}
 	}
 
 	public void start() {
-		logger.trace("Start {}", SocketWriter.class.getSimpleName());
+		logger.trace("Starting {}", this);
 		thread.start();
 	}
 
 	public void stop() {
-		logger.trace("Stop {}", SocketWriter.class.getSimpleName());
+		logger.trace("Stopping {}", this);
 		thread.interrupt();
 	}
 
 	public void write(Message message) throws InterruptedException {
 		logger.trace("Put {} to message queue", message);
 		messageQueue.put(message);
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
 	}
 }

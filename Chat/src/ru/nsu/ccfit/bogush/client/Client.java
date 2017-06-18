@@ -104,6 +104,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	}
 
 	private boolean connectToServer() {
+		logger.info("");
 		logger.info("Connecting to server on {}:{}", host, port);
 		try {
 			logger.trace("Opening socket");
@@ -113,10 +114,10 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 			OutputStream out = socket.getOutputStream();
 			Serializer<Message> serializer = MessageSerializerFactory.createSerializer(in, out, type);
 			MessageStream objectMessageStream = new MessageStream(serializer);
+			logger.trace("Created {}", objectMessageStream.getClass().getSimpleName());
 			socketReader = new SocketReader(objectMessageStream, this, READER_QUEUE_CAPACITY);
 			socketWriter = new SocketWriter(objectMessageStream, WRITER_QUEUE_CAPACITY);
 			start();
-			logger.trace("Created {}", objectMessageStream.getClass().getSimpleName());
 		} catch (IOException e) {
 			logger.error("Failed to open socket");
 			return false;
@@ -125,6 +126,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 			return false;
 		}
 		logger.info("Connected successfully");
+		logger.info("");
 		return true;
 	}
 
@@ -180,18 +182,23 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		stop();
 	}
 
-	private void setLoginPayload(LoginPayload loginPayload) {
-		logger.trace("Set login payload");
-		this.loginPayload = loginPayload;
-	}
-
 	void onLoginSuccess(Session session) {
-		this.session = session;
+		setSession(session);
 		try {
 			socketWriter.write(new UserListRequest(session));
 		} catch (InterruptedException e) {
 			logger.error("Failed to send user list request message");
 		}
+	}
+
+	private void setLoginPayload(LoginPayload loginPayload) {
+		logger.trace("Set login payload to {}", loginPayload);
+		this.loginPayload = loginPayload;
+	}
+
+	private void setSession(Session session) {
+		logger.trace("Set session to {}", session);
+		this.session = session;
 	}
 
 	public User getUser() {
@@ -265,6 +272,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 				System.exit(-1);
 				break;
 		}
+		User.setDefaultType(type.getType());
 		logger.info("Serializer type: {}", type);
 		logger.info("Exit configuration");
 		logger.info("");

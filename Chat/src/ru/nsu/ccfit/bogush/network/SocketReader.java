@@ -34,13 +34,15 @@ public class SocketReader implements Runnable {
 
 	@Override
 	public void run() {
+		logger.trace("Started {}", this);
 		while (!Thread.interrupted()) {
+			logger.info("Listening...");
 			try {
 				Message msg = messageReceiver.receiveMessage();
 				logger.info("Received {}", msg);
 				messageQueue.put(msg);
 			} catch (InterruptedException e) {
-				logger.trace("Interrupted");
+				logger.info("Interrupted {}", this);
 				break;
 			} catch (MessageReceiver.Exception e) {
 				logger.info("Lost connection");
@@ -53,12 +55,12 @@ public class SocketReader implements Runnable {
 	}
 
 	public void start() {
-		logger.trace("Start {}", SocketReader.class.getSimpleName());
+		logger.trace("Starting {}", this);
 		thread.start();
 	}
 
 	public void stop() {
-		logger.trace("Stop {}", SocketReader.class.getSimpleName());
+		logger.trace("Stopping {}", this);
 		thread.interrupt();
 	}
 
@@ -66,5 +68,10 @@ public class SocketReader implements Runnable {
 		Message msg = messageQueue.take();
 		logger.trace("Took {} from message queue", msg);
 		return msg;
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
 	}
 }
