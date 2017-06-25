@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.Message;
 
-import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class SocketWriter implements Runnable {

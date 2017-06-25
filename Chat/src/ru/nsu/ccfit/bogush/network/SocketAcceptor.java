@@ -2,7 +2,6 @@ package ru.nsu.ccfit.bogush.network;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.server.Server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
