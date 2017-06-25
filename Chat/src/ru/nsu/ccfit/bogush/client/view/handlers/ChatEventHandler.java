@@ -5,6 +5,6 @@ public interface ChatEventHandler extends
 		DisconnectHandler,
 		LoginHandler,
 		LogoutHandler,
-		SendTextMessageHandler {
+		SendMessageHandler {
 
 }
