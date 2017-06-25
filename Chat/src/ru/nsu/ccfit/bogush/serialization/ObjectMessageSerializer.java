@@ -1,10 +1,14 @@
 package ru.nsu.ccfit.bogush.serialization;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.Message;
 
 import java.io.*;
 
 public class ObjectMessageSerializer implements Serializer<Message> {
+	private static final Logger logger = LogManager.getLogger(ObjectMessageSerializer.class.getSimpleName());
+
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
 
