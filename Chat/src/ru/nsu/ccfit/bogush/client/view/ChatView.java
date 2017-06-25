@@ -180,7 +180,7 @@ class ChatView extends JFrame {
 	private void sendMessage() {
 		String text = composeTextArea.getText();
 		composeTextArea.setText("");
-		appendMessage(viewController.getUser().getNickname(), text);
+		appendMessage(viewController.getUser().getName(), text);
 		viewController.sendTextMessage(text);
 	}
 
