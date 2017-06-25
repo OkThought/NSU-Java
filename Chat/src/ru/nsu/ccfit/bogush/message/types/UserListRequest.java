@@ -1,24 +1,16 @@
 package ru.nsu.ccfit.bogush.message.types;
 
-import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageFactory;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 import ru.nsu.ccfit.bogush.network.Session;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement(name = "command")
-@XmlType
-public class UserListRequest implements Message, Request {
-	@XmlAttribute(name = "name")
-	private static final String COMMAND_NAME = "list";
-	private final Session session;
-
-	public UserListRequest() {
-		session = new Session();
-	}
+@XmlType(factoryClass = MessageFactory.class, factoryMethod = "createEmptyUserListRequest")
+@XmlAccessorType(XmlAccessType.NONE)
+public class UserListRequest implements Request {
+	private Session session;
 
 	public UserListRequest(Session session) {
 		this.session = session;
@@ -28,13 +20,26 @@ public class UserListRequest implements Message, Request {
 		return session;
 	}
 
-	@XmlElement(name = "session")
-	public void setSessionId(int id) {
-		session.setId(id);
+	public void setSession(Session session) {
+		this.session = session;
 	}
 
+	@XmlElement(name = "session")
 	public int getSessionId() {
-		return session.getId();
+		return getSession().getId();
+	}
+
+	public void setSessionId(int sessionId) {
+		if (session == null) {
+			setSession(new Session(sessionId));
+		} else {
+			session.setId(sessionId);
+		}
+	}
+
+	@XmlAttribute(name = "name")
+	public String getCommandName() {
+		return "list";
 	}
 
 	@Override
@@ -45,11 +50,6 @@ public class UserListRequest implements Message, Request {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "(" + session + ")";
-	}
-
-	@Override
-	public String getCommandName() {
-		return COMMAND_NAME;
 	}
 
 	@Override

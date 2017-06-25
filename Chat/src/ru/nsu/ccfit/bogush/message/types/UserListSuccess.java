@@ -1,34 +1,30 @@
 package ru.nsu.ccfit.bogush.message.types;
 
 import ru.nsu.ccfit.bogush.User;
-import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageFactory;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import java.util.Arrays;
-import java.util.Collection;
 
 @XmlRootElement(name = "success")
-@XmlType
-public class UserListSuccess implements Message {
+@XmlType(factoryClass = MessageFactory.class, factoryMethod = "createEmptyUserListSuccess")
+public class UserListSuccess extends Success {
 	private static final int MAX_USERS_TO_STRING = 3;
-	@XmlElement(name = "listusers")
 	private User[] users;
-
-	public UserListSuccess() {}
 
 	public UserListSuccess(User[] users) {
 		this.users = users;
 	}
 
-	public UserListSuccess(Collection<User> users) {
-		this.users = users.toArray(new User[users.size()]);
-	}
-
+	@XmlElementWrapper(name = "listusers")
+	@XmlElement(name = "user")
 	public User[] getUsers() {
 		return users;
+	}
+
+	public void setUsers(User[] users) {
+		this.users = users;
 	}
 
 	@Override
@@ -53,7 +49,7 @@ public class UserListSuccess implements Message {
 						sb.append(", ");
 					}
 					sb.append('"');
-					sb.append(users[i].getNickname());
+					sb.append(users[i].getName());
 					sb.append('"');
 				} else {
 					sb.append(" and ").append(users.length - MAX_USERS_TO_STRING).append(" more");

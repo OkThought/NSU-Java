@@ -2,7 +2,6 @@ package ru.nsu.ccfit.bogush.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.ccfit.bogush.message.types.ErrorMessage;
 import ru.nsu.ccfit.bogush.network.ReceiveTextMessageListener;
 import ru.nsu.ccfit.bogush.message.DefaultMessageHandler;
 import ru.nsu.ccfit.bogush.User;
@@ -43,7 +42,7 @@ public class ClientMessageHandler extends DefaultMessageHandler {
 	}
 
 	@Override
-	public void handle(LogoutSuccess message) {
+	public void handle(Success message) {
 		logger.trace("Handle {}", message);
 		logger.info("Logged out successfully");
 	}
@@ -58,7 +57,7 @@ public class ClientMessageHandler extends DefaultMessageHandler {
 	}
 
 	@Override
-	public void handle(ServerTextMessage message) {
+	public void handle(TextMessageEvent message) {
 		logger.trace("Handle {}", message);
 		for (ReceiveTextMessageListener handler : client.getReceiveTextMessageListeners()) {
 			handler.textMessageReceived(message.getAuthor(), message);

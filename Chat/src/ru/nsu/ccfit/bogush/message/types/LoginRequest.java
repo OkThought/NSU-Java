@@ -1,55 +1,56 @@
 package ru.nsu.ccfit.bogush.message.types;
 
 import ru.nsu.ccfit.bogush.User;
-import ru.nsu.ccfit.bogush.network.LoginPayload;
+import ru.nsu.ccfit.bogush.message.MessageFactory;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement(name = "command")
-@XmlType
+@XmlType(factoryClass = MessageFactory.class, factoryMethod = "createEmptyLoginRequest")
+@XmlAccessorType(XmlAccessType.NONE)
 public class LoginRequest implements Request {
-	private LoginPayload loginPayload;
+	private User user;
+	private String type;
 
-	@XmlAttribute(name = "name")
-	private static final String messageType = "login";
-
-	@Override
-	public String getCommandName() {
-		return messageType;
+	public LoginRequest(User user, String type) {
+		this.user = user;
+		this.type = type;
 	}
 
-	public LoginRequest() {
-		loginPayload = new LoginPayload();
+	public User getUser() {
+		return user;
 	}
 
-	public LoginRequest(LoginPayload loginPayload) {
-		this.loginPayload = loginPayload;
-	}
-
-	public LoginPayload getLoginPayload() {
-		return loginPayload;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@XmlElement(name = "name")
-	public String getNickname() {
-		return loginPayload.getUser().getNickname();
+	public String getUserName() {
+		return getUser().getName();
 	}
 
-	public void setNickname(String nickname) {
-		loginPayload.setUser(new User(nickname));
+	public void setUserName(String name) {
+		if (user == null) {
+			setUser(new User(name));
+		} else {
+			user.setName(name);
+		}
 	}
 
 	@XmlElement(name = "type")
 	public String getType() {
-		return loginPayload.getUser().getType();
+		return type;
 	}
 
 	public void setType(String type) {
-		loginPayload.getUser().setType(type);
+		this.type = type;
+	}
+
+	@XmlAttribute(name = "name")
+	public String getRequestName() {
+		return "login";
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class LoginRequest implements Request {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + "(" + loginPayload + ")";
+		return this.getClass().getSimpleName() + "(" + user + ")";
 	}
 
 	@Override
@@ -69,11 +70,11 @@ public class LoginRequest implements Request {
 
 		LoginRequest that = (LoginRequest) o;
 
-		return loginPayload != null ? loginPayload.equals(that.loginPayload) : that.loginPayload == null;
+		return user != null ? user.equals(that.user) : that.user == null;
 	}
 
 	@Override
 	public int hashCode() {
-		return loginPayload != null ? loginPayload.hashCode() : 0;
+		return user != null ? user.hashCode() : 0;
 	}
 }

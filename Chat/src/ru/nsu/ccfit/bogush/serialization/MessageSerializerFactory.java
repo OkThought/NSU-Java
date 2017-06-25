@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.Message;
 import ru.nsu.ccfit.bogush.message.types.*;
-import ru.nsu.ccfit.bogush.server.Server;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -24,11 +23,11 @@ public abstract class MessageSerializerFactory {
 					LoginSuccess.class,
 					LogoutRequest.class,
 					LogoutEvent.class,
-					LogoutSuccess.class,
+					Success.class,
 					UserListRequest.class,
 					UserListSuccess.class,
-					ServerTextMessage.class,
-					ClientTextMessage.class,
+					TextMessageEvent.class,
+					TextMessageRequest.class,
 					ErrorMessage.class
 			);
 			logger.trace("Configured finely");

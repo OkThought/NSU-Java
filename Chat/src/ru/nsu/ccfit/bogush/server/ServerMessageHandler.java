@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.DefaultMessageHandler;
 import ru.nsu.ccfit.bogush.message.types.*;
-import ru.nsu.ccfit.bogush.message.types.ErrorMessage;
 import ru.nsu.ccfit.bogush.network.Session;
 
 public class ServerMessageHandler extends DefaultMessageHandler {
@@ -19,7 +18,7 @@ public class ServerMessageHandler extends DefaultMessageHandler {
 	@Override
 	public void handle(LoginRequest message) {
 		logger.trace("Handle {}", message);
-		connectedUser.login(message.getLoginPayload());
+		connectedUser.login(message.getUser());
 	}
 
 	@Override
@@ -32,10 +31,10 @@ public class ServerMessageHandler extends DefaultMessageHandler {
 	}
 
 	@Override
-	public void handle(ClientTextMessage message) {
+	public void handle(TextMessageRequest message) {
 		logger.trace("Handle {}", message);
 		if (checkSession(message.getSession())) {
-			connectedUser.broadcastToOthers(new ServerTextMessage(message, connectedUser.getUser()));
+			connectedUser.broadcastToOthers(new TextMessageEvent(message.getText(), connectedUser.getUser()));
 			connectedUser.addToHistory(message);
 		}
 	}

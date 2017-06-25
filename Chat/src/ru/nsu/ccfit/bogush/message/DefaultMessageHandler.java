@@ -3,7 +3,6 @@ package ru.nsu.ccfit.bogush.message;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.message.types.*;
-import ru.nsu.ccfit.bogush.message.types.ErrorMessage;
 
 public class DefaultMessageHandler implements MessageHandler {
 	private static final Logger logger = LogManager.getLogger(DefaultMessageHandler.class.getSimpleName());
@@ -44,17 +43,17 @@ public class DefaultMessageHandler implements MessageHandler {
 	}
 
 	@Override
-	public void handle(LogoutSuccess message) {
+	public void handle(Success message) {
 		defaultHandle(message);
 	}
 
 	@Override
-	public void handle(ClientTextMessage message) {
+	public void handle(TextMessageRequest message) {
 		defaultHandle(message);
 	}
 
 	@Override
-	public void handle(ServerTextMessage message) {
+	public void handle(TextMessageEvent message) {
 		defaultHandle(message);
 	}
 

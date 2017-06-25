@@ -19,7 +19,6 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 
 	private Server server;
 	private Socket socket;
-	private LoginPayload loginPayload;
 	private boolean online = false;
 
 	private SocketReader socketReader;
@@ -27,6 +26,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 
 	private Thread thread;
 	private Session session;
+	private User user;
 
 	ConnectedUser(Server server, Socket socket, Serializer<Message> serializer) throws IOException {
 		this(server, socket, serializer, DEFAULT_IN_QUEUE_CAPACITY, DEFAULT_OUT_QUEUE_CAPACITY);
@@ -65,11 +65,10 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		socketWriter.start();
 	}
 
-	void login(LoginPayload loginPayload) {
-		this.loginPayload = loginPayload;
+	void login(User user) {
+		this.user = user;
 		session = new Session(hashCode());
 		online = true;
-		User user = loginPayload.getUser();
 		logger.info("Sending login success message back to {}", user);
 		try {
 			sendMessage(new LoginSuccess(session));
@@ -81,7 +80,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 
 	void logout() {
 		online = false;
-		LogoutSuccess msg = new LogoutSuccess();
+		Success msg = new Success();
 		try {
 			sendMessage(msg);
 		} catch (InterruptedException e) {
@@ -100,7 +99,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 	@Override
 	public void lostConnection() {
 		if (online) {
-			broadcastToOthers(new LogoutEvent(loginPayload.getUser()));
+			broadcastToOthers(new LogoutEvent(getUser()));
 		}
 		server.disconnect(this);
 		stop();
@@ -123,7 +122,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		}
 	}
 
-	void addToHistory(ClientTextMessage message) {
+	void addToHistory(TextMessageRequest message) {
 		server.addToHistory(message);
 	}
 
@@ -132,7 +131,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 	}
 
 	public User getUser() {
-		return loginPayload.getUser();
+		return user;
 	}
 
 	User[] getUserList() {
@@ -140,12 +139,12 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 	}
 
 	String getNickname() {
-		return loginPayload.getUser().getNickname();
+		return getUser().getName();
 	}
 
 	@Override
 	public String toString() {
-		if (loginPayload == null || loginPayload.getUser() == null)
+		if (user == null)
 			return getClass().getSimpleName();
 		return getClass().getSimpleName() + "(\"" + getNickname() + "\")";
 	}
@@ -164,6 +163,6 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 
 		if (!server.equals(that.server)) return false;
 		if (!socket.equals(that.socket)) return false;
-		return loginPayload.equals(that.loginPayload);
+		return user.equals(that.user);
 	}
 }

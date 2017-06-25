@@ -1,21 +1,16 @@
 package ru.nsu.ccfit.bogush.message.types;
 
-import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageFactory;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 import ru.nsu.ccfit.bogush.network.Session;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement(name = "success")
-@XmlType
-public class LoginSuccess implements Message {
-	@XmlElement(name = "session")
+@XmlType(factoryClass = MessageFactory.class, factoryMethod = "createEmptyLoginSuccess")
+@XmlAccessorType(XmlAccessType.NONE)
+public class LoginSuccess extends Success {
 	private Session session;
-
-	public LoginSuccess() {}
 
 	public LoginSuccess(Session session) {
 		this.session = session;
@@ -23,6 +18,23 @@ public class LoginSuccess implements Message {
 
 	public Session getSession() {
 		return session;
+	}
+
+	public void setSession(Session session) {
+		this.session = session;
+	}
+
+	@XmlElement(name = "session")
+	public int getSessionId() {
+		return getSession().getId();
+	}
+
+	public void setSessionId(int sessionId) {
+		if (session == null) {
+			setSession(new Session(sessionId));
+		} else {
+			session.setId(sessionId);
+		}
 	}
 
 	@Override

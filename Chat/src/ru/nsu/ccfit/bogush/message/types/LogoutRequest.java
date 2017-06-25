@@ -1,24 +1,16 @@
 package ru.nsu.ccfit.bogush.message.types;
 
+import ru.nsu.ccfit.bogush.message.MessageFactory;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 import ru.nsu.ccfit.bogush.network.Session;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement(name = "command")
-@XmlType
+@XmlType(factoryClass = MessageFactory.class, factoryMethod = "createEmptyLogoutRequest")
+@XmlAccessorType(XmlAccessType.NONE)
 public class LogoutRequest implements Request {
-	@XmlAttribute(name = "name")
-	private static final String COMMAND_NAME = "logout";
-	@XmlElement(name = "session")
 	private Session session;
-
-	public LogoutRequest() {
-		session = new Session();
-	}
 
 	public LogoutRequest(Session session) {
 		this.session = session;
@@ -26,6 +18,29 @@ public class LogoutRequest implements Request {
 
 	public Session getSession() {
 		return session;
+	}
+
+	public void setSession(Session session) {
+		this.session = session;
+	}
+
+	@XmlElement(name = "session")
+	public int getSessionId() {
+		return getSession().getId();
+	}
+
+	public void setSessionId(int sessionId) {
+		if (session == null) {
+			setSession(new Session(sessionId));
+		} else {
+			session.setId(sessionId);
+		}
+	}
+
+
+	@XmlAttribute(name = "name")
+	public String getRequestName() {
+		return "logout";
 	}
 
 	@Override
@@ -36,11 +51,6 @@ public class LogoutRequest implements Request {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "(\"" + session + "\")";
-	}
-
-	@Override
-	public String getCommandName() {
-		return COMMAND_NAME;
 	}
 
 	@Override

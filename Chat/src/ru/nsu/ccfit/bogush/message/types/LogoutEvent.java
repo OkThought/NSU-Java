@@ -1,21 +1,16 @@
 package ru.nsu.ccfit.bogush.message.types;
 
 import ru.nsu.ccfit.bogush.User;
-import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageFactory;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement(name = "event")
-@XmlType
+@XmlType(factoryClass = MessageFactory.class, factoryMethod = "createEmptyLogoutEvent")
+@XmlAccessorType(XmlAccessType.NONE)
 public class LogoutEvent implements Event {
-	@XmlAttribute(name = "name")
-	private static final String EVENT_NAME = "userlogout";
 	private User user;
-
-	public LogoutEvent() {}
 
 	public LogoutEvent(User user) {
 		this.user = user;
@@ -23,6 +18,28 @@ public class LogoutEvent implements Event {
 
 	public User getUser() {
 		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	@XmlElement(name = "name")
+	public String getUserName() {
+		return getUser().getName();
+	}
+
+	public void setUserName(String name) {
+		if (user == null) {
+			setUser(new User(name));
+		} else {
+			user.setName(name);
+		}
+	}
+
+	@XmlAttribute(name = "name")
+	public String getEventName() {
+		return "userlogout";
 	}
 
 	@Override
@@ -33,11 +50,6 @@ public class LogoutEvent implements Event {
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + "(\"" + user + "\")";
-	}
-
-	@Override
-	public String getEventName() {
-		return EVENT_NAME;
 	}
 
 	@Override

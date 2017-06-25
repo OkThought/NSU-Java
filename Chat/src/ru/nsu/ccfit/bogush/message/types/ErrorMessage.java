@@ -1,6 +1,7 @@
 package ru.nsu.ccfit.bogush.message.types;
 
 import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageFactory;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -8,13 +9,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "error")
-@XmlType
+@XmlType(factoryClass = MessageFactory.class, factoryMethod = "createEmptyErrorMessage")
 public class ErrorMessage implements Message {
 	private String message;
-
-	public ErrorMessage() {
-		message = "";
-	}
 
 	public ErrorMessage(String message) {
 		this.message = message;

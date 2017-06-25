@@ -1,6 +1,6 @@
 package ru.nsu.ccfit.bogush.message.types;
 
-import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageFactory;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 import ru.nsu.ccfit.bogush.network.Session;
 
@@ -9,23 +9,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement(name = "command")
-@XmlType
-public class ClientTextMessage extends TextMessage implements Message, Request {
-	@XmlAttribute(name = "name")
-	private static final String COMMAND_NAME = "message";
-	private final Session session;
+@XmlRootElement(name="command")
+@XmlType(factoryClass = MessageFactory.class, factoryMethod = "createEmptyTextMessageRequest")
+public class TextMessageRequest extends TextMessage implements Request {
+	private Session session;
 
-	public ClientTextMessage() {
-		session = new Session();
-	}
-
-	public ClientTextMessage(TextMessage textMessage, Session session) {
-		super(textMessage);
-		this.session = session;
-	}
-
-	public ClientTextMessage(String text, Session session) {
+	public TextMessageRequest(String text, Session session) {
 		super(text);
 		this.session = session;
 	}
@@ -34,13 +23,26 @@ public class ClientTextMessage extends TextMessage implements Message, Request {
 		return session;
 	}
 
-	@XmlElement(name = "session")
-	public void setSessionId(int id) {
-		session.setId(id);
+	public void setSession(Session session) {
+		this.session = session;
 	}
 
+	@XmlElement(name = "session")
 	public int getSessionId() {
-		return session.getId();
+		return getSession().getId();
+	}
+
+	public void setSessionId(int sessionId) {
+		if (session == null) {
+			setSession(new Session(sessionId));
+		} else {
+			session.setId(sessionId);
+		}
+	}
+
+	@XmlAttribute(name = "name")
+	public String getRequestName() {
+		return "message";
 	}
 
 	@Override
@@ -54,16 +56,11 @@ public class ClientTextMessage extends TextMessage implements Message, Request {
 	}
 
 	@Override
-	public String getCommandName() {
-		return COMMAND_NAME;
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		ClientTextMessage that = (ClientTextMessage) o;
+		TextMessageRequest that = (TextMessageRequest) o;
 
 		return (session != null ? session.equals(that.session) : that.session == null) && super.equals(o);
 	}

@@ -1,5 +1,7 @@
 package ru.nsu.ccfit.bogush;
 
+import ru.nsu.ccfit.bogush.client.Client;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -8,31 +10,30 @@ import java.io.Serializable;
 @XmlRootElement(name = "user")
 @XmlType
 public class User implements Serializable {
-	private static String defaultType = "";
-
-	private String nickname;
+	public static final String DEFAULT_TYPE = Client.TYPE;
 	private String type;
+	private String name;
 
 	public User() {
-		this("");
+		this("anonymous");
 	}
 
-	public User(String nickname) {
-		this(nickname, defaultType);
+	public User(String name) {
+		this(name, DEFAULT_TYPE);
 	}
 
-	public User(String nickname, String type) {
-		this.nickname = nickname;
+	public User(String name, String type) {
+		this.name = name;
 		this.type = type;
 	}
 
 	@XmlElement(name = "name")
-	public String getNickname() {
-		return nickname;
+	public String getName() {
+		return name;
 	}
 
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@XmlElement(name = "type")
@@ -46,24 +47,21 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return getNickname();
+		return getName();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		User user = (User) o;
+
+		return name != null ? name.equals(user.name) : user.name == null;
 	}
 
 	@Override
 	public int hashCode() {
-		return nickname != null ? nickname.hashCode() : 0;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof User && ((User) obj).getNickname().equals(nickname);
-	}
-
-	public static String getDefaultType() {
-		return defaultType;
-	}
-
-	public static void setDefaultType(String defaultType) {
-		User.defaultType = defaultType;
+		return name != null ? name.hashCode() : 0;
 	}
 }

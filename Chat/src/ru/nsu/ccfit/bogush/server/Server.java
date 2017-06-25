@@ -25,7 +25,7 @@ import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Server {
-	static { LoggingConfiguration.setConfigFile(); }
+	static { LoggingConfiguration.setConfigFileToDefaultIfNotSet(); }
 	private static final Logger logger = LogManager.getLogger(Server.class.getSimpleName());
 
 	private static final String DO_LOGGING_KEY = "log";
@@ -61,7 +61,7 @@ public class Server {
 	private SocketAcceptor xmlAcceptor;
 	private SocketAcceptor objAcceptor;
 	private HashSet<ConnectedUser> connectedUsers = new HashSet<>();
-	private ArrayBlockingQueue<ClientTextMessage> history;
+	private ArrayBlockingQueue<TextMessageRequest> history;
 	private int objPort;
 	private int xmlPort;
 
@@ -168,7 +168,7 @@ public class Server {
 		connectedUser.stop();
 	}
 
-	void addToHistory(ClientTextMessage message) {
+	void addToHistory(TextMessageRequest message) {
 		logger.trace("Add \"{}\" to history", message.toString());
 		try {
 			if (history.remainingCapacity() == 0) {

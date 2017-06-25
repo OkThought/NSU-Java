@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.*;
 import ru.nsu.ccfit.bogush.client.view.handlers.ChatEventHandler;
 import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageFactory;
 import ru.nsu.ccfit.bogush.message.types.*;
 import ru.nsu.ccfit.bogush.client.view.*;
 import ru.nsu.ccfit.bogush.network.*;
@@ -20,22 +21,23 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import static ru.nsu.ccfit.bogush.serialization.Serializer.Type.*;
-
 public class Client implements ChatEventHandler, LostConnectionListener, Runnable {
-	private static final int READER_QUEUE_CAPACITY = 50;
-	private static final int WRITER_QUEUE_CAPACITY = 50;
+	static { LoggingConfiguration.setConfigFileToDefaultIfNotSet(); }
+	private static final Logger logger = LogManager.getLogger(Client.class.getSimpleName());
 
+	public static final String TYPE = "Ivan's Chat";
+
+	private static final int READER_QUEUE_CAPACITY = 50;
+
+	private static final int WRITER_QUEUE_CAPACITY = 50;
 	private static final String PROPERTIES_FILE                 = "client.properties";
 	private static final String IP_KEY                          = "ip";
 	private static final String PORT_KEY                        = "port";
 	private static final String NICKNAME_KEY                    = "nickname";
-	private static final String SERIALIZATION_TYPE_KEY          = "serialization";
 
 	private static final String IP_DEFAULT                      = "0.0.0.0";
 	private static final String PORT_DEFAULT                    = "0";
 	private static final String NICKNAME_DEFAULT                = "nickname";
-	private static final String SERIALIZATION_TYPE_DEFAULT      = "xml";
 
 	private static final String PROPERTIES_COMMENT  = "Client properties file";
 
@@ -45,12 +47,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		DEFAULT_PROPERTIES.setProperty(IP_KEY, IP_DEFAULT);
 		DEFAULT_PROPERTIES.setProperty(PORT_KEY, PORT_DEFAULT);
 		DEFAULT_PROPERTIES.setProperty(NICKNAME_KEY, NICKNAME_DEFAULT);
-		DEFAULT_PROPERTIES.setProperty(SERIALIZATION_TYPE_KEY, SERIALIZATION_TYPE_DEFAULT);
 	}
-
-	static { LoggingConfiguration.setConfigFile(); }
-
-	private static final Logger logger = LogManager.getLogger(Client.class.getSimpleName());
 
 	private Properties properties = new Properties(DEFAULT_PROPERTIES);
 
@@ -63,7 +60,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	private Thread thread;
 
 	private Session session;
-	private LoginPayload loginPayload;
+	private User user;
 
 	private ArrayList<UserListChangeListener> userListChangeListeners = new ArrayList<>();
 	private ArrayList<ReceiveTextMessageListener> receiveTextMessageListeners = new ArrayList<>();
@@ -147,9 +144,9 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	@Override
 	public void login(String nickname) {
 		logger.info("Logging in with nickname \"{}\"", nickname);
-		setLoginPayload(new LoginPayload(new User(nickname)));
+		setUser(new User(nickname));
 		try {
-			socketWriter.write(new LoginRequest(loginPayload));
+			socketWriter.write(MessageFactory.createLoginRequest(nickname));
 		} catch (InterruptedException e) {
 			logger.error("Failed to send login message");
 		}
@@ -166,8 +163,8 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	}
 
 	@Override
-	public void sendTextMessage(TextMessage msg) {
-		ClientTextMessage textMessage = new ClientTextMessage(msg, session);
+	public void sendMessage(String msg) {
+		TextMessageRequest textMessage = new TextMessageRequest(msg, session);
 		logger.info("Sending {}", textMessage);
 		try {
 			socketWriter.write(textMessage);
@@ -191,18 +188,17 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		}
 	}
 
-	private void setLoginPayload(LoginPayload loginPayload) {
-		logger.trace("Set login payload to {}", loginPayload);
-		this.loginPayload = loginPayload;
-	}
-
 	private void setSession(Session session) {
 		logger.trace("Set session to {}", session);
 		this.session = session;
 	}
 
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public User getUser() {
-		return loginPayload.getUser();
+		return user;
 	}
 
 	private void start() {
@@ -231,13 +227,13 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	}
 
 	private void storeLastSettings() {
-		String nickname = loginPayload == null ? null : loginPayload.getUser().getNickname();
+		String name = user == null ? null : user.getName();
 		String portStr = String.valueOf(this.port);
 		boolean differFromDefaults = false;
 
-		if (!NICKNAME_DEFAULT.equals(nickname)) {
+		if (!NICKNAME_DEFAULT.equals(name)) {
 			differFromDefaults = true;
-			properties.setProperty(NICKNAME_KEY, nickname);
+			properties.setProperty(NICKNAME_KEY, name);
 		}
 
 		if (!IP_DEFAULT.equals(host)) {
@@ -259,21 +255,6 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		logger.info("");
 		logger.info("=== Configuration ===");
 		loadProperties();
-		String typeString = properties.getProperty(SERIALIZATION_TYPE_KEY);
-		switch (typeString.trim().toLowerCase()) {
-			case OBJ:
-				type = OBJ_SERIALIZER;
-				break;
-			case XML:
-				type = XML_SERIALIZER;
-				break;
-			default:
-				logger.fatal("Unknown serialization type: {}", typeString);
-				System.exit(-1);
-				break;
-		}
-		User.setDefaultType(type.getType());
-		logger.info("Serializer type: {}", type);
 		logger.info("Exit configuration");
 		logger.info("");
 	}
