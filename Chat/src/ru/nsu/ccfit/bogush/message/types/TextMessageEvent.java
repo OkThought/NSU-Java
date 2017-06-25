@@ -1,7 +1,7 @@
 package ru.nsu.ccfit.bogush.message.types;
 
 import ru.nsu.ccfit.bogush.User;
-import ru.nsu.ccfit.bogush.message.Message;
+import ru.nsu.ccfit.bogush.message.MessageFactory;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -10,23 +10,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "event")
-@XmlType
-public class ServerTextMessage extends TextMessage implements Message, Event {
-	@XmlAttribute(name = "name")
-	private static final String EVENT_NAME = "message";
-	private final User author;
+@XmlType(factoryClass = MessageFactory.class, factoryMethod = "createEmptyTextMessageEvent")
+public class TextMessageEvent extends TextMessage implements Event {
+	private User author;
 
-	public ServerTextMessage() {
-		super();
-		author = new User();
-	}
-
-	public ServerTextMessage(TextMessage textMessage, User author) {
-		super(textMessage);
-		this.author = author;
-	}
-
-	public ServerTextMessage(String text, User author) {
+	public TextMessageEvent(String text, User author) {
 		super(text);
 		this.author = author;
 	}
@@ -35,13 +23,22 @@ public class ServerTextMessage extends TextMessage implements Message, Event {
 		return author;
 	}
 
-	@XmlElement(name = "name")
-	public void setAuthorName(String name) {
-		author.setNickname(name);
+	public void setAuthor(User author) {
+		this.author = author;
 	}
 
+	@XmlElement(name = "name")
 	public String getAuthorName() {
-		return author.getNickname();
+		return getAuthor().getName();
+	}
+
+	public void setAuthorName(String name) {
+		setAuthor(new User(name));
+	}
+
+	@XmlAttribute(name = "name")
+	public String getEventName() {
+		return "message";
 	}
 
 	@Override
@@ -51,12 +48,7 @@ public class ServerTextMessage extends TextMessage implements Message, Event {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "(" + author.getNickname() + ": \"" + getVerboseText() + "\")";
-	}
-
-	@Override
-	public String getEventName() {
-		return EVENT_NAME;
+		return getClass().getSimpleName() + "(" + author.getName() + ": \"" + getVerboseText() + "\")";
 	}
 
 	@Override
@@ -65,7 +57,7 @@ public class ServerTextMessage extends TextMessage implements Message, Event {
 		if (o == null || getClass() != o.getClass()) return false;
 		if (!super.equals(o)) return false;
 
-		ServerTextMessage that = (ServerTextMessage) o;
+		TextMessageEvent that = (TextMessageEvent) o;
 
 		return (author != null ? author.equals(that.author) : that.author == null) && super.equals(o);
 	}
