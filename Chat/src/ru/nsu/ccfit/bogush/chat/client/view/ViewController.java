@@ -20,7 +20,8 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	private Client client;
 	private final String ip;
 	private final String port;
-	private final String nickname;
+	private final String defaultNickname;
+	private String nickname;
 
 	private ConnectView connectView;
 	private LoginView loginView;
@@ -28,11 +29,11 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 
 	private ArrayList<ChatEventHandler> chatEventHandlers = new ArrayList<>();
 
-	public ViewController(Client client, String ip, String port, String nickname) {
+	public ViewController(Client client, String ip, String port, String defaultNickname) {
 		this.client = client;
 		this.ip = ip;
 		this.port = port;
-		this.nickname = nickname;
+		this.defaultNickname = defaultNickname;
 		showConnectView();
 	}
 
@@ -52,7 +53,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 
 	private void createLoginView() {
 		logger.trace("Create login window");
-		loginView = new LoginView(this, nickname);
+		loginView = new LoginView(this, defaultNickname);
 
 		loginView.addWindowListener(new WindowAdapter() {
 			@Override
@@ -66,7 +67,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 
 	private void createChatView() {
 		logger.trace("Create chat window");
-		chatView = new ChatView(this);
+		chatView = new ChatView(this, nickname);
 		chatView.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
@@ -135,6 +136,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 
 	void login(String nickname) {
 //		logger.trace("Logging in with nickname \"{}\"", nickname);
+		this.nickname = nickname;
 		createChatView();
 		for (LoginHandler loginHandler : chatEventHandlers) {
 			loginHandler.login(nickname);

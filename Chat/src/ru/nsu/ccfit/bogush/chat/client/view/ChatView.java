@@ -38,7 +38,11 @@ class ChatView extends JFrame {
 	private JList<String> messageList;
 
 	ChatView(ViewController viewController) throws HeadlessException {
-		super(TITLE);
+		this(viewController, TITLE);
+	}
+
+	ChatView(ViewController viewController, String title) throws HeadlessException {
+		super(title);
 		this.viewController = viewController;
 		createComponents();
 		this.setContentPane(root);
