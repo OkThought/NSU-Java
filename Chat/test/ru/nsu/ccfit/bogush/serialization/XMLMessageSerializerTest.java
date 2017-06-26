@@ -19,20 +19,20 @@ public class XMLMessageSerializerTest {
 	private static final String FILE_NAME = ".test";
 	private static final Path FILE_PATH = Paths.get(FILE_NAME);
 
-	private File file;
-	private InputStream in;
-	private OutputStream out;
-	private Serializer<Message> serializer;
-
-	public XMLMessageSerializerTest() throws Serializer.SerializerException, IOException {
-		if (Files.notExists(FILE_PATH)) {
-			Path path = Files.createFile(FILE_PATH);
-			System.out.println("file " + path + " created");
+	static private Serializer<Message> serializer;
+	static {
+		try {
+			if (Files.notExists(FILE_PATH)) {
+				Path path = Files.createFile(FILE_PATH);
+				System.out.println("file " + path + " created");
+			}
+			File file = new File(FILE_NAME);
+			InputStream in = new FileInputStream(file);
+			OutputStream out = new FileOutputStream(file);
+			serializer = MessageSerializerFactory.createSerializer(in, out, Serializer.Type.XML_SERIALIZER);
+		} catch (Throwable e) {
+			e.printStackTrace();
 		}
-		file = new File(FILE_NAME);
-		in = new FileInputStream(file);
-		out = new FileOutputStream(file);
-		serializer = MessageSerializerFactory.createSerializer(in, out, Serializer.Type.XML_SERIALIZER);
 	}
 
 	private Message serializeDeserialize(Message m) throws Serializer.SerializerException {
@@ -107,6 +107,22 @@ public class XMLMessageSerializerTest {
 		assertEquals(m, result);
 	}
 
+	@Test
+	public void testTextMessageRequest() throws Serializer.SerializerException {
+		String text = "Lorem ipsum dolor sit amen";
+		Message m = MessageFactory.createTextMessageRequest(text, 1828);
+		Message result = serializeDeserialize(m);
+		assertEquals(m, result);
+	}
+
+	@Test
+	public void testTextMessageEvent() throws Serializer.SerializerException {
+		String text = "War and peace";
+		String author = "Tolstoy";
+		Message m = MessageFactory.createTextMessageEvent(text, author);
+		Message result = serializeDeserialize(m);
+		assertEquals(m, result);
+	}
 
 	@Override
 	protected void finalize() throws Throwable {
