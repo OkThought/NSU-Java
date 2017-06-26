@@ -71,17 +71,13 @@ public class LoginView extends JFrame {
 		rootPanel.add(loginButton);
 	}
 
-	private void alert(String title, String description) {
-		new AlertDialog(this, title, description);
-	}
-
 	private void login() {
 		String nickname = nickTextField.getText().trim();
 		if (nickname.isEmpty()) {
-			logger.trace("Nickname is empty");
-			alert(TITLE, "Nickname is empty!");
+			new AlertDialog(this, TITLE, "Nickname is empty!");
 		} else {
 			viewController.login(nickname);
 		}
 	}
 }
+
