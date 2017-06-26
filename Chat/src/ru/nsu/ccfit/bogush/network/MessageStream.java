@@ -29,9 +29,9 @@ public class MessageStream implements MessageSender, MessageReceiver {
 	@Override
 	public void sendMessage(Message message) throws MessageSender.Exception {
 		try {
-			logger.trace("Serializing {}...", message);
+			logger.trace("Sending {}...", message);
 			serializer.serialize(message);
-			logger.trace("Serialized successfully");
+			logger.trace("Sent successfully");
 		} catch (Serializer.SerializerException e) {
 			throw new MessageSender.Exception(e);
 		}

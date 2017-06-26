@@ -43,6 +43,7 @@ public class SocketReader implements Runnable {
 				logger.info("Interrupted {}", this);
 				break;
 			} catch (MessageReceiver.Exception e) {
+				logger.catching(e);
 				logger.info("Lost connection");
 				for (LostConnectionListener listener : lostConnectionListeners) {
 					listener.lostConnection();

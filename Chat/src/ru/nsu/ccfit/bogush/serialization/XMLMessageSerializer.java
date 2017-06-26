@@ -151,7 +151,9 @@ public class XMLMessageSerializer implements Serializer<Message> {
 				case SUCCESS_TAG:
 					return deserializeSuccess(root);
 				default:
-					throw new SerializerException("Unknown root tag: " + tag);
+					SerializerException e = new SerializerException("Unknown root tag: " + tag);
+					logger.throwing(e);
+					throw e;
 			}
 		} catch (SAXException | IOException e) {
 			throw new SerializerException(e);
