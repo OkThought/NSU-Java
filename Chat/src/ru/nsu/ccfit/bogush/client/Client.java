@@ -132,6 +132,9 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	public boolean connect(String host, int port) {
 		this.host = host;
 		this.port = port;
+		properties.setProperty(IP_KEY, host);
+		properties.setProperty(PORT_KEY, String.valueOf(port));
+		storeProperties();
 		return connectToServer();
 	}
 
@@ -196,6 +199,8 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 
 	public void setUser(User user) {
 		this.user = user;
+		properties.setProperty(NICKNAME_KEY, user.getName());
+		storeProperties();
 	}
 
 	public User getUser() {
@@ -212,7 +217,6 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	private void stop() {
 		logger.trace("Stop client");
 		thread.interrupt();
-		storeLastSettings();
 		socketReader.stop();
 		socketWriter.stop();
 	}
@@ -224,31 +228,6 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 		} catch (IOException e) {
 			logger.fatal("Failed to close socket");
 			System.exit(-1);
-		}
-	}
-
-	private void storeLastSettings() {
-		String name = user == null ? null : user.getName();
-		String portStr = String.valueOf(this.port);
-		boolean differFromDefaults = false;
-
-		if (!NICKNAME_DEFAULT.equals(name)) {
-			differFromDefaults = true;
-			properties.setProperty(NICKNAME_KEY, name);
-		}
-
-		if (!IP_DEFAULT.equals(host)) {
-			differFromDefaults = true;
-			properties.setProperty(IP_KEY, host);
-		}
-
-		if (!PORT_DEFAULT.equals(portStr)) {
-			differFromDefaults = true;
-			properties.setProperty(PORT_KEY, portStr);
-		}
-
-		if (differFromDefaults) {
-			storeProperties();
 		}
 	}
 
