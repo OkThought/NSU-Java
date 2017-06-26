@@ -53,6 +53,8 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 
 	private Properties properties = new Properties(DEFAULT_PROPERTIES);
 
+	private ViewController viewController;
+
 	private String host;
 	private int port;
 	private Socket socket;
@@ -74,7 +76,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	}
 
 	private void prepareUI() {
-		ViewController viewController = new ViewController(this,
+		viewController = new ViewController(this,
 				properties.getProperty(IP_KEY),
 				properties.getProperty(PORT_KEY),
 				properties.getProperty(NICKNAME_KEY));
@@ -85,6 +87,10 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 
 	private Client() {
 		configure();
+		initThread();
+	}
+
+	private void initThread() {
 		thread = new Thread(this, this.getClass().getSimpleName());
 	}
 
@@ -181,6 +187,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	public void lostConnection() {
 		logger.info("Lost connection with server");
 		stop();
+		viewController.lostConnection();
 	}
 
 	void onLoginSuccess(Session session) {
@@ -217,6 +224,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	private void stop() {
 		logger.trace("Stop client");
 		thread.interrupt();
+		initThread();
 		socketReader.stop();
 		socketWriter.stop();
 	}

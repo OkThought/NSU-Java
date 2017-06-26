@@ -120,6 +120,8 @@ public class XMLMessageSerializer implements Serializer<Message> {
 		try {
 			size = readSize();
 			logger.trace("Read size: {}", size);
+		} catch (EOFException e) {
+			throw new SerializerException(e);
 		} catch (IOException e) {
 			logger.error("Failed to read size");
 		}
@@ -128,6 +130,8 @@ public class XMLMessageSerializer implements Serializer<Message> {
 		try {
 			xml = readXml(size);
 			logger.trace("Read xml: \n{}", xml);
+		} catch (EOFException e) {
+			throw new SerializerException(e);
 		} catch (IOException e) {
 			logger.error("Failed to read xml");
 			return null;

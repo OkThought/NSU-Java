@@ -23,6 +23,10 @@ public class SocketReader implements Runnable {
 	public SocketReader(MessageReceiver messageReceiver, int queueCapacity) {
 		this.messageReceiver = messageReceiver;
 		messageQueue = new LinkedBlockingQueue<>(queueCapacity);
+		initThread();
+	}
+
+	private void initThread() {
 		thread = new Thread(this, this.getClass().getSimpleName());
 	}
 
@@ -43,7 +47,6 @@ public class SocketReader implements Runnable {
 				logger.info("Interrupted {}", this);
 				break;
 			} catch (MessageReceiver.Exception e) {
-				logger.catching(e);
 				logger.info("Lost connection");
 				for (LostConnectionListener listener : lostConnectionListeners) {
 					listener.lostConnection();
@@ -61,6 +64,7 @@ public class SocketReader implements Runnable {
 	public void stop() {
 		logger.trace("Stopping {}", this);
 		thread.interrupt();
+		initThread();
 	}
 
 	public Message read() throws InterruptedException {

@@ -7,13 +7,14 @@ import ru.nsu.ccfit.bogush.client.Client;
 import ru.nsu.ccfit.bogush.client.UserListChangeListener;
 import ru.nsu.ccfit.bogush.client.view.handlers.*;
 import ru.nsu.ccfit.bogush.message.types.TextMessage;
+import ru.nsu.ccfit.bogush.network.LostConnectionListener;
 import ru.nsu.ccfit.bogush.network.ReceiveTextMessageListener;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-public class ViewController implements UserListChangeListener, ReceiveTextMessageListener {
+public class ViewController implements UserListChangeListener, ReceiveTextMessageListener, LostConnectionListener {
 	private static final Logger logger = LogManager.getLogger(ViewController.class.getSimpleName());
 
 	private Client client;
@@ -108,7 +109,8 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 
 	private void hideChatView() {
 		logger.trace("Hide chat window");
-		chatView.dispose();
+		if (chatView != null)
+			chatView.setVisible(false);
 	}
 
 	void connect(String host, int port) {
@@ -149,6 +151,13 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 		}
 		hideChatView();
 		showLoginView();
+	}
+
+	@Override
+	public void lostConnection() {
+		hideChatView();
+		hideLoginView();
+		showConnectView();
 	}
 
 	@Override

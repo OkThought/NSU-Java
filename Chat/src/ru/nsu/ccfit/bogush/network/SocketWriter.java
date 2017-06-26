@@ -16,6 +16,10 @@ public class SocketWriter implements Runnable {
 	public SocketWriter(MessageSender messageSender, int queueCapacity) {
 		this.messageSender = messageSender;
 		this.messageQueue = new LinkedBlockingQueue<>(queueCapacity);
+		initThread();
+	}
+
+	private void initThread() {
 		thread = new Thread(this, this.getClass().getSimpleName());
 	}
 
@@ -45,6 +49,7 @@ public class SocketWriter implements Runnable {
 	public void stop() {
 		logger.trace("Stopping {}", this);
 		thread.interrupt();
+		initThread();
 	}
 
 	public void write(Message message) throws InterruptedException {
