@@ -24,7 +24,7 @@ public class ServerMessageHandler extends DefaultMessageHandler {
 	@Override
 	public void handle(LogoutRequest message) {
 		logger.trace("Handle {}", message);
-		logger.error("Received logout request {} from {}", message, connectedUser.getUser());
+		logger.trace("Received logout request {} from {}", message, connectedUser.getUser());
 		if (checkSession(message.getSession())) {
 			connectedUser.logout();
 		}
