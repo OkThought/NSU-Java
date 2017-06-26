@@ -3,3 +3,5 @@ server.properties
 client.properties
 out/
 .test
+/client.jar
+/server.jar
