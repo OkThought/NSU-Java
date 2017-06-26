@@ -66,15 +66,15 @@
     <target name="build.client" depends="compile.client.src.files"
             description="Compile and jar client files into client.jar">
         <echo message="Jar client files into ${client.jar}"/>
-        <manifestclasspath property="manifest_cp" jarfile="${client.jar}">
+        <manifestclasspath property="client.cp" jarfile="${client.jar}">
             <classpath refid="libs"/>
         </manifestclasspath>
-        <echo message="Classpath: ${manifest_cp}"/>
+        <echo message="Classpath: ${client.cp}"/>
         <jar destfile="${client.jar}">
             <fileset dir="${out.dir}" excludes="**Test.class, **/server/**"/>
             <manifest>
                 <attribute name="Main-Class" value="ru.nsu.ccfit.bogush.chat.client.Client"/>
-                <attribute name="Class-Path" value="${manifest_cp}"/>
+                <attribute name="Class-Path" value="${client.cp}"/>
             </manifest>
         </jar>
     </target>
@@ -82,14 +82,14 @@
     <target name="build.server" depends="compile.server.src.files"
             description="Compile and jar server files into server.jar">
         <echo message="Jar server files into ${server.jar}"/>
-        <manifestclasspath property="manifest_cp" jarfile="${client.jar}">
+        <manifestclasspath property="server.cp" jarfile="${server.jar}">
             <classpath refid="libs"/>
         </manifestclasspath>
-        <echo message="Classpath: ${manifest_cp}"/><jar destfile="${server.jar}">
+        <echo message="Classpath: ${server.cp}"/><jar destfile="${server.jar}">
             <fileset dir="${out.dir}" excludes="**Test.class, **/client/**"/>
             <manifest>
                 <attribute name="Main-Class" value="ru.nsu.ccfit.bogush.chat.server.Server"/>
-                <attribute name="Class-Path" value="${manifest_cp}"/>
+                <attribute name="Class-Path" value="${server.cp}"/>
             </manifest>
         </jar>
     </target>
