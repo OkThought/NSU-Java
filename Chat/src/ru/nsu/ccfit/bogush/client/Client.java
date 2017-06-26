@@ -25,7 +25,9 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	static { LoggingConfiguration.setConfigFileToDefaultIfNotSet(); }
 	private static final Logger logger = LogManager.getLogger(Client.class.getSimpleName());
 
-	public static final String TYPE = "Ivan's Chat";
+	public static final String CHAT_VERSION = "Ivan's Chat";
+
+	private static final Serializer.Type SERIALIZER_TYPE = Serializer.Type.XML_SERIALIZER;
 
 	private static final int READER_QUEUE_CAPACITY = 50;
 
@@ -64,7 +66,6 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 
 	private ArrayList<UserListChangeListener> userListChangeListeners = new ArrayList<>();
 	private ArrayList<ReceiveTextMessageListener> receiveTextMessageListeners = new ArrayList<>();
-	private Serializer.Type type;
 
 	public static void main(String[] args) {
 		logger.info("Launch client");
@@ -109,11 +110,11 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 			logger.trace("Opened socket on {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
 			InputStream in = socket.getInputStream();
 			OutputStream out = socket.getOutputStream();
-			Serializer<Message> serializer = MessageSerializerFactory.createSerializer(in, out, type);
-			MessageStream objectMessageStream = new MessageStream(serializer);
-			logger.trace("Created {}", objectMessageStream.getClass().getSimpleName());
-			socketReader = new SocketReader(objectMessageStream, this, READER_QUEUE_CAPACITY);
-			socketWriter = new SocketWriter(objectMessageStream, WRITER_QUEUE_CAPACITY);
+			Serializer<Message> serializer = MessageSerializerFactory.createSerializer(in, out, SERIALIZER_TYPE);
+			MessageStream messageStream = new MessageStream(serializer);
+			logger.trace("Created {}", messageStream.getClass().getSimpleName());
+			socketReader = new SocketReader(messageStream, this, READER_QUEUE_CAPACITY);
+			socketWriter = new SocketWriter(messageStream, WRITER_QUEUE_CAPACITY);
 			start();
 		} catch (IOException e) {
 			logger.error("Failed to open socket");

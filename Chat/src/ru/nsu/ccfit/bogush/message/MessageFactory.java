@@ -11,7 +11,7 @@ public final class MessageFactory {
 	private static final User EMPTY_USER = new User();
 	private static final Session EMPTY_SESSION = Session.NO_SESSION;
 	private static final String EMPTY_TEXT = "";
-	private static final String DEFAULT_TYPE = Client.TYPE;
+	private static final String DEFAULT_TYPE = Client.CHAT_VERSION;
 
 
 	private MessageFactory() {}

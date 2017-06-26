@@ -10,7 +10,7 @@ import java.io.Serializable;
 @XmlRootElement(name = "user")
 @XmlType
 public class User implements Serializable {
-	public static final String DEFAULT_TYPE = Client.TYPE;
+	public static final String DEFAULT_TYPE = Client.CHAT_VERSION;
 	private String type;
 	private String name;
 
