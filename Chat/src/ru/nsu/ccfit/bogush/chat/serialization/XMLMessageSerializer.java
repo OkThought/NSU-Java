@@ -16,6 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+import java.net.SocketException;
 
 public class XMLMessageSerializer implements Serializer<Message> {
 	private static final Logger logger = LogManager.getLogger(XMLMessageSerializer.class.getSimpleName());
@@ -120,7 +121,7 @@ public class XMLMessageSerializer implements Serializer<Message> {
 		try {
 			size = readSize();
 			logger.trace("Read size: {}", size);
-		} catch (EOFException e) {
+		} catch (SocketException | EOFException e) {
 			throw new SerializerException(e);
 		} catch (IOException e) {
 			logger.error("Failed to read size");

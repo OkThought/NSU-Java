@@ -149,6 +149,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	public void disconnect() {
 		logger.info("Disconnecting from the server");
 		closeSocket();
+		stop();
 		logger.info("Disconnected successfully");
 	}
 
