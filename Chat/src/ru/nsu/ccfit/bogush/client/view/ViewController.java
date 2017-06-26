@@ -192,4 +192,16 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 	public void addChatEventHandler(ChatEventHandler handler) {
 		chatEventHandlers.add(handler);
 	}
+
+	public ConnectView getConnectView() {
+		return connectView;
+	}
+
+	public LoginView getLoginView() {
+		return loginView;
+	}
+
+	public ChatView getChatView() {
+		return chatView;
+	}
 }
