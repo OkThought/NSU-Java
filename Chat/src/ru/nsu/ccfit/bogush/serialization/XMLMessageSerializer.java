@@ -48,14 +48,19 @@ public class XMLMessageSerializer implements Serializer<Message> {
 	private static final String SUCCESS_USER_LIST_TAG               = "listusers";
 	private static final String USER_NAME_TAG                       = "name";
 	private static final String USER_TYPE_TAG                       = "type";
+	private static final int    DEFAULT_SIZE                        = 1 << 20; // megabyte
 	private InputStream in;
 	private OutputStream out;
 	private Marshaller marshaller;
 	private DocumentBuilder documentBuilder;
+	private OutputStreamWriter outputStreamWriter;
+	private DataOutputStream dataOutputStream;
 
 	XMLMessageSerializer(InputStream in, OutputStream out, JAXBContext jaxbContext) throws SerializerException {
 		this.in = in;
 		this.out = out;
+		outputStreamWriter = new OutputStreamWriter(out);
+		dataOutputStream = new DataOutputStream(out);
 		try {
 			marshaller = jaxbContext.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -67,23 +72,70 @@ public class XMLMessageSerializer implements Serializer<Message> {
 	}
 
 	@Override
-	public void serialize(Message obj) throws SerializerException {
-//		logger.trace("Serializing {}", obj);
+	public void serialize(Message msg) throws SerializerException {
+		logger.trace("Serializing {}", msg);
+		StringWriter stringWriter = new StringWriter();
 		try {
-			marshaller.marshal(obj, out);
-//			logger.trace("Serialized successfully");
-			marshaller.marshal(obj, System.out);
-			System.out.println();
+			marshaller.marshal(msg, stringWriter);
+			logger.trace("Serialized into buffer");
 		} catch (JAXBException e) {
-			//			logger.error("Failed to serialize");
+			logger.error("Failed to serialize");
 			throw new SerializerException(e);
+		}
+
+		String xml = stringWriter.toString();
+		int size = xml.getBytes().length;
+		writeSize(size);
+		writeXml(xml);
+	}
+
+	private void writeSize(int size) {
+		logger.trace("Writing size: {}", size);
+		try {
+			dataOutputStream.writeInt(size);
+			dataOutputStream.flush();
+			logger.trace("Size written");
+		} catch (IOException e) {
+			logger.error("Failed to write size");
+			logger.catching(e);
+		}
+	}
+
+	private void writeXml(String xml) {
+		logger.trace("Writing xml:\n{}", xml);
+		try {
+			outputStreamWriter.write(xml);
+			outputStreamWriter.flush();
+			logger.trace("Xml written");
+		} catch (IOException e) {
+			logger.error("Failed to write xml");
+			logger.catching(e);
 		}
 	}
 
 	@Override
 	public Message deserialize() throws SerializerException {
+		logger.trace("Deserializing input stream...");
+		int size = DEFAULT_SIZE;
 		try {
-			Document doc = documentBuilder.parse(in);
+			size = readSize();
+			logger.trace("Read size: {}", size);
+		} catch (IOException e) {
+			logger.error("Failed to read size");
+		}
+
+		String xml;
+		try {
+			xml = readXml(size);
+			logger.trace("Read xml: \n{}", xml);
+		} catch (IOException e) {
+			logger.error("Failed to read xml");
+			return null;
+		}
+
+		try {
+			ByteArrayInputStream xmlInputStream = new ByteArrayInputStream(xml.getBytes());
+			Document doc = documentBuilder.parse(xmlInputStream);
 			Element root = doc.getDocumentElement();
 			if (root == null) {
 				throw new SerializerException("Root tag not found");
@@ -104,6 +156,22 @@ public class XMLMessageSerializer implements Serializer<Message> {
 		} catch (SAXException | IOException e) {
 			throw new SerializerException(e);
 		}
+	}
+
+	private int readSize() throws IOException {
+		logger.trace("Reading size...");
+		DataInputStream dataInputStream = new DataInputStream(in);
+		return dataInputStream.readInt();
+	}
+
+	private String readXml(int size) throws IOException {
+		logger.trace("Reading {} bytes of xml...", size);
+		byte[] bytes = new byte[size];
+		if (-1 == in.read(bytes)) {
+			logger.error("Eof found while reading xml");
+			throw new EOFException();
+		}
+		return new String(bytes);
 	}
 
 	private ErrorMessage deserializeErrorMessage(Element errorElement) throws SerializerException {
