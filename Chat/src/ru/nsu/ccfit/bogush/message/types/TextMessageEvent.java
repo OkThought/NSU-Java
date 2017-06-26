@@ -4,13 +4,11 @@ import ru.nsu.ccfit.bogush.User;
 import ru.nsu.ccfit.bogush.message.MessageFactory;
 import ru.nsu.ccfit.bogush.message.MessageHandler;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement(name = "event")
 @XmlType(factoryClass = MessageFactory.class, factoryMethod = "createEmptyTextMessageEvent")
+@XmlAccessorType(XmlAccessType.NONE)
 public class TextMessageEvent extends TextMessage implements Event {
 	private User author;
 

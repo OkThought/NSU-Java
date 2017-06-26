@@ -1,5 +1,6 @@
 package ru.nsu.ccfit.bogush.message.types;
 
+import javax.xml.bind.annotation.XmlElement;
 import java.io.Serializable;
 
 public abstract class TextMessage implements Serializable {
@@ -9,6 +10,7 @@ public abstract class TextMessage implements Serializable {
 		this.text = text;
 	}
 
+	@XmlElement(name = "message")
 	public String getText() {
 		return text;
 	}
