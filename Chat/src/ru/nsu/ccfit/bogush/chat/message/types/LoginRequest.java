@@ -11,11 +11,10 @@ import javax.xml.bind.annotation.*;
 @XmlAccessorType(XmlAccessType.NONE)
 public class LoginRequest implements Request {
 	private User user;
-	private String type;
 
 	public LoginRequest(User user, String type) {
 		this.user = user;
-		this.type = type;
+		user.setType(type);
 	}
 
 	public User getUser() {
@@ -41,11 +40,11 @@ public class LoginRequest implements Request {
 
 	@XmlElement(name = "type")
 	public String getType() {
-		return type;
+		return user.getType();
 	}
 
 	public void setType(String type) {
-		this.type = type;
+		user.setType(type);
 	}
 
 	@XmlAttribute(name = "name")
