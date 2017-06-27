@@ -168,12 +168,14 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 			logger.warn("User entered but chat view was not created yet");
 		} else {
 			chatView.addUser(user);
+			chatView.appendUserEntered(user.getName());
 		}
 	}
 
 	@Override
 	public void userLeft(User user) {
 		chatView.removeUser(user);
+		chatView.appendUserLeft(user.getName());
 	}
 
 	@Override
@@ -197,7 +199,7 @@ public class ViewController implements UserListChangeListener, ReceiveTextMessag
 
 	@Override
 	public void textMessageReceived(User author, TextMessage msg) {
-		chatView.appendMessage(author.getName(), msg.getText());
+		chatView.appendTextMessage(author.getName(), msg.getText());
 	}
 
 	public void addChatEventHandler(ChatEventHandler handler) {
