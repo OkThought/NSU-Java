@@ -7,7 +7,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 import ru.nsu.ccfit.bogush.chat.LoggingConfiguration;
 import ru.nsu.ccfit.bogush.chat.User;
 import ru.nsu.ccfit.bogush.chat.message.Message;
-import ru.nsu.ccfit.bogush.chat.message.types.*;
 import ru.nsu.ccfit.bogush.chat.network.SocketAcceptor;
 import ru.nsu.ccfit.bogush.chat.serialization.MessageSerializerFactory;
 import ru.nsu.ccfit.bogush.chat.serialization.Serializer;
@@ -23,7 +22,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class Server {
 	static { LoggingConfiguration.setConfigFileToDefaultIfNotSet(); }
@@ -62,7 +60,7 @@ public class Server {
 	private SocketAcceptor xmlAcceptor;
 	private SocketAcceptor objAcceptor;
 	private HashSet<ConnectedUser> connectedUsers = new HashSet<>();
-	private ArrayBlockingQueue<Message> history;
+	private ConcurrentRollingArray<Message> history;
 	private int objPort;
 	private int xmlPort;
 
@@ -169,24 +167,17 @@ public class Server {
 		connectedUser.stop();
 	}
 
-	void addToHistory(Message message) {
+	synchronized void addToHistory(Message message) {
 		logger.trace("Add \"{}\" to history", message.toString());
-		try {
-			if (history.remainingCapacity() == 0) {
-				history.take();
-			}
-			history.put(message);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		history.add(message);
 	}
 
 	HashSet<ConnectedUser> getConnectedUsers() {
 		return connectedUsers;
 	}
 
-	public ArrayBlockingQueue<Message> getHistory() {
-		return history;
+	public Message[] getHistory() {
+		return history.toArray(new Message[history.size()]);
 	}
 
 	User[] getUserList() {
@@ -212,7 +203,7 @@ public class Server {
 		objPort = Integer.parseInt(properties.getProperty(SERVER_OBJ_PORT_KEY));
 
 		int historyCapacity = Integer.parseInt(properties.getProperty(HISTORY_CAPACITY_KEY));
-		history = new ArrayBlockingQueue<>(historyCapacity);
+		history = new ConcurrentRollingArray<>(historyCapacity);
 
 		storeProperties();
 		logger.info("Exit configuration");
