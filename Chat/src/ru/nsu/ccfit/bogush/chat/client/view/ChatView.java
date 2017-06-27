@@ -23,6 +23,10 @@ class ChatView extends JFrame {
 					"<span style='color:gray; font-size:0.9em;'>%s: </span>" +
 					"<span style='font-size:1.1em'>%s</span>" +
 			"</div>";
+	private static final String USER_EVENT_FORMAT =
+			"<div style='padding: 2px 6px'>" +
+					"<span style='color:gray; font-size:0.9em;'>%s</span>" +
+			"</div>";
 
 	private ViewController viewController;
 
@@ -184,20 +188,32 @@ class ChatView extends JFrame {
 	private void sendMessage() {
 		String text = composeTextArea.getText();
 		composeTextArea.setText("");
-		appendMessage(viewController.getUser().getName(), text);
+		appendTextMessage(viewController.getUser().getName(), text);
 		viewController.sendTextMessage(text);
 	}
 
-	void appendMessage(String author, String text) {
-		messageListModel.addElement(String.format(MESSAGE_FORMAT, author, text));
-		SwingUtilities.invokeLater(this::autoScroll);
-		chatScrollPane.validate();
-		chatScrollPane.repaint();
+	void appendTextMessage(String author, String text) {
+		appendText(String.format(MESSAGE_FORMAT, author, text));
+	}
+
+	void appendUserLeft(String name) {
+		appendText(String.format(USER_EVENT_FORMAT, name + " left chat"));
+	}
+
+	void appendUserEntered(String name) {
+		appendText(String.format(USER_EVENT_FORMAT, name + " entered chat"));
+	}
+
+	void appendText(String text) {
+		SwingUtilities.invokeLater(() -> {
+			messageListModel.addElement(text);
+			SwingUtilities.invokeLater(this::autoScroll);
+		});
 	}
 
 	private void autoScroll() {
 		int lastIndex = messageListModel.getSize()-1;
-		if (lastIndex > 0) {
+		if (lastIndex >= 0) {
 			messageList.ensureIndexIsVisible(lastIndex);
 		}
 	}
