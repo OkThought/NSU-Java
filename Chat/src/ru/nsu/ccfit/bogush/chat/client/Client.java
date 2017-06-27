@@ -168,7 +168,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	public void logout() {
 		logger.info("Logging out");
 		try {
-			socketWriter.write(new LogoutRequest(session));
+			socketWriter.write(MessageFactory.createLogoutRequest(session));
 		} catch (InterruptedException e) {
 			logger.error("Failed to send logout message");
 		}
@@ -176,7 +176,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 
 	@Override
 	public void sendMessage(String msg) {
-		TextMessageRequest textMessage = new TextMessageRequest(msg, session);
+		TextMessageRequest textMessage = MessageFactory.createTextMessageRequest(msg, session);
 		logger.info("Sending {}", textMessage);
 		try {
 			socketWriter.write(textMessage);
@@ -195,7 +195,7 @@ public class Client implements ChatEventHandler, LostConnectionListener, Runnabl
 	void onLoginSuccess(Session session) {
 		setSession(session);
 		try {
-			socketWriter.write(new UserListRequest(session));
+			socketWriter.write(MessageFactory.createUserListRequest(session));
 		} catch (InterruptedException e) {
 			logger.error("Failed to send user list request message");
 		}

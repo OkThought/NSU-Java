@@ -3,6 +3,7 @@ package ru.nsu.ccfit.bogush.chat.server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.chat.message.DefaultMessageHandler;
+import ru.nsu.ccfit.bogush.chat.message.MessageFactory;
 import ru.nsu.ccfit.bogush.chat.message.types.*;
 import ru.nsu.ccfit.bogush.chat.network.Session;
 
@@ -34,7 +35,7 @@ public class ServerMessageHandler extends DefaultMessageHandler {
 	public void handle(TextMessageRequest message) {
 		logger.trace("Handle {}", message);
 		if (checkSession(message.getSession())) {
-			connectedUser.broadcastToOthers(new TextMessageEvent(message.getText(), connectedUser.getUser()));
+			connectedUser.broadcastToOthers(MessageFactory.createTextMessageEvent(message.getText(), connectedUser.getUser()));
 			connectedUser.addToHistory(message);
 		}
 	}
@@ -43,7 +44,7 @@ public class ServerMessageHandler extends DefaultMessageHandler {
 	public void handle(UserListRequest message) {
 		logger.trace("Handle {}", message);
 		if (checkSession(message.getSession())) {
-			UserListSuccess userListSuccessMessage = new UserListSuccess(connectedUser.getUserList());
+			UserListSuccess userListSuccessMessage = MessageFactory.createUserListSuccess(connectedUser.getUserList());
 			try {
 				connectedUser.sendMessage(userListSuccessMessage);
 			} catch (InterruptedException e) {
@@ -58,7 +59,7 @@ public class ServerMessageHandler extends DefaultMessageHandler {
 			logger.error("{} not equals actual {}", requested, actual);
 			logger.warn("Probably '{}' wants to play hacker", connectedUser.getNickname());
 			try {
-				connectedUser.sendMessage(new ErrorMessage("Wrong session id"));
+				connectedUser.sendMessage(MessageFactory.createErrorMessage("Wrong session id"));
 			} catch (InterruptedException e) {
 				logger.error("Failed to send error message");
 			}
