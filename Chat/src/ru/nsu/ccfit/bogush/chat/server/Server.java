@@ -62,7 +62,7 @@ public class Server {
 	private SocketAcceptor xmlAcceptor;
 	private SocketAcceptor objAcceptor;
 	private HashSet<ConnectedUser> connectedUsers = new HashSet<>();
-	private ArrayBlockingQueue<TextMessageRequest> history;
+	private ArrayBlockingQueue<Message> history;
 	private int objPort;
 	private int xmlPort;
 
@@ -169,7 +169,7 @@ public class Server {
 		connectedUser.stop();
 	}
 
-	void addToHistory(TextMessageRequest message) {
+	void addToHistory(Message message) {
 		logger.trace("Add \"{}\" to history", message.toString());
 		try {
 			if (history.remainingCapacity() == 0) {
@@ -183,6 +183,10 @@ public class Server {
 
 	HashSet<ConnectedUser> getConnectedUsers() {
 		return connectedUsers;
+	}
+
+	public ArrayBlockingQueue<Message> getHistory() {
+		return history;
 	}
 
 	User[] getUserList() {

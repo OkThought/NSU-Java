@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.ccfit.bogush.chat.User;
 import ru.nsu.ccfit.bogush.chat.message.Message;
+import ru.nsu.ccfit.bogush.chat.message.MessageFactory;
 import ru.nsu.ccfit.bogush.chat.message.types.*;
 import ru.nsu.ccfit.bogush.chat.network.*;
 import ru.nsu.ccfit.bogush.chat.serialization.Serializer;
@@ -78,28 +79,39 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		online = true;
 		logger.info("Sending login success message back to {}", user);
 		try {
-			sendMessage(new LoginSuccess(session));
+			sendMessage(MessageFactory.createLoginSuccess(session));
 		} catch (InterruptedException e) {
 			logger.error("Failed to write success message");
 		}
-		broadcastToOthers(new LoginEvent(user));
+		try {
+			for (Message msg: server.getHistory()) {
+				sendMessage(msg);
+			}
+		} catch (InterruptedException e) {
+			logger.error("Couldn't send message history");
+		}
+		Message loginEvent = MessageFactory.createLoginEvent(user);
+		broadcastToOthers(loginEvent);
+		addToHistory(loginEvent);
 	}
 
 	void logout() {
 		online = false;
-		Success msg = new Success();
+		Success msg = MessageFactory.createSuccess();
 		try {
 			sendMessage(msg);
 		} catch (InterruptedException e) {
 			logger.error("Failed to send {}", msg);
 		}
-		broadcastToOthers(new LogoutEvent(getUser()));
+		Message logoutEvent = MessageFactory.createLogoutEvent(getUser());
+		broadcastToOthers(logoutEvent);
+		addToHistory(logoutEvent);
 	}
 
 	@Override
 	public void lostConnection() {
 		if (online) {
-			broadcastToOthers(new LogoutEvent(getUser()));
+			broadcastToOthers(MessageFactory.createLogoutEvent(getUser()));
 		}
 		server.disconnect(this);
 		stop();
@@ -122,7 +134,7 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		}
 	}
 
-	void addToHistory(TextMessageRequest message) {
+	void addToHistory(Message message) {
 		server.addToHistory(message);
 	}
 

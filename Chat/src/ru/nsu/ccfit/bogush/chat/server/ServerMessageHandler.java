@@ -35,8 +35,9 @@ public class ServerMessageHandler extends DefaultMessageHandler {
 	public void handle(TextMessageRequest message) {
 		logger.trace("Handle {}", message);
 		if (checkSession(message.getSession())) {
-			connectedUser.broadcastToOthers(MessageFactory.createTextMessageEvent(message.getText(), connectedUser.getUser()));
-			connectedUser.addToHistory(message);
+			TextMessageEvent textMessageEvent = MessageFactory.createTextMessageEvent(message.getText(), connectedUser.getUser());
+			connectedUser.broadcastToOthers(textMessageEvent);
+			connectedUser.addToHistory(textMessageEvent);
 		}
 	}
 
