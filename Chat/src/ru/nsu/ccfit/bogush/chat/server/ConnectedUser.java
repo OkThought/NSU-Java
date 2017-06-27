@@ -65,6 +65,13 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 		socketWriter.start();
 	}
 
+	void stop() {
+		logger.trace("Stop {}", this);
+		thread.interrupt();
+		socketReader.stop();
+		socketWriter.stop();
+	}
+
 	void login(User user) {
 		this.user = user;
 		session = new Session(hashCode());
@@ -87,13 +94,6 @@ public class ConnectedUser implements Runnable, LostConnectionListener {
 			logger.error("Failed to send {}", msg);
 		}
 		broadcastToOthers(new LogoutEvent(getUser()));
-	}
-
-	void stop() {
-		logger.trace("Stop {}", this);
-		thread.interrupt();
-		socketReader.stop();
-		socketWriter.stop();
 	}
 
 	@Override
