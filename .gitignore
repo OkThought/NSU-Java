@@ -7,15 +7,3 @@ hs_err_pid*
 # Project files
 *.idea
 *.iml
-
-# Input files
-LoC/config
-LoC/tests/input/
-
-# Necessary jars
-!/LoC/lib/hamcrest-core-1.3.jar
-!/LoC/lib/junit-4.12.jar
-
-# Output files
-LoC/out/
-out/
