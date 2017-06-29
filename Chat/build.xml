@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project basedir="." name="Chat" default="all">
+    <property name="server.jar" value="${basedir}/server.jar"/>
+    <property name="client.jar" value="${basedir}/client.jar"/>
+    <property name="out.dir" value="${basedir}/out"/>
+    <property name="src.dir" value="${basedir}/src"/>
+    <property name="lib.dir" value="${basedir}/lib"/>
+    <property name="test.dir" value="${basedir}/test"/>
+    <property name="test.out.dir" value="${out.dir}"/>
+
+    <target name="create.out.dir">
+        <mkdir dir="${out.dir}"/>
+    </target>
+
+    <target name="create.test.out.dir">
+        <mkdir dir="${test.out.dir}"/>
+    </target>
+
+    <path id="libs">
+        <fileset dir="${lib.dir}"/>
+    </path>
+
+    <target name="compile.server.src.files" depends="create.out.dir">
+        <echo message="compiling server source files"/>
+        <javac srcdir="${src.dir}" destdir="${out.dir}" includeantruntime="false">
+            <exclude name="**/client/**"/>
+            <classpath refid="libs"/>
+        </javac>
+    </target>
+
+    <target name="compile.client.src.files" depends="create.out.dir">
+        <echo message="compiling client source files"/>
+        <javac srcdir="${src.dir}" destdir="${out.dir}" includeantruntime="false">
+            <exclude name="**/server/**.java"/>
+            <classpath refid="libs"/>
+        </javac>
+    </target>
+
+    <target name="compile.test.files" depends="create.test.out.dir">
+        <echo message="compiling test source files"/>
+        <javac srcdir="${test.dir}" destdir="${test.out.dir}" includeantruntime="false">
+            <classpath>
+                <path refid="libs"/>
+                <path id="class.path"><fileset dir="${out.dir}"/></path>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="test" depends="compile.client.src.files,
+                                 compile.server.src.files,
+                                 compile.test.files"
+            description="run all tests from ${test.dir}">
+        <echo message="running tests from ${test.dir}"/>
+        <junit printsummary="on">
+            <classpath>
+                <path refid="libs"/>
+                <path refid="class.path"/>
+            </classpath>
+            <batchtest>
+                <fileset dir="${test.out.dir}" includes="**Test.class"/>
+            </batchtest>
+        </junit>
+        <echo message="tests finished"/>
+    </target>
+
+    <target name="build.client" depends="compile.client.src.files"
+            description="Compile and jar client files into client.jar">
+        <echo message="Jar client files into ${client.jar}"/>
+        <manifestclasspath property="client.cp" jarfile="${client.jar}">
+            <classpath refid="libs"/>
+        </manifestclasspath>
+        <echo message="Classpath: ${client.cp}"/>
+        <jar destfile="${client.jar}">
+            <fileset dir="${out.dir}" excludes="**Test.class, **/server/**"/>
+            <manifest>
+                <attribute name="Main-Class" value="ru.nsu.ccfit.bogush.chat.client.Client"/>
+                <attribute name="Class-Path" value="${client.cp}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="build.server" depends="compile.server.src.files"
+            description="Compile and jar server files into server.jar">
+        <echo message="Jar server files into ${server.jar}"/>
+        <manifestclasspath property="server.cp" jarfile="${server.jar}">
+            <classpath refid="libs"/>
+        </manifestclasspath>
+        <echo message="Classpath: ${server.cp}"/><jar destfile="${server.jar}">
+            <fileset dir="${out.dir}" excludes="**Test.class, **/client/**"/>
+            <manifest>
+                <attribute name="Main-Class" value="ru.nsu.ccfit.bogush.chat.server.Server"/>
+                <attribute name="Class-Path" value="${server.cp}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="clean" description="remove 'out' dir, client.jar and server.jar">
+        <delete dir="${out.dir}"/>
+        <delete file="${server.jar}"/>
+        <delete file="${client.jar}"/>
+    </target>
+
+    <target name="all" depends="test, build.client, build.server"
+            description="run tests, build server and client">
+        <echo message="Build ${server.jar} and ${client.jar}"/>
+    </target>
+
+    <target name="run.server" depends="build.server" description="Build and run the server">
+        <java jar="${server.jar}" fork="true"/>
+    </target>
+
+    <target name="run.client" depends="build.client" description="Build and run the client">
+        <java jar="${client.jar}" fork="true"/>
+    </target>
+</project>
