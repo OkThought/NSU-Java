@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="carfactory" default="all">
+	<!-- Uncomment the following property if no tests compilation is needed -->
+	<!--
+	<property name="skip.tests" value="true"/>
+	 -->
+
+	<!-- Compiler options -->
+	
+	<property name="compiler.debug" value="on"/>
+	<property name="compiler.generate.no.warnings" value="off"/>
+	<property name="compiler.args" value=""/>
+	<property name="compiler.max.memory" value="700m"/>
+	<patternset id="ignored.files">
+		<exclude name="**/*.hprof/**"/>
+		<exclude name="**/*.pyc/**"/>
+		<exclude name="**/*.pyo/**"/>
+		<exclude name="**/*.rbc/**"/>
+		<exclude name="**/*.yarb/**"/>
+		<exclude name="**/*~/**"/>
+		<exclude name="**/.DS_Store/**"/>
+		<exclude name="**/.git/**"/>
+		<exclude name="**/.hg/**"/>
+		<exclude name="**/.svn/**"/>
+		<exclude name="**/CVS/**"/>
+		<exclude name="**/__pycache__/**"/>
+		<exclude name="**/_svn/**"/>
+		<exclude name="**/vssver.scc/**"/>
+		<exclude name="**/vssver2.scc/**"/>
+	</patternset>
+	<patternset id="library.patterns">
+		<include name="*.war"/>
+		<include name="*.swc"/>
+		<include name="*.apk"/>
+		<include name="*.zip"/>
+		<include name="*.egg"/>
+		<include name="*.ane"/>
+		<include name="*.jar"/>
+		<include name="*.ear"/>
+	</patternset>
+	<patternset id="compiler.resources">
+		<exclude name="**/?*.java"/>
+		<exclude name="**/?*.form"/>
+		<exclude name="**/?*.class"/>
+		<exclude name="**/?*.groovy"/>
+		<exclude name="**/?*.scala"/>
+		<exclude name="**/?*.flex"/>
+		<exclude name="**/?*.kt"/>
+		<exclude name="**/?*.clj"/>
+		<exclude name="**/?*.aj"/>
+	</patternset>
+	
+	<!-- Project Libraries -->
+	
+	<path id="library.log4j-api-2.8.2.classpath">
+		<pathelement location="${basedir}/lib/log4j2/log4j-api-2.8.2.jar"/>
+	</path>
+	
+	<path id="library.log4j-core-2.8.2.classpath">
+		<pathelement location="${basedir}/lib/log4j2/log4j-core-2.8.2.jar"/>
+	</path>
+
+	<path id="library.junit.classpath">
+		<pathelement location="${basedir}/lib/junit/junit-4.12.jar"/>
+		<pathelement location="${basedir}/lib/junit/hamcrest-core-1.3.jar"/>
+	</path>
+	<!-- Register Custom Compiler Taskdefs -->
+	
+	<property name="javac2.home" value="${basedir}/lib/javac2"/>
+	<path id="javac2.classpath">
+		<pathelement location="${javac2.home}/javac2.jar"/>
+		<pathelement location="${javac2.home}/jdom.jar"/>
+		<pathelement location="${javac2.home}/asm-all.jar"/>
+		<pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+	</path>
+
+	<target name="register.custom.compilers">
+		<taskdef name="javac2"
+                 classname="com.intellij.ant.Javac2"
+                 classpathref="javac2.classpath"/>
+		<taskdef name="instrumentIdeaExtensions"
+                 classname="com.intellij.ant.InstrumentIdeaExtensions"
+                 classpathref="javac2.classpath"/>
+	</target>
+	
+	<!-- Modules -->
+	
+	
+	<!-- Module CarFactory -->
+	
+	<dirname property="module.carfactory.basedir" file="${ant.file}"/>
+	
+	<property name="compiler.args.carfactory"
+              value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+	
+	<property name="carfactory.output.dir"
+              value="${module.carfactory.basedir}/out/production/CarFactory"/>
+	<property name="carfactory.testoutput.dir"
+              value="${module.carfactory.basedir}/out/test/CarFactory"/>
+
+	<property name="log.api.jar" value="lib/log4j2/log4j-api-2.8.2.jar"/>
+	<property name="log.core.jar" value="lib/log4j2/log4j-core-2.8.2.jar"/>
+
+	<path id="carfactory.module.bootclasspath">
+		<!-- Paths to be included in compilation bootclasspath -->
+	</path>
+	
+	<path id="carfactory.module.production.classpath">
+		<path refid="library.log4j-api-2.8.2.classpath"/>
+		<path refid="library.log4j-core-2.8.2.classpath"/>
+		<path refid="library.junit.classpath"/>
+	</path>
+	
+	<path id="carfactory.runtime.production.module.classpath">
+		<pathelement location="${carfactory.output.dir}"/>
+		<path refid="library.log4j-api-2.8.2.classpath"/>
+		<path refid="library.log4j-core-2.8.2.classpath"/>
+	</path>
+	
+	<path id="carfactory.module.classpath">
+		<pathelement location="${carfactory.output.dir}"/>
+		<path refid="library.log4j-api-2.8.2.classpath"/>
+		<path refid="library.log4j-core-2.8.2.classpath"/>
+	</path>
+	
+	<path id="carfactory.runtime.module.classpath">
+		<pathelement location="${carfactory.testoutput.dir}"/>
+		<pathelement location="${carfactory.output.dir}"/>
+		<path refid="library.log4j-api-2.8.2.classpath"/>
+		<path refid="library.log4j-core-2.8.2.classpath"/>
+	</path>
+	
+	
+	<patternset id="excluded.from.module.carfactory">
+		<patternset refid="ignored.files"/>
+	</patternset>
+	
+	<patternset id="excluded.from.compilation.carfactory">
+		<patternset refid="excluded.from.module.carfactory"/>
+	</patternset>
+	
+	<path id="carfactory.module.sourcepath">
+		<dirset dir="${module.carfactory.basedir}">
+			<include name="src"/>
+		</dirset>
+	</path>
+
+	<path id="carfactory.module.testsourcepath">
+		<dirset dir="${module.carfactory.basedir}">
+			<include name="test"/>
+		</dirset>
+	</path>
+	
+	
+	<target name="compile.module.carfactory"
+            depends="compile.module.carfactory.production,compile.module.carfactory.tests"
+            description="Compile module CarFactory"/>
+	
+	<target name="compile.module.carfactory.production"
+            depends="register.custom.compilers"
+            description="Compile module CarFactory; production classes">
+		<mkdir dir="${carfactory.output.dir}"/>
+		<unjar src="${javac2.home}/forms_rt.jar" dest="${carfactory.output.dir}">
+			<patternset>
+				<include name="**/*.class"/>
+			</patternset>
+		</unjar>
+		<javac2 destdir="${carfactory.output.dir}"
+                debug="${compiler.debug}"
+                nowarn="${compiler.generate.no.warnings}"
+                memorymaximumsize="${compiler.max.memory}"
+                fork="true"
+                includeantruntime="false">
+			<compilerarg line="${compiler.args.carfactory}"/>
+			<bootclasspath refid="carfactory.module.bootclasspath"/>
+			<classpath refid="carfactory.module.production.classpath"/>
+			<src refid="carfactory.module.sourcepath"/>
+			<src refid="carfactory.module.testsourcepath"/>
+			<patternset refid="excluded.from.compilation.carfactory"/>
+		</javac2>
+
+		<copy todir="${carfactory.output.dir}">
+			<fileset dir="${module.carfactory.basedir}/src">
+				<patternset refid="compiler.resources"/>
+				<type type="file"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="compile.module.carfactory.tests"
+            depends="register.custom.compilers,compile.module.carfactory.production"
+            description="compile module CarFactory; test classes"
+            unless="skip.tests"/>
+	
+	<target name="clean.module.carfactory" description="cleanup module">
+		<delete dir="${carfactory.output.dir}"/>
+		<delete dir="${carfactory.testoutput.dir}"/>
+	</target>
+	
+	<target name="init" description="Build initialization">
+		<!-- Perform any build initialization in this target -->
+	</target>
+
+	<target name="clean.jar" description="clean output jar">
+		<delete file="CarFactory.jar"/>
+	</target>
+
+	<target name="clean"
+            depends="clean.module.carfactory, clean.jar"
+            description="cleanup all"/>
+	
+	<target name="build.modules"
+            depends="init, clean, compile.module.carfactory"
+            description="build all modules"/>
+
+	<target name="jar" depends="build.modules" description="jar all">
+		<jar jarfile="CarFactory.jar">
+			<fileset dir="${carfactory.output.dir}"/>
+			<manifest>
+				<attribute name="Main-Class" value="ru.nsu.ccfit.bogush.Main"/>
+				<attribute name="Class-Path" value="${log.api.jar} ${log.core.jar}"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="all" depends="jar" description="build all"/>
+
+	<target name="run" description="run the jar">
+		<java jar="CarFactory.jar" fork="true"/>
+	</target>
+
+	<target name="build-run" depends="jar, run" description="build and run the jar"/>
+
+	<target name="test" description="run all tests" depends="build.modules">
+		<junit dir="test" fork="true" printsummary="on">
+			<classpath refid="library.junit.classpath"/>
+		</junit>
+	</target>
+</project>
