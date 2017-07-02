@@ -1,0 +1,8 @@
+# Ignore zipped versions
+*.zip
+
+# Ignore project jars
+*.jar
+
+# Unignore lib jars
+!*/lib/**/*.jar
