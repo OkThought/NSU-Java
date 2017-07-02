@@ -112,4 +112,16 @@
     <target name="run.client" depends="build.client" description="Build and run the client">
         <java jar="${client.jar}" fork="true"/>
     </target>
+
+    <property name="builds.dir" value="${basedir}/builds"/>
+    <property name="version" value="1.1"/>
+    <property name="build.dir" value="${builds.dir}/${version}"/>
+    <target name="build" depends="build.client, build.server" description="Build a new version of the project">
+        <copy todir="${build.dir}/${lib.dir}">
+            <fileset dir="${lib.dir}"/>
+        </copy>
+        <copy todir="${build.dir}" file="${client.jar}"/>
+        <copy todir="${build.dir}" file="${server.jar}"/>
+        <copy todir="${build.dir}" file="log.xml"/>
+    </target>
 </project>
