@@ -54,13 +54,13 @@ public class XMLMessageSerializer implements Serializer<Message> {
 	private OutputStream out;
 	private Marshaller marshaller;
 	private DocumentBuilder documentBuilder;
-	private OutputStreamWriter outputStreamWriter;
+	private DataInputStream dataInputStream;
 	private DataOutputStream dataOutputStream;
 
 	XMLMessageSerializer(InputStream in, OutputStream out, JAXBContext jaxbContext) throws SerializerException {
 		this.in = in;
 		this.out = out;
-		outputStreamWriter = new OutputStreamWriter(out);
+		dataInputStream = new DataInputStream(in);
 		dataOutputStream = new DataOutputStream(out);
 		try {
 			marshaller = jaxbContext.createMarshaller();
@@ -85,9 +85,22 @@ public class XMLMessageSerializer implements Serializer<Message> {
 		}
 
 		String xml = stringWriter.toString();
-		int size = xml.getBytes().length;
-		writeSize(size);
 		writeXml(xml);
+	}
+
+	private void writeXml(String xml) {
+		byte[] xmlBytes = xml.getBytes();
+		int size = xmlBytes.length;
+		writeSize(size);
+		try {
+			logger.trace("Writing xml:\n{}", xml);
+			dataOutputStream.write(xmlBytes);
+			dataOutputStream.flush();
+			logger.trace("Xml written");
+		} catch (IOException e) {
+			logger.error("Failed to write xml");
+			logger.catching(e);
+		}
 	}
 
 	private void writeSize(int size) {
@@ -98,18 +111,6 @@ public class XMLMessageSerializer implements Serializer<Message> {
 			logger.trace("Size written");
 		} catch (IOException e) {
 			logger.error("Failed to write size");
-			logger.catching(e);
-		}
-	}
-
-	private void writeXml(String xml) {
-		logger.trace("Writing xml:\n{}", xml);
-		try {
-			outputStreamWriter.write(xml);
-			outputStreamWriter.flush();
-			logger.trace("Xml written");
-		} catch (IOException e) {
-			logger.error("Failed to write xml");
 			logger.catching(e);
 		}
 	}
@@ -167,14 +168,13 @@ public class XMLMessageSerializer implements Serializer<Message> {
 
 	private int readSize() throws IOException {
 		logger.trace("Reading size...");
-		DataInputStream dataInputStream = new DataInputStream(in);
 		return dataInputStream.readInt();
 	}
 
 	private String readXml(int size) throws IOException {
 		logger.trace("Reading {} bytes of xml...", size);
 		byte[] bytes = new byte[size];
-		if (-1 == in.read(bytes)) {
+		if (-1 == dataInputStream.read(bytes)) {
 			logger.error("Eof found while reading xml");
 			throw new EOFException();
 		}
