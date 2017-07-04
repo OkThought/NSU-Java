@@ -5,3 +5,4 @@ out/
 .test
 /client.jar
 /server.jar
+/logs
